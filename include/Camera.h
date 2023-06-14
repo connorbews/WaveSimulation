@@ -23,11 +23,12 @@ class Camera
 
         float speed = 0.1f;
         float sensitivity = 100.0f;
-    
+
         Camera(int width, int height, glm::vec3 position);
 
         void Matrix(float FOVdeg, float nearPlane, float farPlane, Shader& shader, const char* uniform);
-        void Inputs(GLFWwindow* window);
+        void Inputs(GLFWwindow* window, int key, int scancode, int action, int mods);
+        static void staticInputs(GLFWwindow* window, int key, int scancode, int action, int mods);
 };
 
 #endif

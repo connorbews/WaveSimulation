@@ -1,5 +1,5 @@
 #include "../include/Camera.h"
- 
+
 Camera::Camera(int width, int height, glm::vec3 position)
 {
     Camera::width = width;
@@ -18,38 +18,44 @@ void Camera::Matrix(float FOVdeg, float nearPlane, float farPlane, Shader& shade
     glUniformMatrix4fv(glGetUniformLocation(shader.ID, uniform), 1, GL_FALSE, glm::value_ptr(proj * view));
 }
 
-void Camera::Inputs(GLFWwindow* window)
+void Camera::Inputs(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    if (key == GLFW_KEY_W)
     {
         Position += speed * Orientation;
     }
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    else if (key == GLFW_KEY_A)
     {
         Position += speed * -glm::normalize(glm::cross(Orientation, Up));
     }
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    else if (key == GLFW_KEY_S)
     {
         Position += speed * -Orientation;
     }
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    else if (key == GLFW_KEY_D)
     {
         Position += speed * glm::normalize(glm::cross(Orientation, Up));
     }
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+    else if (key == GLFW_KEY_SPACE)
     {
         Position += speed * Up;
     }
-    if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+    else if (key == GLFW_KEY_LEFT_CONTROL)
     {
         Position += speed * -Up;
     }
-    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+    else if (key == GLFW_KEY_LEFT_SHIFT && action == GLFW_PRESS)
     {
         speed = 0.4f;
     }
-    else if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE)
+    else if (key == GLFW_KEY_LEFT_SHIFT && action == GLFW_RELEASE)
     {
         speed = 0.1f;
     }
+}
+
+void Camera::staticInputs(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    Camera* _camera = static_cast<Camera*>(glfwGetWindowUserPointer(window));
+    _camera->Inputs(window, key, scancode, action, mods);
 }

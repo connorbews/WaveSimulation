@@ -41,8 +41,6 @@ GLuint indices[] =
 	3, 0, 4,
 };
 
-
-
 int main()
 {
 	// Initialize GLFW
@@ -106,7 +104,10 @@ int main()
 	glEnable(GL_DEPTH_TEST);
 
 	Camera camera(800, 800, glm::vec3(0.0f, 0.0f, 2.0f));
+    glfwSetWindowUserPointer(window, &camera);
 
+    // Set the key callback function
+    glfwSetKeyCallback(window, Camera::staticInputs);
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -117,7 +118,6 @@ int main()
 		// Tell OpenGL which Shader Program we want to use
 		shaderProgram.Activate();
 
-		camera.Inputs(window);
 		camera.Matrix(45.0f, 0.1f, 100.0f, shaderProgram, "camMatrix");
 
 		popCat.Bind();

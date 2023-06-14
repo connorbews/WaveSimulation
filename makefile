@@ -1,29 +1,22 @@
-a: hello_triangle.o shaderClass.o VBO.o VAO.o EBO.o stb.o Texture.o Camera.o
-	g++ -o a.out -L./lib hello_triangle.o shaderClass.o VBO.o VAO.o EBO.o stb.o Texture.o Camera.o src/glad.c -lGL -lGLU -lglfw3
+CC := g++
+CFLAGS := -I./include
+LDFLAGS := -L./lib -lGL -lGLU -lglfw3
+SRCDIR := src
+OBJDIR := obj
 
-hello_triangle.o: hello_triangle.cpp
-	g++ -I./include -c hello_triangle.cpp
+SOURCES := $(wildcard $(SRCDIR)/*.cpp)
+OBJECTS := $(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $(SOURCES))
 
-shaderClass.o: src/shaderClass.cpp include/shaderClass.h
-	g++ -I./include -c src/shaderClass.cpp
+TARGET := a.out
 
-VBO.o: src/VBO.cpp include/VBO.h
-	g++ -I./include -c src/VBO.cpp
+$(TARGET): main.o $(OBJECTS)
+	$(CC) -o $@ main.o $(OBJECTS) src/glad.c $(LDFLAGS)
 
-VAO.o: src/VAO.cpp include/VAO.h
-	g++ -I./include -c src/VAO.cpp
+main.o: main.cpp
+	g++ -I./include -c main.cpp
 
-EBO.o: src/EBO.cpp include/EBO.h
-	g++ -I./include -c src/EBO.cpp
-
-stb.o: src/stb.cpp include/stb/stb_image.h
-	g++ -I./include -c src/stb.cpp
-
-Texture.o: src/Texture.cpp include/Texture.h
-	g++ -I./include -c src/Texture.cpp
-
-Camera.o: src/Camera.cpp include/Camera.h
-	g++ -I./include -c src/Camera.cpp
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	$(RM) a.out *.o
+	$(RM) $(TARGET) $(OBJECTS)
