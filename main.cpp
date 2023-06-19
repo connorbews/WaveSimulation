@@ -16,6 +16,7 @@ namespace fs = std::filesystem;
 #include "include/glm/gtc/matrix_transform.hpp"
 #include "include/glm/gtc/type_ptr.hpp"
 #include "include/Camera.h"
+#include "include/Model.h"
 
 
 
@@ -43,6 +44,10 @@ GLuint indices[] =
 
 int main()
 {
+	std::string parentDir = (fs::current_path().fs::path::parent_path()).string();
+	std::string texPath = "/glad/resources/";
+
+	Model model((parentDir + texPath + "triangle.gltf").c_str());
 	// Initialize GLFW
 	glfwInit();
 
@@ -93,9 +98,6 @@ int main()
 	VAO1.Unbind();
 	VBO1.Unbind();
 	EBO1.Unbind();
-
-	std::string parentDir = (fs::current_path().fs::path::parent_path()).string();
-	std::string texPath = "/glad/resources/";
 
 	// Texture
 	Texture popCat((parentDir + texPath + "miles.png").c_str(), GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
