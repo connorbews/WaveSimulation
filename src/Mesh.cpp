@@ -2,6 +2,10 @@
 
 Mesh::Mesh(const char* filename)
 {
+    /*int indexOffset = 0;
+    int vertexOffset = 0;
+    int indexLength = 0;
+    int vertexLength = 0;
     std::string transmittedData = "";
     std::ifstream file(filename);
 
@@ -10,7 +14,6 @@ Mesh::Mesh(const char* filename)
     for (auto& el : data.items()) {
         if (el.key() == "buffers")
         {
-            //std::cout << el.key() << " : " << "Value: " << el.value() << "\n";
             for (auto& el1 : el.value()[0].items())
             {
                 if (el1.key() == "uri")
@@ -19,18 +22,38 @@ Mesh::Mesh(const char* filename)
                 }
             }
         }
+        else if (el.key() == "bufferViews")
+        {
+            for (auto& el1 : el.value()[0].items())
+            {
+                if (el1.key() == "byteOffset")
+                {
+                    indexOffset = el1.value();
+                }
+                else if (el1.key() == "byteLength")
+                {
+                    indexLength = el1.value();
+                }
+            }
+            for (auto& el1 : el.value()[1].items())
+            {
+                if (el1.key() == "byteOffset")
+                {
+                    vertexOffset = el1.value();
+                }
+                else if (el1.key() == "byteLength")
+                {
+                    vertexLength = el1.value();
+                }
+            }
+        }
     }
 
-    std::cout << "successfully read file: " << transmittedData << std::endl;
-
     transmittedData.erase(0, 37);
-
-    std::cout << "successfully edited string: " << transmittedData << std::endl;
-
     transmittedData = base64_decode(transmittedData);
 
-    ExtractIndices(transmittedData, 6, 0, sizeof(int));
-    ExtractVertices(transmittedData, transmittedData.size(), 8, sizeof(float));
+    ExtractIndices(transmittedData, indexLength + indexOffset, indexOffset, 2);
+    ExtractVertices(transmittedData, vertexLength + vertexOffset, vertexOffset, sizeof(float));*/
 }
 
 Mesh::~Mesh()
@@ -48,7 +71,6 @@ void Mesh::ExtractIndices(std::string& data, int length, int offset, int size)
             temp = temp + data[j] * std::pow(2, 8*(i + size - j - 1));
         }
 
-        std::cout << (temp / 256) << std::endl;
         indices.push_back(temp / 256);
 
         temp = 0;
@@ -58,6 +80,7 @@ void Mesh::ExtractIndices(std::string& data, int length, int offset, int size)
 void Mesh::ExtractVertices(std::string& data, int length, int offset, int size)
 {
     int temp = 0;
+    int check = 1;
     for (int i = offset; i < length; i += size)
     {
         for (int j = i; j < (i + size); j++)
@@ -65,9 +88,22 @@ void Mesh::ExtractVertices(std::string& data, int length, int offset, int size)
             temp = temp + abs(float(data[j])) * std::pow(2, 8*(i + size - j - 1));
         }
 
-        std::cout << (temp / float(32831)) << std::endl;
         vertices.push_back(temp / float(32831));
 
+        if (check % 3 == 0)
+        {
+            vertices.push_back(0.92f);
+            vertices.push_back(0.86f);
+            vertices.push_back(0.76f);
+        }
+
+        check++;
+
         temp = 0;
+    }
+
+    for (GLfloat vertex : vertices)
+    {
+        std::cout << "vertex: " << vertex << std::endl;
     }
 }

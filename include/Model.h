@@ -5,7 +5,7 @@
 #include "Mesh.h"
 #include "glad/glad.h"
 
-class Model : Mesh
+class Model : public Mesh
 {
     public:
         Model(const char* filename);
