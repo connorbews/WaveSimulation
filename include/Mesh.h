@@ -18,6 +18,11 @@ class Mesh
 
         Mesh(const char* filename);
         ~Mesh();
+
+    private:
+        void ExtractIndices(std::string& data, int length, int offset, int size);
+        void ExtractVertices(std::string& data, int length, int offset, int size);
+
 };
 
 #endif

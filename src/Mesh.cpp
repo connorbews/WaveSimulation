@@ -27,12 +27,47 @@ Mesh::Mesh(const char* filename)
 
     std::cout << "successfully edited string: " << transmittedData << std::endl;
 
-    std::string decodedData = base64_decode(transmittedData);
+    transmittedData = base64_decode(transmittedData);
 
-    std::cout << "Decoded string: " << decodedData << std::endl;
+    ExtractIndices(transmittedData, 6, 0, sizeof(int));
+    ExtractVertices(transmittedData, transmittedData.size(), 8, sizeof(float));
 }
 
 Mesh::~Mesh()
 {
     std::cout << "Called Mesh deconstructor" << std::endl;
+}
+
+void Mesh::ExtractIndices(std::string& data, int length, int offset, int size)
+{
+    int temp = 0;
+    for (int i = offset; i < length; i += size)
+    {
+        for (int j = i; j < (i + size); j++)
+        {
+            temp = temp + data[j] * std::pow(2, 8*(i + size - j - 1));
+        }
+
+        std::cout << (temp / 256) << std::endl;
+        indices.push_back(temp / 256);
+
+        temp = 0;
+    }
+}
+
+void Mesh::ExtractVertices(std::string& data, int length, int offset, int size)
+{
+    int temp = 0;
+    for (int i = offset; i < length; i += size)
+    {
+        for (int j = i; j < (i + size); j++)
+        {
+            temp = temp + abs(float(data[j])) * std::pow(2, 8*(i + size - j - 1));
+        }
+
+        std::cout << (temp / float(32831)) << std::endl;
+        vertices.push_back(temp / float(32831));
+
+        temp = 0;
+    }
 }
