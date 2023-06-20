@@ -18,7 +18,6 @@ namespace fs = std::filesystem;
 #include "include/Camera.h"
 #include "include/Model.h"
 
-
 int main()
 {
 	std::string parentDir = (fs::current_path().fs::path::parent_path()).string();
@@ -62,14 +61,14 @@ int main()
 	VAO1.Bind();
 
 	// Generates Vertex Buffer Object and links it to vertices
-	VBO VBO1(model.vertices.data(), sizeof(model.vertices));
+	VBO VBO1(&model.vertices[0], model.vertices.size() * sizeof(GLfloat));
 	// Generates Element Buffer Object and links it to indices
-	EBO EBO1(model.indices.data(), sizeof(model.indices));
+	EBO EBO1(&model.indices[0], model.indices.size() * sizeof(GLuint));
 
 	// Links VBO to VAO
-	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 8 * sizeof(float), (void*)0);
-	VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	VAO1.LinkAttrib(VBO1, 2, 2, GL_FLOAT, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 6 * sizeof(float), (void*)0);
+	VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	//VAO1.LinkAttrib(VBO1, 2, 2, GL_FLOAT, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 
 	// Unbind all to prevent accidentally modifying them
 	VAO1.Unbind();
@@ -104,7 +103,7 @@ int main()
 		VAO1.Bind();
 		// Draw primpopCat.Delete();ers(window);
 
-		glDrawElements(GL_TRIANGLES, sizeof(model.indices)/ sizeof(int), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, model.indices.size() * sizeof(GLuint) / sizeof(int), GL_UNSIGNED_INT, 0);
 
 		glfwSwapBuffers(window);
 		// Take care of all GLFW events

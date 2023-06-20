@@ -2,7 +2,7 @@
 
 Mesh::Mesh(const char* filename)
 {
-    /*int indexOffset = 0;
+    int indexOffset = 0;
     int vertexOffset = 0;
     int indexLength = 0;
     int vertexLength = 0;
@@ -53,7 +53,7 @@ Mesh::Mesh(const char* filename)
     transmittedData = base64_decode(transmittedData);
 
     ExtractIndices(transmittedData, indexLength + indexOffset, indexOffset, 2);
-    ExtractVertices(transmittedData, vertexLength + vertexOffset, vertexOffset, sizeof(float));*/
+    ExtractVertices(transmittedData, vertexLength + vertexOffset, vertexOffset, sizeof(float));
 }
 
 Mesh::~Mesh()
