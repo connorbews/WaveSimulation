@@ -1,64 +1,56 @@
 #include "../include/Mesh.h"
 
-Mesh::Mesh(const char* filename)
+Mesh::Mesh(const nlohmann::json& data)
 {
-    int indexOffset = 0;
-    int vertexOffset = 0;
-    int indexLength = 0;
-    int vertexLength = 0;
-    std::string transmittedData = "";
-    std::ifstream file(filename);
-
-    json data = json::parse(file);
-
-    for (auto& el : data.items()) {
-        if (el.key() == "buffers")
-        {
-            for (auto& el1 : el.value()[0].items())
-            {
-                if (el1.key() == "uri")
-                {
-                    transmittedData = el1.value();
-                }
-            }
-        }
-        else if (el.key() == "bufferViews")
-        {
-            for (auto& el1 : el.value()[0].items())
-            {
-                if (el1.key() == "byteOffset")
-                {
-                    indexOffset = el1.value();
-                }
-                else if (el1.key() == "byteLength")
-                {
-                    indexLength = el1.value();
-                }
-            }
-            for (auto& el1 : el.value()[1].items())
-            {
-                if (el1.key() == "byteOffset")
-                {
-                    vertexOffset = el1.value();
-                }
-                else if (el1.key() == "byteLength")
-                {
-                    vertexLength = el1.value();
-                }
-            }
-        }
-    }
-
-    transmittedData.erase(0, 37);
-    transmittedData = base64_decode(transmittedData);
-
-    ExtractIndices(transmittedData, indexLength + indexOffset, indexOffset, 2);
-    ExtractVertices(transmittedData, vertexLength + vertexOffset, vertexOffset, sizeof(float));
+    //LoadMeshData(data);
 }
 
 Mesh::~Mesh()
 {
     std::cout << "Called Mesh deconstructor" << std::endl;
+}
+
+void Mesh::LoadMeshData(const nlohmann::json& data)
+{
+    ExtractMeshData(data);
+    ParseIndexOffset(data);
+    ParseIndexLength(data);
+    ParseVertexOffset(data);
+    ParseVertexLength(data);
+    ExtractIndices(decodedMeshData, indexLength + indexOffset, indexOffset, 2);
+    ExtractVertices(decodedMeshData, vertexLength + vertexOffset, vertexOffset, sizeof(float));
+}
+
+void Mesh::ExtractMeshData(const nlohmann::json& data)
+{
+    std::string encodedData = data["buffers"][0]["uri"];
+    DecodeMeshData(encodedData);
+}
+
+void Mesh::DecodeMeshData(std::string encodedData)
+{
+    encodedData.erase(0, 37);
+    decodedMeshData = base64_decode(encodedData);
+}
+
+void Mesh::ParseIndexOffset(const nlohmann::json& data)
+{
+    indexOffset = data["bufferViews"][0]["byteOffset"];
+}
+
+void Mesh::ParseIndexLength(const nlohmann::json& data)
+{
+    indexLength = data["bufferViews"][0]["byteLength"];
+}
+
+void Mesh::ParseVertexOffset(const nlohmann::json& data)
+{
+    vertexOffset = data["bufferViews"][1]["byteOffset"];
+}
+
+void Mesh::ParseVertexLength(const nlohmann::json& data)
+{
+    vertexLength = data["bufferViews"][1]["byteLength"];
 }
 
 void Mesh::ExtractIndices(std::string& data, int length, int offset, int size)

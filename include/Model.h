@@ -8,6 +8,8 @@
 class Model : public Mesh
 {
     public:
+        nlohmann::json fileData;
+
         Model(const char* filename);
         ~Model();
 };
