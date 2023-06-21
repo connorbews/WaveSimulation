@@ -15,10 +15,10 @@ void Mesh::LoadMeshData(const nlohmann::json& data)
     try
     {
         ExtractMeshData(data);
-        ParseIndexOffset(data);
-        ParseIndexLength(data);
-        ParseVertexOffset(data);
-        ParseVertexLength(data);
+        indexOffset = ParseOffsetData(data, 0);
+        indexLength = ParseLengthData(data, 0);
+        primitiveOffset = ParseOffsetData(data, 1);
+        primitiveLength = ParseLengthData(data, 1);
     }
     catch (const nlohmann::json::basic_json::out_of_range& ex)
     {
@@ -32,10 +32,11 @@ void Mesh::LoadMeshData(const nlohmann::json& data)
     {
         std::cerr << "Something else has gone wrong, sorry" << ex.what() << std::endl;
     }
+
     try
     {
         ExtractIndices(decodedMeshData, indexLength + indexOffset, indexOffset, 2);
-        ExtractVertices(decodedMeshData, vertexLength + vertexOffset, vertexOffset, sizeof(float));
+        ExtractVertices(decodedMeshData, primitiveLength + primitiveOffset, primitiveOffset, sizeof(float));
     }
     catch(const std::out_of_range& ex)
     {
@@ -63,25 +64,14 @@ void Mesh::DecodeMeshData(std::string encodedData)
     decodedMeshData = base64_decode(encodedData);
 }
 
-void Mesh::ParseIndexOffset(const nlohmann::json& data)
+int Mesh::ParseOffsetData(const nlohmann::json& data, int index)
 {
-    indexOffset = data.at("bufferViews").at(0).at("byteOffset");
+    indexOffset = data.at("bufferViews").at(index).at("byteOffset");
 }
 
-void Mesh::ParseIndexLength(const nlohmann::json& data)
+int Mesh::ParseLengthData(const nlohmann::json& data, int index)
 {
-    indexLength = data.at("bufferViews").at(0).at("byteLength");
-}
-
-void Mesh::ParseVertexOffset(const nlohmann::json& data)
-{
-    vertexOffset = data.at("bufferViews").at(1).at("byteOffset");
-}
-
-void Mesh::ParseVertexLength(const nlohmann::json& data)
-{
-    vertexLength = data.at("bufferViews").at(1).at("byteLength");
-    
+    indexLength = data.at("bufferViews").at(index).at("byteLength");
 }
 
 void Mesh::ExtractIndices(std::string& data, int length, int offset, int size)
@@ -103,7 +93,6 @@ void Mesh::ExtractIndices(std::string& data, int length, int offset, int size)
 void Mesh::ExtractVertices(std::string& data, int length, int offset, int size)
 {
     int temp = 0;
-    int check = 1;
     for (int i = offset; i < length; i += size)
     {
         for (int j = i; j < (i + size); j++)
@@ -112,15 +101,6 @@ void Mesh::ExtractVertices(std::string& data, int length, int offset, int size)
         }
 
         vertices.push_back(temp / float(32831));
-
-        if (check % 3 == 0)
-        {
-            vertices.push_back(0.92f);
-            vertices.push_back(0.86f);
-            vertices.push_back(0.76f);
-        }
-
-        check++;
 
         temp = 0;
     }

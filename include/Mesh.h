@@ -12,13 +12,19 @@
 class Mesh
 {
     public:
-        std::vector<GLfloat> vertices;
         std::vector<GLuint> indices;
+		std::vector<GLfloat> vertices;
+		std::vector<GLfloat> normals;
 		std::string decodedMeshData;
+
+
+
 		int indexOffset;
-    	int vertexOffset;
-    	int indexLength;
-    	int vertexLength;
+		int indexLength;
+    	int primitiveOffset;
+    	int primitiveLength;
+
+		int nodeLength;
 
         Mesh(const nlohmann::json& data);
         ~Mesh();
@@ -27,10 +33,8 @@ class Mesh
 		void LoadMeshData(const nlohmann::json& data);
 		void ExtractMeshData(const nlohmann::json& data) noexcept(false);
 		void DecodeMeshData(std::string encodedData);
-		void ParseIndexOffset(const nlohmann::json& data) noexcept(false);
-		void ParseVertexOffset(const nlohmann::json& data) noexcept(false);
-		void ParseIndexLength(const nlohmann::json& data) noexcept(false);
-		void ParseVertexLength(const nlohmann::json& data) noexcept(false);
+		int ParseOffsetData(const nlohmann::json& data, int index) noexcept(false);
+		int ParseLengthData(const nlohmann::json& data, int index) noexcept(false);
 
         void ExtractIndices(std::string& data, int length, int offset, int size) noexcept(false);
         void ExtractVertices(std::string& data, int length, int offset, int size) noexcept(false);

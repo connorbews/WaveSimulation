@@ -23,7 +23,7 @@ int main()
 	std::string parentDir = (fs::current_path().fs::path::parent_path()).string();
 	std::string texPath = "/glad/resources/";
 
-	Model model((parentDir + texPath + "triangle.gltf").c_str());
+	Model model((parentDir + texPath + "twotriangle.gltf").c_str());
 	// Initialize GLFW
 	glfwInit();
 
