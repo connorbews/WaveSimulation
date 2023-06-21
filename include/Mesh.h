@@ -21,19 +21,19 @@ class Mesh
     	int vertexLength;
 
         Mesh(const nlohmann::json& data);
-		void LoadMeshData(const nlohmann::json& data);
         ~Mesh();
 
     private:
-		void ExtractMeshData(const nlohmann::json& data);
+		void LoadMeshData(const nlohmann::json& data);
+		void ExtractMeshData(const nlohmann::json& data) noexcept(false);
 		void DecodeMeshData(std::string encodedData);
-		void ParseIndexOffset(const nlohmann::json& data);
-		void ParseVertexOffset(const nlohmann::json& data);
-		void ParseIndexLength(const nlohmann::json& data);
-		void ParseVertexLength(const nlohmann::json& data);
+		void ParseIndexOffset(const nlohmann::json& data) noexcept(false);
+		void ParseVertexOffset(const nlohmann::json& data) noexcept(false);
+		void ParseIndexLength(const nlohmann::json& data) noexcept(false);
+		void ParseVertexLength(const nlohmann::json& data) noexcept(false);
 
-        void ExtractIndices(std::string& data, int length, int offset, int size);
-        void ExtractVertices(std::string& data, int length, int offset, int size);
+        void ExtractIndices(std::string& data, int length, int offset, int size) noexcept(false);
+        void ExtractVertices(std::string& data, int length, int offset, int size) noexcept(false);
 
 };
 

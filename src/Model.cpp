@@ -1,13 +1,7 @@
 #include "../include/Model.h"
 
-Model::Model(const char* filename) : Mesh::Mesh(fileData)
-{
-    std::ifstream file(filename);
-    fileData = nlohmann::json::parse(file);
-
-    file.close();
-
-    LoadMeshData(fileData);
+Model::Model(const char* filename) : Mesh::Mesh(Loader::fileReader(filename))
+{ 
     std::cout << "successfully compiled program" << std::endl;
 }
 
