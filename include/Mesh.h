@@ -17,14 +17,14 @@ class Mesh
 		std::vector<GLfloat> normals;
 		std::string decodedMeshData;
 
-
+		std::vector<GLfloat> translation;
 
 		int indexOffset;
 		int indexLength;
     	int primitiveOffset;
     	int primitiveLength;
 
-		int nodeLength;
+		int numNodes;
 
         Mesh(const nlohmann::json& data);
         ~Mesh();
@@ -33,12 +33,14 @@ class Mesh
 		void LoadMeshData(const nlohmann::json& data);
 		void ExtractMeshData(const nlohmann::json& data) noexcept(false);
 		void DecodeMeshData(std::string encodedData);
+
 		int ParseOffsetData(const nlohmann::json& data, int index) noexcept(false);
 		int ParseLengthData(const nlohmann::json& data, int index) noexcept(false);
+		int ExtractNumNodes(const nlohmann::json& data) noexcept(false);
 
         void ExtractIndices(std::string& data, int length, int offset, int size) noexcept(false);
         void ExtractVertices(std::string& data, int length, int offset, int size) noexcept(false);
-
+		void ExtractTranslation(const nlohmann::json& data) noexcept(false);
 };
 
 #endif

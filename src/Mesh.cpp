@@ -19,6 +19,10 @@ void Mesh::LoadMeshData(const nlohmann::json& data)
         indexLength = ParseLengthData(data, 0);
         primitiveOffset = ParseOffsetData(data, 1);
         primitiveLength = ParseLengthData(data, 1);
+        std::cout << "indexLength: " << indexLength << std::endl;
+        std::cout << "indexOffset: " << indexOffset << std::endl;
+        std::cout << "primitiveLength: " << primitiveLength << std::endl;
+        std::cout << "primitiveLength: " << primitiveOffset << std::endl;
     }
     catch (const nlohmann::json::basic_json::out_of_range& ex)
     {
@@ -66,12 +70,12 @@ void Mesh::DecodeMeshData(std::string encodedData)
 
 int Mesh::ParseOffsetData(const nlohmann::json& data, int index)
 {
-    indexOffset = data.at("bufferViews").at(index).at("byteOffset");
+    return data.at("bufferViews").at(index).at("byteOffset");
 }
 
 int Mesh::ParseLengthData(const nlohmann::json& data, int index)
 {
-    indexLength = data.at("bufferViews").at(index).at("byteLength");
+    return data.at("bufferViews").at(index).at("byteLength");
 }
 
 void Mesh::ExtractIndices(std::string& data, int length, int offset, int size)
@@ -87,6 +91,11 @@ void Mesh::ExtractIndices(std::string& data, int length, int offset, int size)
         indices.push_back(temp / 256);
 
         temp = 0;
+    }
+
+    for (GLuint index : indices)
+    {
+        std::cout << "index: " << index << std::endl;
     }
 }
 
@@ -110,3 +119,8 @@ void Mesh::ExtractVertices(std::string& data, int length, int offset, int size)
         std::cout << "vertex: " << vertex << std::endl;
     }
 }
+
+/*int Mesh::ExtractNumNodes(const nlohmann::json& data)
+{
+
+}*/

@@ -55,13 +55,13 @@ int main()
 
 	// Generates Shader object using shaders defualt.vert and default.frag
 	Shader shaderProgram("resources/shaders/default.vert", "resources/shaders/default.frag");
-
 	// Generates Vertex Array Object and binds it
 	VAO VAO1;
 	VAO1.Bind();
 
 	// Generates Vertex Buffer Object and links it to vertices
 	VBO VBO1(&model.vertices[0], model.vertices.size() * sizeof(GLfloat));
+	
 	// Generates Element Buffer Object and links it to indices
 	EBO EBO1(&model.indices[0], model.indices.size() * sizeof(GLuint));
 
@@ -74,10 +74,6 @@ int main()
 	VAO1.Unbind();
 	VBO1.Unbind();
 	EBO1.Unbind();
-
-	// Texture
-	Texture popCat((parentDir + texPath + "miles.png").c_str(), GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-	popCat.texUnit(shaderProgram, "tex0", 0);
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -97,8 +93,6 @@ int main()
 		shaderProgram.Activate();
 
 		camera.Matrix(45.0f, 0.1f, 100.0f, shaderProgram, "camMatrix");
-
-		popCat.Bind();
 		// Bind the VAO so OpenGL knows to use it
 		VAO1.Bind();
 		// Draw primpopCat.Delete();ers(window);
@@ -116,7 +110,6 @@ int main()
 	VAO1.Delete();
 	VBO1.Delete();
 	EBO1.Delete();
-	popCat.Delete();
 	shaderProgram.Delete();
 	// Delete window before ending the program
 	glfwDestroyWindow(window);

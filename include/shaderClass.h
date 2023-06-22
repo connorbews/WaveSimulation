@@ -7,6 +7,7 @@
 #include<sstream>
 #include<iostream>
 #include<cerrno>
+#include <vector>
 
 std::string get_file_contents(const char* filename);
 
