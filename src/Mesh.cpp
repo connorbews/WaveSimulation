@@ -14,7 +14,6 @@ void Mesh::LoadMeshData(const nlohmann::json& data)
 {
     try
     {
-        ExtractMeshData(data);
         indexOffset = ParseOffsetData(data, 0);
         indexLength = ParseLengthData(data, 0);
         primitiveOffset = ParseOffsetData(data, 1);
@@ -39,8 +38,7 @@ void Mesh::LoadMeshData(const nlohmann::json& data)
 
     try
     {
-        ExtractIndices(decodedMeshData, indexLength + indexOffset, indexOffset, 2);
-        ExtractVertices(decodedMeshData, primitiveLength + primitiveOffset, primitiveOffset, sizeof(float));
+        ExtractMeshData(data);
     }
     catch(const std::out_of_range& ex)
     {
@@ -54,12 +52,29 @@ void Mesh::LoadMeshData(const nlohmann::json& data)
     {
         std::cerr << "Something else has gone wrong, sorry" << ex.what() << std::endl;
     }
+    
 }
+
+
 
 void Mesh::ExtractMeshData(const nlohmann::json& data)
 {
     std::string encodedData = data["buffers"][0]["uri"];
     DecodeMeshData(encodedData);
+    nlohmann::json bufferViews = data.at("bufferViews");
+
+    for (auto& it : bufferViews.items())
+    {
+        int target = it.value().at("target");
+        if (target == GL_ELEMENT_ARRAY_BUFFER)
+        {
+            ExtractIndices(decodedMeshData, indexLength + indexOffset, indexOffset, 2);
+        }
+        else if (target == GL_ARRAY_BUFFER)
+        {
+            ExtractVertices(decodedMeshData, primitiveLength + primitiveOffset, primitiveOffset, sizeof(float));
+        }
+    }
 }
 
 void Mesh::DecodeMeshData(std::string encodedData)
