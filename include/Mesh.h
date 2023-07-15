@@ -3,6 +3,7 @@
 
 #include "glad/glad.h"
 #include "nlohmann/json.hpp"
+#include "glm/vec3.hpp"
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -13,8 +14,7 @@ class Mesh
 {
     public:
         std::vector<GLuint> indices;
-		std::vector<GLfloat> vertices;
-		std::vector<GLfloat> normals;
+		std::vector<GLfloat> geometry;
 		std::string decodedMeshData;
 
 		std::vector<GLfloat> translation;
@@ -36,11 +36,10 @@ class Mesh
 
 		int ParseOffsetData(const nlohmann::json& data, int index) noexcept(false);
 		int ParseLengthData(const nlohmann::json& data, int index) noexcept(false);
-		int ExtractNumNodes(const nlohmann::json& data) noexcept(false);
 
-        void ExtractIndices(std::string& data, int length, int offset, int size) noexcept(false);
-        void ExtractVertices(std::string& data, int length, int offset, int size) noexcept(false);
-		void ExtractTranslation(const nlohmann::json& data) noexcept(false);
+        void ExtractIndices(std::string& data, int length, int offset, int size, int iteration) noexcept(false);
+        void ExtractVertices(std::string& data, int length, int offset, int size, glm::vec3 translation) noexcept(false);
+
 };
 
 #endif

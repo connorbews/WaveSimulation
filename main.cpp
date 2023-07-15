@@ -60,7 +60,7 @@ int main()
 	VAO1.Bind();
 
 	// Generates Vertex Buffer Object and links it to vertices
-	VBO VBO1(&model.vertices[0], model.vertices.size() * sizeof(GLfloat));
+	VBO VBO1(&model.geometry[0], model.geometry.size() * sizeof(GLfloat));
 	
 	// Generates Element Buffer Object and links it to indices
 	EBO EBO1(&model.indices[0], model.indices.size() * sizeof(GLuint));
