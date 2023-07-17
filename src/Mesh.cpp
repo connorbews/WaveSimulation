@@ -42,8 +42,25 @@ void Mesh::LoadMeshData(const nlohmann::json& data)
         std::string encodedData = data["buffers"][0]["uri"];
         DecodeMeshData(encodedData);
 
-        
+        int i = 0;
+        for (auto& [key, val] : data.at("nodes").items())
+        {
+            int mesh = val.at("mesh");
+            int accessor = data.at("meshes").at(mesh).at("primitives").at(0).at("indices");
+            int bufferView = data.at("accessors").at(accessor).at("bufferView");
 
+            int bufferViewOffset = data.at("bufferViews").at(bufferView).at("byteOffset");
+            int size = data.at("accessors").at(accessor).at("count");
+            int repititions = data.at("nodes").size();
+            /*int offset = data.at("accessors").at(accessor).at("byteOffset");
+            offset += bufferViewOffset;*/
+            int length = bufferViewOffset + size * 2;
+            int byteSize = 2;
+            std::cout << "offset: " << bufferViewOffset << " length: " << length << " byteSize: " << byteSize << std::endl;
+            ExtractIndices(decodedMeshData, length, bufferViewOffset, byteSize, i * size);
+            i++;
+        }
+        
         for (auto& [key, val] : data.at("nodes").items())
         {
             int mesh = val.at("mesh");
@@ -60,16 +77,55 @@ void Mesh::LoadMeshData(const nlohmann::json& data)
             int bufferView = data.at("accessors").at(accessor).at("bufferView");
             int bufferViewOffset = data.at("bufferViews").at(bufferView).at("byteOffset");
             int size = data.at("accessors").at(accessor).at("count");
-            /*int attributeSize = data.at("meshes").at(mesh).at("primitives").at(0).at("attributes").size();
-            int repititions = data.at("nodes").size();
-            //geometry.reserve(size * attributeSize * repititions * 3);*/
-            int offset = data.at("accessors").at(accessor).at("byteOffset");
-            offset += bufferViewOffset;
-            int length = offset + size * 12;
+            //int offset = data.at("accessors").at(accessor).at("byteOffset");
+            //offset += bufferViewOffset;
+            int length = bufferViewOffset + size * 12;
             int byteSize = sizeof(float);
-            std::cout << "offset: " << offset << " length: " << length << " byteSize: " << byteSize << std::endl;
-            ExtractVertices(decodedMeshData, length, offset, byteSize, translation);
+            std::cout << "offset: " << bufferViewOffset << " length: " << length << " byteSize: " << byteSize << std::endl;
+            ExtractVertices(decodedMeshData, length, bufferViewOffset, byteSize, translation);
         }
+
+        normalsOffset = geometry.size();
+
+        for (auto& [key, val] : data.at("nodes").items())
+        {
+            int mesh = val.at("mesh");
+
+            glm::vec3 translation(0.f, 0.f, 0.f);
+
+            int accessor = data.at("meshes").at(mesh).at("primitives").at(0).at("attributes").at("NORMAL");
+            int bufferView = data.at("accessors").at(accessor).at("bufferView");
+            int bufferViewOffset = data.at("bufferViews").at(bufferView).at("byteOffset");
+            
+            int size = data.at("accessors").at(accessor).at("count");
+            /*int offset = data.at("accessors").at(accessor).at("byteOffset");
+            offset += bufferViewOffset;*/
+            int length = bufferViewOffset + size * 12;
+            int byteSize = sizeof(float);
+            std::cout << "offset: " << bufferViewOffset << " length: " << length << " byteSize: " << byteSize << std::endl;
+            ExtractVertices(decodedMeshData, length, bufferViewOffset, byteSize, translation);
+        }
+
+        for (auto& [key, val] : data.at("nodes").items())
+        {
+            int mesh = val.at("mesh");
+
+            glm::vec3 translation(0.f, 0.f, 0.f);
+
+            int accessor = data.at("meshes").at(mesh).at("primitives").at(0).at("attributes").at("TEXCOORD_0");
+            int bufferView = data.at("accessors").at(accessor).at("bufferView");
+            int bufferViewOffset = data.at("bufferViews").at(bufferView).at("byteOffset");
+            
+            int size = data.at("accessors").at(accessor).at("count");
+            /*int offset = data.at("accessors").at(accessor).at("byteOffset");
+            offset += bufferViewOffset;*/
+            int length = bufferViewOffset + size * 8;
+            int byteSize = sizeof(float);
+            std::cout << "offset: " << bufferViewOffset << " length: " << length << " byteSize: " << byteSize << std::endl;
+            ExtractVertices(decodedMeshData, length, bufferViewOffset, byteSize, translation);
+        }
+
+        textureOffset = geometry.size();
 
         /*int i = 0;
         int repititions = data.at("nodes").size();
@@ -218,15 +274,15 @@ void Mesh::ExtractIndices(std::string& data, int length, int offset, int size, i
             temp = temp + data[j] * std::pow(2, 8*(i + size - j - 1));
         }
 
-        indices[i / size] = temp / 256 + iteration;
+        indices.push_back(temp / 256 + iteration);
 
         temp = 0;
     }
 
-    for (GLuint index : indices)
+    /*for (GLuint index : indices)
     {
         std::cout << "index: " << index << std::endl;
-    }
+    }*/
 }
 
 void Mesh::ExtractVertices(std::string& data, int length, int offset, int size, glm::vec3 translation)
@@ -243,9 +299,9 @@ void Mesh::ExtractVertices(std::string& data, int length, int offset, int size, 
 
         temp = 0;
     }
-    std::cout << geometry.size() << std::endl;
+    /*std::cout << geometry.size() << std::endl;
     for (GLfloat vertex : geometry)
     {
         std::cout << "vertex: " << vertex << std::endl;
-    }
+    }*/
 }

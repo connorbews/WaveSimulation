@@ -24,7 +24,8 @@ class Mesh
     	int primitiveOffset;
     	int primitiveLength;
 
-		int numNodes;
+		int normalsOffset;
+		int textureOffset;
 
         Mesh(const nlohmann::json& data);
         ~Mesh();
