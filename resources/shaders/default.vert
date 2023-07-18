@@ -3,9 +3,10 @@ layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormals;
 layout (location = 2) in vec2 aTex;
 
-out vec3 color;
+out vec4 color;
 
 uniform mat4 camMatrix;
+uniform vec4 matColour;
 
 void main()
 {
@@ -13,5 +14,5 @@ void main()
    // Use the normal direction for shading calculations
    vec3 normal = normalize(aNormals);
    // Perform shading calculations using the normal direction
-   color = vec3(0.8f, 0.3f, 0.2f); // Example shading calculation
+   color = matColour; // Example shading calculation
 }

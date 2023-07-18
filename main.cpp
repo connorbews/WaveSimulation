@@ -77,7 +77,7 @@ int main()
 
 	glEnable(GL_DEPTH_TEST);
 
-	Camera camera(800, 800, glm::vec3(0.0f, 0.0f, 2.0f));
+	Camera camera(800, 800, glm::vec3(5.0f, 10.0f, 900.0f));
     glfwSetWindowUserPointer(window, &camera);
 
     // Set the key callback function
@@ -92,7 +92,8 @@ int main()
 		// Tell OpenGL which Shader Program we want to use
 		shaderProgram.Activate();
 
-		camera.Matrix(45.0f, 0.1f, 100.0f, shaderProgram, "camMatrix");
+		camera.Matrix(-45.0f, 0.1f, 1000.0f, shaderProgram, "camMatrix");
+		glUniform4fv(glGetUniformLocation(shaderProgram.ID, "matColour"), 1, glm::value_ptr(model.colour));
 		// Bind the VAO so OpenGL knows to use it
 		VAO1.Bind();
 		// Draw primpopCat.Delete();ers(window);

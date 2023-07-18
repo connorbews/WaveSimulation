@@ -4,6 +4,7 @@
 #include "glad/glad.h"
 #include "nlohmann/json.hpp"
 #include "glm/vec3.hpp"
+#include "glm/vec4.hpp"
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -26,6 +27,8 @@ class Mesh
 
 		int normalsOffset;
 		int textureOffset;
+
+		glm::vec4 colour;
 
         Mesh(const nlohmann::json& data);
         ~Mesh();
