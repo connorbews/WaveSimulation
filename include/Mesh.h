@@ -28,7 +28,7 @@ class Mesh
 		int normalsOffset;
 		int textureOffset;
 
-		glm::vec4 colour;
+		std::vector<float> colour;
 
         Mesh(const nlohmann::json& data);
         ~Mesh();

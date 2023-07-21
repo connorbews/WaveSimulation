@@ -132,6 +132,7 @@ int main()
 
 	shaderProgram.Activate();
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	glUniform4f(glGetUniformLocation(shaderProgram.ID, "matColour"), model.colour[0], model.colour[1], model.colour[2], model.colour[3]);
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -153,7 +154,6 @@ int main()
 		camera.updateMatrix(-45.0f, 0.1f, 1000.0f);
 
 		camera.Matrix(shaderProgram, "camMatrix");
-		glUniform4f(glGetUniformLocation(shaderProgram.ID, "matColour"), model.colour.x, model.colour.y, model.colour.z, model.colour.w);
 		// Bind the VAO so OpenGL knows to use it
 		VAO1.Bind();
 

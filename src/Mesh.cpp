@@ -101,13 +101,12 @@ void Mesh::LoadMeshData(const nlohmann::json& data)
         {
             int mesh = val.at("mesh");
 
-            glm::vec4 colour(0.f, 0.f, 0.f, 0.f);
-
             int material = data.at("meshes").at(mesh).at("primitives").at(0).at("material");
-            colour[0] = data.at("materials").at(material).at("pbrMetallicRoughness").at("baseColorFactor").at(0);
-            colour[1] = data.at("materials").at(material).at("pbrMetallicRoughness").at("baseColorFactor").at(1);
-            colour[2] = data.at("materials").at(material).at("pbrMetallicRoughness").at("baseColorFactor").at(2);
-            colour[3] = data.at("materials").at(material).at("pbrMetallicRoughness").at("baseColorFactor").at(3);
+
+            colour.push_back(data.at("materials").at(material).at("pbrMetallicRoughness").at("baseColorFactor").at(0));
+            colour.push_back(data.at("materials").at(material).at("pbrMetallicRoughness").at("baseColorFactor").at(1));
+            colour.push_back(data.at("materials").at(material).at("pbrMetallicRoughness").at("baseColorFactor").at(2));
+            colour.push_back(data.at("materials").at(material).at("pbrMetallicRoughness").at("baseColorFactor").at(3));
         }
 
     }
