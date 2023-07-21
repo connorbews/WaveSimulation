@@ -97,6 +97,7 @@ int main()
 	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 0, (void*)0);
 	VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 0, (void*)(model.normalsOffset * sizeof(float)));
 	VAO1.LinkAttrib(VBO1, 2, 2, GL_FLOAT, 0, (void*)(model.textureOffset * sizeof(float)));
+	
 
 	// Unbind all to prevent accidentally modifying them
 	VAO1.Unbind();
@@ -118,11 +119,11 @@ int main()
 
 	glm::vec4 lightColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-	glm::vec3 lightPos = glm::vec3(10.0f, 5.0f, 800.0f);
+	glm::vec3 lightPos = glm::vec3(10.0f, 5.0f, 500.0f);
 	glm::mat4 lightModel = glm::mat4(1.0f);
 	lightModel = glm::translate(lightModel, lightPos);
 
-	glm::vec3 wavePos = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 wavePos = glm::vec3(0.0f, 2.5246694087982178f, 0.0f);
 	glm::mat4 waveModel = glm::mat4(1.0f);
 	waveModel = glm::translate(waveModel, wavePos);
 	
@@ -131,6 +132,8 @@ int main()
 	glUniform4f(glGetUniformLocation(lightShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 
 	shaderProgram.Activate();
+	glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(waveModel));
+	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPosition"), lightPos.x, lightPos.y, lightPos.z);
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "matColour"), model.colour[0], model.colour[1], model.colour[2], model.colour[3]);
 

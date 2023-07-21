@@ -1,11 +1,18 @@
 #version 330 core
+in vec4 color;
+in vec3 currentPosition;
+in vec3 normals;
+
 out vec4 FragColor;
 
 uniform vec4 lightColor;
-in vec4 color;
+uniform vec4 matColour;
+uniform vec3 lightPosition;
 
 void main()
 {
-   FragColor =  color * lightColor;
-   //vec4(0.005960569716989994f, 0.0f, 0.8000000715255737f, 1.0f)
+   vec3 lightDirection = normalize(lightPosition - currentPosition);
+   vec3 normalDirection = normalize(normals);
+   float diffuse = max(dot(normalDirection, lightDirection), 0.0f);
+   FragColor =  matColour * lightColor * diffuse;
 }

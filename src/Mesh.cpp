@@ -78,6 +78,8 @@ void Mesh::LoadMeshData(const nlohmann::json& data)
             ExtractVertices(decodedMeshData, length, bufferViewOffset, byteSize, translation);
         }
 
+        textureOffset = geometry.size();
+
         for (auto& [key, val] : data.at("nodes").items())
         {
             int mesh = val.at("mesh");
@@ -94,8 +96,6 @@ void Mesh::LoadMeshData(const nlohmann::json& data)
             std::cout << "offset: " << bufferViewOffset << " length: " << length << " byteSize: " << byteSize << std::endl;
             ExtractVertices(decodedMeshData, length, bufferViewOffset, byteSize, translation);
         }
-
-        textureOffset = geometry.size();
 
         for (auto& [key, val] : data.at("nodes").items())
         {
