@@ -18,6 +18,34 @@ namespace fs = std::filesystem;
 #include "include/Camera.h"
 #include "include/Model.h"
 
+GLfloat lightVertices[] = 
+{
+	-1.0f, -1.0f,  1.0f,
+	-1.0f, -1.0f, -1.0f,
+	 1.0f, -1.0f, -1.0f,
+	 1.0f, -1.0f,  1.0f,
+	-1.0f,  1.0f,  1.0f,
+	-1.0f,  1.0f, -1.0f,
+	 1.0f,  1.0f, -1.0f,
+	 1.0f,  1.0f,  1.0f
+};
+
+GLuint lightIndices[] = 
+{
+	0, 1, 2,
+	0, 2, 3,
+	0, 4, 7,
+	0, 7, 3,
+	3, 7, 6,
+	3, 6, 2,
+	2, 6, 5,
+	2, 5, 1,
+	1, 5, 4,
+	1, 4, 0,
+	4, 5, 6,
+	4, 6, 7
+};
+
 int main()
 {
 	std::string parentDir = (fs::current_path().fs::path::parent_path()).string();
@@ -75,6 +103,36 @@ int main()
 	VBO1.Unbind();
 	EBO1.Unbind();
 
+	Shader lightShader("resources/shaders/light.vert", "resources/shaders/light.frag");
+	VAO lightVAO;
+	lightVAO.Bind();
+
+	VBO lightVBO(lightVertices, sizeof(lightVertices));
+	EBO lightEBO(lightIndices, sizeof(lightIndices));
+
+	lightVAO.LinkAttrib(lightVBO, 0, 3, GL_FLOAT, 0, (void*)0);
+
+	lightVAO.Unbind();
+	lightVBO.Unbind();
+	lightEBO.Unbind();
+
+	glm::vec4 lightColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+	glm::vec3 lightPos = glm::vec3(10.0f, 5.0f, 800.0f);
+	glm::mat4 lightModel = glm::mat4(1.0f);
+	lightModel = glm::translate(lightModel, lightPos);
+
+	glm::vec3 wavePos = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::mat4 waveModel = glm::mat4(1.0f);
+	waveModel = glm::translate(waveModel, wavePos);
+	
+	lightShader.Activate();
+	glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));
+	glUniform4f(glGetUniformLocation(lightShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+
+	shaderProgram.Activate();
+	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+
 	glEnable(GL_DEPTH_TEST);
 
 	Camera camera(800, 800, glm::vec3(5.0f, 10.0f, 900.0f));
@@ -92,14 +150,22 @@ int main()
 		// Tell OpenGL which Shader Program we want to use
 		shaderProgram.Activate();
 
-		camera.Matrix(-45.0f, 0.1f, 1000.0f, shaderProgram, "camMatrix");
-		glUniform4fv(glGetUniformLocation(shaderProgram.ID, "matColour"), 1, glm::value_ptr(model.colour));
+		camera.updateMatrix(-45.0f, 0.1f, 1000.0f);
+
+		camera.Matrix(shaderProgram, "camMatrix");
+		glUniform4f(glGetUniformLocation(shaderProgram.ID, "matColour"), model.colour.x, model.colour.y, model.colour.z, model.colour.w);
 		// Bind the VAO so OpenGL knows to use it
 		VAO1.Bind();
-		// Draw primpopCat.Delete();ers(window);
 
 		glDrawElements(GL_TRIANGLES, model.indices.size() * sizeof(GLuint) / sizeof(int), GL_UNSIGNED_INT, 0);
+		// Draw primpopCat.Delete();ers(window);
 
+		lightShader.Activate();
+		camera.Matrix(lightShader, "camMatrix");
+		lightVAO.Bind();
+		
+		glDrawElements(GL_TRIANGLES, sizeof(lightIndices) / sizeof(int), GL_UNSIGNED_INT, 0);
+		
 		glfwSwapBuffers(window);
 		// Take care of all GLFW events
 		glfwPollEvents();
