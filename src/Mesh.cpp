@@ -32,9 +32,10 @@ void Mesh::LoadMeshData(const nlohmann::json& data)
             offset += bufferViewOffset;*/
             int length = bufferViewOffset + size * 2;
             int byteSize = 2;
-            std::cout << "offset: " << bufferViewOffset << " length: " << length << " byteSize: " << byteSize << std::endl;
+            //std::cout << "offset: " << bufferViewOffset << " length: " << length << " byteSize: " << byteSize << std::endl;
             ExtractIndices(decodedMeshData, length, bufferViewOffset, byteSize, i * size);
             i++;
+            //std::cout << "only ran once: " << std::endl;
         }
         
         for (auto& [key, val] : data.at("nodes").items())
@@ -42,12 +43,12 @@ void Mesh::LoadMeshData(const nlohmann::json& data)
             int mesh = val.at("mesh");
 
             glm::vec3 translation(0.f, 0.f, 0.f);
-            if (val.find("translation") != val.end())
+            /*if (val.find("translation") != val.end())
             {
                 translation[0] = val.at("translation").at(0);
                 translation[1] = val.at("translation").at(1);
                 translation[2] = val.at("translation").at(2);
-            }
+            }*/
 
             int accessor = data.at("meshes").at(mesh).at("primitives").at(0).at("attributes").at("POSITION");
             int bufferView = data.at("accessors").at(accessor).at("bufferView");
@@ -55,7 +56,7 @@ void Mesh::LoadMeshData(const nlohmann::json& data)
             int size = data.at("accessors").at(accessor).at("count");
             int length = bufferViewOffset + size * 12;
             int byteSize = sizeof(float);
-            std::cout << "offset: " << bufferViewOffset << " length: " << length << " byteSize: " << byteSize << std::endl;
+            //std::cout << "offset: " << bufferViewOffset << " length: " << length << " byteSize: " << byteSize << std::endl;
             ExtractVertices(decodedMeshData, length, bufferViewOffset, byteSize, translation);
         }
 
@@ -74,7 +75,7 @@ void Mesh::LoadMeshData(const nlohmann::json& data)
             int size = data.at("accessors").at(accessor).at("count");
             int length = bufferViewOffset + size * 12;
             int byteSize = sizeof(float);
-            std::cout << "offset: " << bufferViewOffset << " length: " << length << " byteSize: " << byteSize << std::endl;
+            //std::cout << "offset: " << bufferViewOffset << " length: " << length << " byteSize: " << byteSize << std::endl;
             ExtractVertices(decodedMeshData, length, bufferViewOffset, byteSize, translation);
         }
 
@@ -93,7 +94,7 @@ void Mesh::LoadMeshData(const nlohmann::json& data)
             int size = data.at("accessors").at(accessor).at("count");
             int length = bufferViewOffset + size * 8;
             int byteSize = sizeof(float);
-            std::cout << "offset: " << bufferViewOffset << " length: " << length << " byteSize: " << byteSize << std::endl;
+            //std::cout << "offset: " << bufferViewOffset << " length: " << length << " byteSize: " << byteSize << std::endl;
             ExtractVertices(decodedMeshData, length, bufferViewOffset, byteSize, translation);
         }
 
@@ -138,9 +139,22 @@ void Mesh::ExtractIndices(std::string& data, int length, int offset, int size, i
     {
         for (int j = i; j < (i + size); j++)
         {
-            temp = temp + data[j] * std::pow(2, 8*(i + size - j - 1));
+            int data1 = 0;
+            if ((int)data[j] < 0)
+            {
+                data1 = (int)data[j] + 256;
+            }
+            else
+            {
+                data1 = (int)data[j];
+            }
+            temp = temp + abs(data1 * std::pow(2, 8*(i + size - j - 1)));
+            /*if (i < 2043100)
+            {
+                std::cout << "i: " << i << " j: " << j << " temp: " << temp << " data[j]: " << (int)data[j] << std::endl;
+            }*/
         }
-
+        
         indices.push_back(temp / 256 + iteration);
 
         temp = 0;

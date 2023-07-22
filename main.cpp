@@ -96,9 +96,16 @@ int main()
 	// Links VBO to VAO
 	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 0, (void*)0);
 	VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 0, (void*)(model.normalsOffset * sizeof(float)));
-	VAO1.LinkAttrib(VBO1, 2, 2, GL_FLOAT, 0, (void*)(model.textureOffset * sizeof(float)));
+	//VAO1.LinkAttrib(VBO1, 2, 2, GL_FLOAT, 0, (void*)(model.textureOffset * sizeof(float)));
 	
-
+	for (int i = 0; i < model.indices.size(); i++)
+	{
+		if (model.indices[i] > 256)
+		{
+			std::cout << "here" << std::endl;
+		}
+		//std::cout << model.indices[i] << std::endl;
+	}
 	// Unbind all to prevent accidentally modifying them
 	VAO1.Unbind();
 	VBO1.Unbind();
@@ -119,7 +126,7 @@ int main()
 
 	glm::vec4 lightColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-	glm::vec3 lightPos = glm::vec3(10.0f, 5.0f, 500.0f);
+	glm::vec3 lightPos = glm::vec3(10.0f, 5.0f, 10000.0f);
 	glm::mat4 lightModel = glm::mat4(1.0f);
 	lightModel = glm::translate(lightModel, lightPos);
 
@@ -139,7 +146,7 @@ int main()
 
 	glEnable(GL_DEPTH_TEST);
 
-	Camera camera(800, 800, glm::vec3(5.0f, 10.0f, 900.0f));
+	Camera camera(800, 800, glm::vec3(5.0f, 10.0f, 250000.0f));
     glfwSetWindowUserPointer(window, &camera);
 
     // Set the key callback function
@@ -154,7 +161,7 @@ int main()
 		// Tell OpenGL which Shader Program we want to use
 		shaderProgram.Activate();
 
-		camera.updateMatrix(-45.0f, 0.1f, 1000.0f);
+		camera.updateMatrix(60.0f, 0.1f, 1000000.0f);
 
 		camera.Matrix(shaderProgram, "camMatrix");
 		// Bind the VAO so OpenGL knows to use it

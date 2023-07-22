@@ -14,5 +14,5 @@ void main()
    vec3 lightDirection = normalize(lightPosition - currentPosition);
    vec3 normalDirection = normalize(normals);
    float diffuse = max(dot(normalDirection, lightDirection), 0.0f);
-   FragColor =  matColour * lightColor * diffuse;
+   FragColor =  matColour * lightColor;
 }
