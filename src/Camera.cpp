@@ -33,7 +33,7 @@ void Camera::Inputs(GLFWwindow* window, int key, int scancode, int action, int m
     }
     else if (key == GLFW_KEY_A)
     {
-        Position += speed * glm::normalize(glm::cross(Orientation, Up));
+        Position += speed * -glm::normalize(glm::cross(Orientation, Up));
     }
     else if (key == GLFW_KEY_S)
     {
@@ -41,7 +41,7 @@ void Camera::Inputs(GLFWwindow* window, int key, int scancode, int action, int m
     }
     else if (key == GLFW_KEY_D)
     {
-        Position += speed * -glm::normalize(glm::cross(Orientation, Up));
+        Position += speed * glm::normalize(glm::cross(Orientation, Up));
     }
     else if (key == GLFW_KEY_SPACE)
     {

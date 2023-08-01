@@ -1,4 +1,4 @@
-#version 330 core
+#version 460 core
 in vec4 color;
 in vec3 currentPosition;
 in vec3 normals;

@@ -103,6 +103,8 @@ int main()
 	VBO1.Unbind();
 	EBO1.Unbind();
 
+	Shader computeShader("resources/shaders/initialize.comp");
+
 	Shader lightShader("resources/shaders/light.vert", "resources/shaders/light.frag");
 	VAO lightVAO;
 	lightVAO.Bind();
@@ -146,11 +148,13 @@ int main()
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
 	{
+		computeShader.computeActivate();
 		// Specify the color of the background
 		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
 		// Clean the back buffer and assign the new color to it
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// Tell OpenGL which Shader Program we want to use
+
 		shaderProgram.Activate();
 
 		camera.updateMatrix(45.0f, 0.1f, 10000.0f);

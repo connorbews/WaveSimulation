@@ -53,10 +53,35 @@ Shader::Shader(const char* vertexFile, const char* fragmentFile)
 	glLinkProgram(ID);
 	compileErrors(ID, "PROGRAM");
 
-	// Delete the now useless Vertex and Fragment Shader objects
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
 
+}
+
+Shader::Shader(const char* computeFile)
+{
+	std::string computeCode = get_file_contents(computeFile);
+
+	const char* computeSource = computeCode.c_str();
+
+	// Create Vertex Shader Object and get its reference
+	GLuint computeShader = glCreateShader(GL_COMPUTE_SHADER);
+	// Attach Vertex Shader source to the Vertex Shader Object
+	glShaderSource(computeShader, 1, &computeSource, NULL);
+	// Compile the Vertex Shader into machine code
+	glCompileShader(computeShader);
+	compileErrors(computeShader, "COMPUTE");
+
+	// Create Shader Program Object and get its reference
+	computeProgram = glCreateProgram();
+	// Attach the Vertex and Fragment Shaders to the Shader Program
+	glAttachShader(computeProgram, computeShader);
+	// Wrap-up/Link all the shaders together into the Shader Program
+	glLinkProgram(computeProgram);
+	compileErrors(ID, "COMPUTE PROGRAM");
+
+	// Delete the now useless Vertex and Fragment Shader objects
+	glDeleteShader(computeShader);
 }
 
 // Activates the Shader Program
@@ -65,10 +90,22 @@ void Shader::Activate()
 	glUseProgram(ID);
 }
 
+void Shader::computeActivate()
+{
+	glUseProgram(computeProgram);
+	glDispatchCompute(1, 1, 1);
+	glMemoryBarrier(GL_ALL_BARRIER_BITS);
+}
+
 // Deletes the Shader Program
 void Shader::Delete()
 {
 	glDeleteProgram(ID);
+}
+
+void Shader::computeDelete()
+{
+	glDeleteProgram(computeProgram);
 }
 
 void Shader::compileErrors(unsigned int shader, const char* type)
