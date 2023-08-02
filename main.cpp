@@ -57,8 +57,8 @@ int main()
 	
 	// Tell GLFW what version of OpenGL we are using 
 	// In this case we are using OpenGL 3.3
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 	// Tell GLFW we are using the CORE profile
 	// So that means we only have the modern functions
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -138,6 +138,8 @@ int main()
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "matColour"), model.colour[0], model.colour[1], model.colour[2], model.colour[3]);
 
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, VBO1.ID);
+
 	glEnable(GL_DEPTH_TEST);
 
 	Camera camera(800, 800, glm::vec3(5.0f, 10.0f, 50.0f));
@@ -149,6 +151,8 @@ int main()
 	while (!glfwWindowShouldClose(window))
 	{
 		computeShader.computeActivate();
+
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, VBO1.ID);
 		// Specify the color of the background
 		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
 		// Clean the back buffer and assign the new color to it
@@ -156,6 +160,8 @@ int main()
 		// Tell OpenGL which Shader Program we want to use
 
 		shaderProgram.Activate();
+
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, VBO1.ID);
 
 		camera.updateMatrix(45.0f, 0.1f, 10000.0f);
 

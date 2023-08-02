@@ -94,7 +94,7 @@ void Shader::computeActivate()
 {
 	glUseProgram(computeProgram);
 	glDispatchCompute(1, 1, 1);
-	glMemoryBarrier(GL_ALL_BARRIER_BITS);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 }
 
 // Deletes the Shader Program
