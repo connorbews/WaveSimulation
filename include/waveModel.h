@@ -11,12 +11,14 @@
 class waveModel
 {
 public:
-	std::vector<glm::vec2> geometry;
+    GLuint specBuffer;
+	std::vector<GLfloat> geometry;
 
 	waveModel();
 private:
     void oceanographicSpectrum();
-    glm::vec2 spectrumHeight(float kx, float ky);
+    glm::vec2 spectrumHeight(float kx, float ky, float randr, float randi);
     float waveDispersion(float kx, float ky);
 };
+
 #endif

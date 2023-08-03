@@ -17,6 +17,7 @@ namespace fs = std::filesystem;
 #include "include/glm/gtc/type_ptr.hpp"
 #include "include/Camera.h"
 #include "include/Model.h"
+#include "include/waveModel.h"
 
 GLfloat lightVertices[] = 
 {
@@ -125,18 +126,22 @@ int main()
 	lightModel = glm::translate(lightModel, lightPos);
 
 	glm::vec3 wavePos = glm::vec3(0.0f, 2.5246694087982178f, 0.0f);
-	glm::mat4 waveModel = glm::mat4(1.0f);
-	waveModel = glm::translate(waveModel, wavePos);
+	glm::mat4 wavemodel = glm::mat4(1.0f);
+	wavemodel = glm::translate(wavemodel, wavePos);
 	
 	lightShader.Activate();
 	glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));
 	glUniform4f(glGetUniformLocation(lightShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 
 	shaderProgram.Activate();
-	glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(waveModel));
+	glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(wavemodel));
 	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPosition"), lightPos.x, lightPos.y, lightPos.z);
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "matColour"), model.colour[0], model.colour[1], model.colour[2], model.colour[3]);
+
+	waveModel waveModel;
+
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, waveModel.specBuffer);
 
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, VBO1.ID);
 
@@ -153,6 +158,8 @@ int main()
 		computeShader.computeActivate();
 
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, VBO1.ID);
+
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, waveModel.specBuffer);
 		// Specify the color of the background
 		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
 		// Clean the back buffer and assign the new color to it
