@@ -53,6 +53,7 @@ int main()
 	std::string texPath = "/glad/resources/";
 
 	Model model((parentDir + texPath + "waves.gltf").c_str());
+	waveModel waveModel;
 	// Initialize GLFW
 	glfwInit();
 	
@@ -104,7 +105,7 @@ int main()
 	VBO1.Unbind();
 	EBO1.Unbind();
 
-	Shader computeShader("resources/shaders/initialize.comp");
+	//Shader computeShader("resources/shaders/initialize.comp");
 
 	Shader lightShader("resources/shaders/light.vert", "resources/shaders/light.frag");
 	VAO lightVAO;
@@ -139,11 +140,9 @@ int main()
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "matColour"), model.colour[0], model.colour[1], model.colour[2], model.colour[3]);
 
-	waveModel waveModel;
+	//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, waveModel.specBuffer);
 
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, waveModel.specBuffer);
-
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, VBO1.ID);
+	//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, VBO1.ID);
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -155,11 +154,14 @@ int main()
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
 	{
-		computeShader.computeActivate();
+		//glUniform1f(glGetUniformLocation(computeShader.computeProgram, "dt"), dt);
+		//computeShader.computeActivate();
 
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, VBO1.ID);
+		//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, VBO1.ID);
 
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, waveModel.specBuffer);
+		//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, waveModel.specBuffer);
+
+		//dt += 1.0 / 60.0f;
 		// Specify the color of the background
 		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
 		// Clean the back buffer and assign the new color to it
@@ -168,7 +170,7 @@ int main()
 
 		shaderProgram.Activate();
 
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, VBO1.ID);
+		//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, VBO1.ID);
 
 		camera.updateMatrix(45.0f, 0.1f, 10000.0f);
 

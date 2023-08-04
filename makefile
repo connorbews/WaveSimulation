@@ -1,6 +1,6 @@
 CC := g++
 CFLAGS := -I./include
-LDFLAGS := -L./lib -lGL -lGLU -lglfw3
+LDFLAGS := -L./lib -lGL -lGLU -lglfw3 -lfftw3 -lm
 SRCDIR := src
 OBJDIR := obj
 

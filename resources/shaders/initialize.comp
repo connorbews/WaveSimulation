@@ -12,6 +12,8 @@ layout (std430, binding = 1) buffer SpecSSBO {
     vec2 specData[];
 };
 
+uniform float dt;
+
 void horizontaliFFT();
 void verticaliFFT();
 
@@ -20,13 +22,14 @@ void wavePropagation(float dt);
 
 void main()
 {
-    horizontaliFFT();
-    verticaliFFT();
+    //wavePropagation(dt);
+
+    //horizontaliFFT();
+    //verticaliFFT();
 }
 
-void horizontaliFFT()
+void horizontaliFFT(int row, int n)
 {
-
 }
 
 void verticaliFFT()

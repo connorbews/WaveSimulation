@@ -4,10 +4,34 @@ waveModel::waveModel()
 {
     oceanographicSpectrum();
 
-    glGenBuffers(1, &specBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, specBuffer);
-	glBufferData(GL_ARRAY_BUFFER, geometry.size() * sizeof(GLfloat), &geometry[0], GL_DYNAMIC_DRAW);
-}
+    std::cout << "geometry size: " << geometry.size() << std::endl;
+
+    fftw_plan p = fftw_plan_dft_c2r_2d(256, 256,
+                &geometry[0],
+                &geometryMesh[0],
+                FFTW_ESTIMATE);
+
+    std::cout << "got here: " << std::endl;
+
+    fftw_execute(p);
+    fftw_destroy_plan(p);
+
+    for (int i = 0; i < 256 - 1; i++)
+    {
+        for (int j = 0; j < 256 - 1; j++)
+        {
+            index.push_back(i * 256 + j);
+            index.push_back((i + 1) * 256 + j);
+            index.push_back(i * 256 + j + 1);
+
+            index.push_back((i + 1) * 256 + j + 1);
+            index.push_back(i * 256 + j + 1);
+            index.push_back((i + 1) * 256 + j);
+        }
+    }
+
+    std::cout << "index size: " << index.size() << std::endl;
+ }
 
 void waveModel::oceanographicSpectrum()
 {
@@ -29,16 +53,17 @@ void waveModel::oceanographicSpectrum()
         {
             float ky = 2 * M_PI * j / Ly;
 
-            glm::vec2 h0 = spectrumHeight(kx, ky, er, ei);
-            glm::vec2 h1 = spectrumHeight(-kx, -ky, er, ei);
+            fftw_complex* h0 = spectrumHeight(kx, ky, er, ei);
+            fftw_complex* h1 = spectrumHeight(-kx, -ky, er, ei);
 
-            float omega = waveDispersion(kx, ky);
+            double omega = waveDispersion(kx, ky);
 
-            glm::vec2 spectrum;
+            fftw_complex spectrum;
 
             if (omega < 0.00001f)
             {
-                spectrum = glm::vec2(0.0f, 0.0f);
+                spectrum[0] = 0.0;
+                spectrum[1] = 0.0;
             }
             else
             {
@@ -52,44 +77,45 @@ void waveModel::oceanographicSpectrum()
 
                 float directional_spectrum = directional * dspectrum;
 
-                spectrum = (h0 + h1) * 0.5f * glm::exp(glm::vec2(0.0f, 1.0f) * omega * 0.0f);
+                spectrum[0] = (*h0[0] + *h1[0]) * 0.5 * 1.0;
+                spectrum[1] = (*h0[1] + *h1[1]) * 0.5 * 1.0;
             }
 
-            geometry.push_back(spectrum.x);
-            geometry.push_back(spectrum.y);
+            geometry.push_back(spectrum);
         }
     }
 }
 
-glm::vec2 waveModel::spectrumHeight(float kx, float ky, float randr, float randi)
+fftw_complex* waveModel::spectrumHeight(double kx, double ky, double randr, double randi)
 {
     glm::vec2 w = glm::vec2(1.0f, 0.0f);
     glm::vec2 k = glm::vec2(kx, ky);
 
-    float k1 = std::sqrt(std::pow(kx, 2) + std::pow(ky, 2));
+    double k1 = std::sqrt(std::pow(kx, 2) + std::pow(ky, 2));
 
-    float L = std::pow(31.0f, 2) / 10.0f;
+    double L = std::pow(31.0, 2) / 10.0;
 
-    glm::vec2 h;
+    fftw_complex h;
 
     if (k1 < 0.00001f)
     {
-        h = glm::vec2(0.0f, 0.0f);
+        h[0] = 0.0;
+        h[1] = 0.0;
     }
     else
     {
-        float L = std::pow(31.0f, 2.0f) / 10.0f;
         glm::vec2 w = glm::vec2(1.0f, 0.0f);
 
-        float p =  1 * std::exp(-1.0f / (k1 * std::pow(L, 2))) / (std::pow(k1, 4)) * std::pow(std::abs(glm::dot(w, k)), 2);
+        double p =  1.0 * std::exp(-1.0 / (k1 * std::pow(L, 2))) / (std::pow(k1, 4)) * std::pow(std::abs(glm::dot(w, k)), 2);
 
-        h = 1.0f / std::sqrt(2.0f) * glm::vec2(randr, randi) * std::sqrt(p);
+        h[0] = 1.0 / std::sqrt(2.0) * randr * std::sqrt(p);
+        h[1] = 1.0 / std::sqrt(2.0) * randr * std::sqrt(p);
     }
 
-    return h;
+    return &h;
 }
 
-float waveModel::waveDispersion(float kx, float ky)
+double waveModel::waveDispersion(double kx, double ky)
 {
     return std::sqrt(10 * std::sqrt(std::pow(kx, 2) + std::pow(ky, 2)));
 }

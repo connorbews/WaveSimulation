@@ -7,18 +7,24 @@
 #include <cstdlib>
 #include <cmath>
 #include <random>
+#include <complex>
+#include <fftw3.h>
+#include <iostream>
+#include <mutex>
 
 class waveModel
 {
 public:
     GLuint specBuffer;
-	std::vector<GLfloat> geometry;
+	std::vector<fftw_complex> geometry;
+    std::vector<int> index;
+    std::vector<double> geometryMesh;
 
 	waveModel();
 private:
     void oceanographicSpectrum();
-    glm::vec2 spectrumHeight(float kx, float ky, float randr, float randi);
-    float waveDispersion(float kx, float ky);
+    fftw_complex* spectrumHeight(double kx, double ky, double randr, double randi);
+    double waveDispersion(double kx, double ky);
 };
 
 #endif
