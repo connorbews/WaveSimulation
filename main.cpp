@@ -90,14 +90,14 @@ int main()
 	VAO1.Bind();
 
 	// Generates Vertex Buffer Object and links it to vertices
-	VBO VBO1(&model.geometry[0], model.geometry.size() * sizeof(GLfloat));
+	VBO VBO1(&waveModel.geometryMesh[0], waveModel.geometryMesh.size() * sizeof(GLfloat));
 	
 	// Generates Element Buffer Object and links it to indices
-	EBO EBO1(&model.indices[0], model.indices.size() * sizeof(GLuint));
+	EBO EBO1(&waveModel.index[0], waveModel.index.size() * sizeof(GLuint));
 
 	// Links VBO to VAO
 	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 0, (void*)0);
-	VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 0, (void*)(model.normalsOffset * sizeof(float)));
+	//VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 0, (void*)(model.normalsOffset * sizeof(float)));
 	//VAO1.LinkAttrib(VBO1, 2, 2, GL_FLOAT, 0, (void*)(model.textureOffset * sizeof(float)));
 	
 	// Unbind all to prevent accidentally modifying them
