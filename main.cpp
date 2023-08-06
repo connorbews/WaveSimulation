@@ -54,6 +54,15 @@ int main()
 
 	Model model((parentDir + texPath + "waves.gltf").c_str());
 	waveModel waveModel;
+
+	/*for (int i = 0; i < 8; i++)
+	{
+		for (int j = 0; j < 8; j++)
+		{
+			std::cout << waveModel.geometry[i * 8 + j] << ", ";
+		}
+		std::cout << std::endl;
+	}*/
 	// Initialize GLFW
 	glfwInit();
 	
@@ -146,7 +155,7 @@ int main()
 
 	glEnable(GL_DEPTH_TEST);
 
-	Camera camera(800, 800, glm::vec3(5.0f, 10.0f, 50.0f));
+	Camera camera(800, 800, glm::vec3(0.0f, 0.0f, 200.0f));
     glfwSetWindowUserPointer(window, &camera);
 
     // Set the key callback function

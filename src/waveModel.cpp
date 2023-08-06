@@ -3,21 +3,22 @@
 waveModel::waveModel()
 {
     fftw_complex *in;
-    double *out;
+    fftw_complex *out;
 
     oceanographicSpectrum();
 
     in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * geometry.size());
-    out = (double*) fftw_malloc(sizeof(double) * geometry.size());
+    out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * geometry.size());
 
     for (int i = 0 ;  i< geometry.size() ; i++)
     {
        memcpy(&in[i], &geometry[i], sizeof(fftw_complex));
     }
 
-    fftw_plan p = fftw_plan_dft_c2r_2d(256, 256,
+    fftw_plan p = fftw_plan_dft_2d(256, 256,
                 in,
                 out,
+                FFTW_BACKWARD,
                 FFTW_ESTIMATE);
 
     fftw_execute(p);
@@ -27,7 +28,7 @@ waveModel::waveModel()
     {
         geometryMesh.push_back((i % 256) * 1000.0f / 256.0f);
         geometryMesh.push_back((i / 256) * 1000.0f / 256.0f);
-        geometryMesh.push_back(float(out[i]));
+        geometryMesh.push_back(std::sqrt(std::pow(out[i][0] / 65536.0, 2.0) + std::pow(out[i][1] / 65536.0, 2.0)));
     }
 
     for (int i = 0; i < 256 - 1; i++)
@@ -55,8 +56,8 @@ void waveModel::oceanographicSpectrum()
     std::default_random_engine generator;
     std::normal_distribution<double> distribution(0.0, 1.0);
 
-    double er = distribution(generator);
-    double ei = distribution(generator);
+    double er = 0.5;//distribution(generator);
+    double ei = 0.5;//distribution(generator);
 
     for (int i = n; i < std::abs(n); i++)
     {
@@ -82,13 +83,13 @@ void waveModel::oceanographicSpectrum()
 
                 double w_m = 10.0 / (1.026 * 31.0);
 
-                double directional = (alpha * 100.0) / (std::pow(omega, 5));
+                double directional = (alpha * 100.0) / (std::pow(omega, 5.0));
 
-                double dspectrum = std::exp((-5.0f / 4.0f) * std::pow((w_m / omega), 4)) * std::pow(std::cos(theta_p - std::atan2(ky, kx)), 2);
+                double dspectrum = std::exp((-5.0 / 4.0) * std::pow((w_m / omega), 4.0)) * std::pow(std::cos(theta_p - std::atan2(ky, kx)), 2.0);
 
                 double directional_spectrum = directional * dspectrum;
 
-                spectrum = (h0 + h1) * 0.5 * std::exp(std::complex<double>(0.0, 1.0) * omega * 0.0);
+                spectrum = (h0 + h1) * 0.5 * std::exp(std::complex<double>(0.0, 1.0) * omega * 0.0) * directional_spectrum;
             }
 
             geometry.push_back(spectrum);
