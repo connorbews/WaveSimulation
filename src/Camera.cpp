@@ -15,7 +15,7 @@ void Camera::updateMatrix(float FOVdeg, float nearPlane, float farPlane)
 
     view = glm::lookAt(Position, Position + Orientation, Up);
     proj = glm::perspective(glm::radians(FOVdeg), (float)(width / height), nearPlane, farPlane);
-    rotate = glm::rotate(proj * view, glm::radians(20.0f), glm::cross(Orientation, Up));
+    rotate = glm::rotate(proj * view, glm::radians(-20.0f), glm::cross(Orientation, Up));
 
     cameraMatrix = rotate;
 }
@@ -33,7 +33,7 @@ void Camera::Inputs(GLFWwindow* window, int key, int scancode, int action, int m
     }
     else if (key == GLFW_KEY_A)
     {
-        Position += speed * glm::normalize(glm::cross(Orientation, Up));
+        Position += speed * -glm::normalize(glm::cross(Orientation, Up));
     }
     else if (key == GLFW_KEY_S)
     {
@@ -41,7 +41,7 @@ void Camera::Inputs(GLFWwindow* window, int key, int scancode, int action, int m
     }
     else if (key == GLFW_KEY_D)
     {
-        Position += speed * -glm::normalize(glm::cross(Orientation, Up));
+        Position += speed * glm::normalize(glm::cross(Orientation, Up));
     }
     else if (key == GLFW_KEY_SPACE)
     {
