@@ -21,14 +21,14 @@ namespace fs = std::filesystem;
 
 GLfloat lightVertices[] = 
 {
-	-1.0f, -1.0f,  1.0f,
-	-1.0f, -1.0f, -1.0f,
-	 1.0f, -1.0f, -1.0f,
-	 1.0f, -1.0f,  1.0f,
-	-1.0f,  1.0f,  1.0f,
-	-1.0f,  1.0f, -1.0f,
-	 1.0f,  1.0f, -1.0f,
-	 1.0f,  1.0f,  1.0f
+	-10.0f, -10.0f,  10.0f,
+	-10.0f, -10.0f, -10.0f,
+	 10.0f, -10.0f, -10.0f,
+	 10.0f, -10.0f,  10.0f,
+	-10.0f,  10.0f,  10.0f,
+	-10.0f,  10.0f, -10.0f,
+	 10.0f,  10.0f, -10.0f,
+	 10.0f,  10.0f,  10.0f
 };
 
 GLuint lightIndices[] = 
@@ -106,7 +106,7 @@ int main()
 
 	// Links VBO to VAO
 	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 0, (void*)0);
-	//VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 0, (void*)(model.normalsOffset * sizeof(float)));
+	VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 0, (void*)(waveModel.normalsOffset * sizeof(float)));
 	//VAO1.LinkAttrib(VBO1, 2, 2, GL_FLOAT, 0, (void*)(model.textureOffset * sizeof(float)));
 	
 	// Unbind all to prevent accidentally modifying them
@@ -131,7 +131,7 @@ int main()
 
 	glm::vec4 lightColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-	glm::vec3 lightPos = glm::vec3(0.0f, 10.0f, 0.0f);
+	glm::vec3 lightPos = glm::vec3(500.0f, 500.0f, 100.0f);
 	glm::mat4 lightModel = glm::mat4(1.0f);
 	lightModel = glm::translate(lightModel, lightPos);
 
@@ -155,12 +155,15 @@ int main()
 
 	glEnable(GL_DEPTH_TEST);
 
-	Camera camera(800, 800, glm::vec3(0.0f, 0.0f, 200.0f));
+	Camera camera(800, 800, glm::vec3(500.0f, 500.0f, 700.0f));
     glfwSetWindowUserPointer(window, &camera);
 
     // Set the key callback function
     glfwSetKeyCallback(window, Camera::staticInputs);
 	// Main while loop
+
+	double dt = 0.0;
+
 	while (!glfwWindowShouldClose(window))
 	{
 		//glUniform1f(glGetUniformLocation(computeShader.computeProgram, "dt"), dt);
@@ -187,7 +190,9 @@ int main()
 		// Bind the VAO so OpenGL knows to use it
 		VAO1.Bind();
 
-		glDrawElements(GL_TRIANGLES, model.indices.size() * sizeof(GLuint) / sizeof(int), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, waveModel.index.size() * sizeof(GLuint) / sizeof(int), GL_UNSIGNED_INT, 0);
+		dt += 1.0 / 1000.0;
+		waveModel.wavePropagation(VAO1.ID, dt);
 		// Draw primpopCat.Delete();ers(window);
 
 		lightShader.Activate();

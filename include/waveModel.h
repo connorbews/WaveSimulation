@@ -19,10 +19,14 @@ public:
 	std::vector<std::complex<double>> geometry;
     std::vector<GLuint> index;
     std::vector<GLfloat> geometryMesh;
+    int normalsOffset;
 
 	waveModel();
+    void wavePropagation(GLuint ID, double dt);
 private:
     void oceanographicSpectrum();
+    void meshNormals();
+    void updateNormals();
     std::complex<double> spectrumHeight(double kx, double ky, double randr, double randi);
     double waveDispersion(double kx, double ky);
 };
