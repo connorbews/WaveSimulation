@@ -52,22 +52,14 @@ int main()
 	std::string parentDir = (fs::current_path().fs::path::parent_path()).string();
 	std::string texPath = "/glad/resources/";
 
-	//Model model((parentDir + texPath + "waves.gltf").c_str());
 	waveModel waveModel;
 
-	/*for (int i = 0; i < 8; i++)
-	{
-		for (int j = 0; j < 8; j++)
-		{
-			std::cout << waveModel.geometry[i * 8 + j] << ", ";
-		}
-		std::cout << std::endl;
-	}*/
+
 	// Initialize GLFW
 	glfwInit();
 	
 	// Tell GLFW what version of OpenGL we are using 
-	// In this case we are using OpenGL 3.3
+	// In this case we are using OpenGL 4.6
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 	// Tell GLFW we are using the CORE profile

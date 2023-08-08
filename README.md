@@ -33,6 +33,19 @@ To download the FFTW library you will need to follow to installation instruction
 # Math
 
 ## Wave Initialization
+
+In order to initialize the waves position, we use a function called a Wave Spectrum. A wave spectrum is defined as a "function which expresses the time-average energy of a random ocean configuration as a continuous function of angular frequency ω and direction θ" (Horvath, pg 31). The wave spectrum can be broken into a product of two equations the non-directional wave spectra and the directional wave spectra.
+
+### Non-directional Wave Spectra
+
+The non-directional wave spectra is a function that describes the distribution of wave energy as a function of frequency.
+
+In this project I used the Pierson-Moskowitz Spectrum:
+
+$$S_{pierson moskowitz}(\omega) = \frac{\alpha g^2}{\omega^5}exp(-\beta(\frac{\omega_0}{\omega})^4)$$
+
+### Directional Wave Spectra
+
 ## Vertex Normals Calculation
 ## Wave Propagation Model
 
