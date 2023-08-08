@@ -169,9 +169,9 @@ void waveModel::oceanographicSpectrum()
             {
                 double theta_p = M_PI / 4.0;
 
-                double w_m = 10.0 / (1.026 * 31.0);
+                double w_m = 9.81 / (1.026 * 31.0);
 
-                double directional = (alpha * 100.0) / (std::pow(omega, 5.0));
+                double directional = (alpha * std::pow(9.81, 2.0)) / (std::pow(omega, 5.0));
 
                 double dspectrum = std::exp((-5.0 / 4.0) * std::pow((w_m / omega), 4.0)) * std::pow(std::cos(theta_p - std::atan2(ky, kx)), 2.0);
 

@@ -34,11 +34,9 @@ To download the FFTW library you will need to follow to installation instruction
 
 ## Wave Initialization
 
-In order to initialize the waves position, we use a function called a Wave Spectrum. A wave spectrum is defined as a "function which expresses the time-average energy of a random ocean configuration as a continuous function of angular frequency ω and direction θ" (Horvath, pg 31). The wave spectrum can be broken into a product of two equations the non-directional wave spectra and the directional wave spectra.
+In order to initialize the waves position, we use a function called a Wave Spectrum. The wave spectrum can be broken into a product of two equations the non-directional wave spectra and the directional wave spectra. I then used the product of the non-directional wave spectra and the directional wave sprectra to initialize a 256 x 256 grid. The grid is in the spectral domain, to convert it to a height field, I used the fftw library and the 2d inverse fast fourier transform.
 
 ### Non-directional Wave Spectra
-
-The non-directional wave spectra is a function that describes the distribution of wave energy as a function of frequency.
 
 In this project I used the Pierson-Moskowitz Spectrum:
 
@@ -46,7 +44,24 @@ $$S_{pierson moskowitz}(\omega) = \frac{\alpha g^2}{\omega^5}exp(-\beta(\frac{\o
 
 ### Directional Wave Spectra
 
+In this project I used the Positive Cosine Squared Directional Spreading Spectrum:
+
+$$D_{cos^2}(\theta) = \begin{cases}
+    \frac{2}{\pi}cos^2(\theta) & \text{if } \frac{-\pi}{2} < \theta < \frac{\pi}{2} \\
+    0 & \text{otherwise}
+\end{cases}$$
+
 ## Vertex Normals Calculation
+
+I used the following formula to calculate the normal field from the height field above:
+
+$$d_x = \frac{1}{2}[h(i + 1, j) - h(i - 1, j)]$$
+$$d_y = \frac{1}{2}[h(i, j + 1) - h(i, j - 1)]$$
+
+I can then take the cross product of these vectors is the normal vector. The normal vector normalized results in the following equation:
+
+$$n = \frac{(-d_x, -d_y, 1)}{\sqrt(d_x^2 + d_y^2 + 1)}$$
+
 ## Wave Propagation Model
 
 # References
