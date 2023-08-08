@@ -10,4 +10,4 @@ sudo make install
 
 cd ..
 sudo rm -r glfw
-mv /usr/local/lib/libglfw3.a libglfw.a
+sudo mv /usr/local/lib/libglfw3.a libglfw3.a

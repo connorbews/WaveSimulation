@@ -52,7 +52,7 @@ int main()
 	std::string parentDir = (fs::current_path().fs::path::parent_path()).string();
 	std::string texPath = "/glad/resources/";
 
-	Model model((parentDir + texPath + "waves.gltf").c_str());
+	//Model model((parentDir + texPath + "waves.gltf").c_str());
 	waveModel waveModel;
 
 	/*for (int i = 0; i < 8; i++)
@@ -147,7 +147,7 @@ int main()
 	glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(wavemodel));
 	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPosition"), lightPos.x, lightPos.y, lightPos.z);
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-	glUniform4f(glGetUniformLocation(shaderProgram.ID, "matColour"), model.colour[0], model.colour[1], model.colour[2], model.colour[3]);
+	glUniform4f(glGetUniformLocation(shaderProgram.ID, "matColour"), 0.005960569716989994f, 0.0f, 0.8000000715255737, 1.0f);
 
 	//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, waveModel.specBuffer);
 
