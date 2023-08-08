@@ -10,6 +10,8 @@ Through the combined power of OpenGL and C++, this project delivers authentic wa
 
 ## Linux
 
+To run this project, you will need to have the following dependencies. Please type these commands into your terminal.
+
 ```sh
 sudo apt-get update
 sudo apt-get install cmake pkg-config
@@ -18,6 +20,14 @@ sudo apt-get install mesa-utils libglu1-mesa-dev freeglut3-dev mesa-common-dev
 sudo apt-get install libglew-dev libglfw3-dev libglm-dev
 sudo apt-get install libao-dev libmpg123-dev
 ```
+
+You will also need the glfw library. Please run the shell script using the command below to install glfw.
+
+```sh
+bash install_dependencies.sh
+```
+
+To download the FFTW library you will need to follow to installation instructions on the [FFTW Website](https://www.fftw.org/download.html)
 ## Windows
 
 # Math
