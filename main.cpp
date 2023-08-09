@@ -54,7 +54,7 @@ int main()
 
 	waveModel waveModel;
 
-
+	
 	// Initialize GLFW
 	glfwInit();
 	
@@ -77,7 +77,7 @@ int main()
 	}
 	// Introduce the window into the current context
 	glfwMakeContextCurrent(window);
-
+	
 	//Load GLAD so it configures OpenGL
 	gladLoadGL();
 	// Specify the viewport of OpenGL in the Window
@@ -86,6 +86,7 @@ int main()
 
 	// Generates Shader object using shaders defualt.vert and default.frag
 	Shader shaderProgram("resources/shaders/default.vert", "resources/shaders/default.frag");
+
 	// Generates Vertex Array Object and binds it
 	VAO VAO1;
 	VAO1.Bind();
@@ -95,7 +96,7 @@ int main()
 	
 	// Generates Element Buffer Object and links it to indices
 	EBO EBO1(&waveModel.index[0], waveModel.index.size() * sizeof(GLuint));
-
+	
 	// Links VBO to VAO
 	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 0, (void*)0);
 	VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 0, (void*)(waveModel.normalsOffset * sizeof(float)));
@@ -105,7 +106,7 @@ int main()
 	VAO1.Unbind();
 	VBO1.Unbind();
 	EBO1.Unbind();
-
+	
 	//Shader computeShader("resources/shaders/initialize.comp");
 
 	Shader lightShader("resources/shaders/light.vert", "resources/shaders/light.frag");

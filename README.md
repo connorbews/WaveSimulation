@@ -53,9 +53,12 @@ $$D_{cos^2}(\theta) = \begin{cases}
 
 ## Vertex Normals Calculation
 
-I used the following formula to calculate the normal field from the height field above:
+I used the following formula to calculate the slope in the x direction:
 
 $$d_x = \frac{1}{2}[h(i + 1, j) - h(i - 1, j)]$$
+
+I used the following formula to calculate the slope in the y direction:
+
 $$d_y = \frac{1}{2}[h(i, j + 1) - h(i, j - 1)]$$
 
 I can then take the cross product of these vectors is the normal vector. The normal vector normalized results in the following equation:
@@ -63,6 +66,8 @@ I can then take the cross product of these vectors is the normal vector. The nor
 $$n = \frac{(-d_x, -d_y, 1)}{\sqrt(d_x^2 + d_y^2 + 1)}$$
 
 ## Wave Propagation Model
+
+
 
 # References
 
