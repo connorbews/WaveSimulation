@@ -67,7 +67,15 @@ $$n = \frac{(-d_x, -d_y, 1)}{\sqrt(d_x^2 + d_y^2 + 1)}$$
 
 ## Wave Propagation Model
 
+The wave propagation model was defined as:
 
+$$\tilde{h}(k_x, k_y) = \tilde{h}(k_x, k_y) \cdot exp(i\cdot g \sqrt(k_x^2 + k_y^2) \cdot dt)$$
+
+Where $\tilde{h}(k_x, k_y)$ is the 256 x 256 grid in the spectral domain obtained from the oceanographic spectrum
+
+Once again I need to calculate the inverse fast fourier transform in order to convert the spectral domain data into spatial domain data.
+
+I increase the value of "dt," applying the wave propagation model anew, and execute the inverse fast Fourier transform once more. This sequence is iteratively executed in a loop, enabling the simulation of the wave's progression over time.
 
 # References
 
