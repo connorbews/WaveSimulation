@@ -6,11 +6,7 @@ Leveraging a wave propagation model, our simulation enables realistic interactio
 
 Through the combined power of OpenGL and C++, this project delivers authentic wave simulation. 
 
-
-
-https://github.com/connorbews/vertexs/assets/49799089/22e2135d-de9a-47e2-b8aa-50d873d55674
-
-
+https://github.com/connorbews/vertexs/assets/49799089/c912705d-5ac3-43e8-a316-fe532ec3ba5a
 
 # Setup Instructions
 
