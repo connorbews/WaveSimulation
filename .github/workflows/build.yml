@@ -13,11 +13,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Set up C++ environment
-      uses: actions/setup-cpp@v2
     - name: Build application
       run: |
-        mkdir build
         cd build
         cmake ..
-        make
