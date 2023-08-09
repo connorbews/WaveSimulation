@@ -5,6 +5,8 @@ namespace fs = std::filesystem;
 #include<glad/glad.h>
 #include<GLFW/glfw3.h>
 #include<math.h>
+#include <chrono>
+#include <thread>
 
 #include"include/shaderClass.h"
 #include"include/VAO.h"
@@ -156,7 +158,7 @@ int main()
 	// Main while loop
 
 	double dt = 0.0;
-
+	using std::operator""s;
 	while (!glfwWindowShouldClose(window))
 	{
 		//glUniform1f(glGetUniformLocation(computeShader.computeProgram, "dt"), dt);
@@ -184,7 +186,7 @@ int main()
 		VAO1.Bind();
 
 		glDrawElements(GL_TRIANGLES, waveModel.index.size() * sizeof(GLuint) / sizeof(int), GL_UNSIGNED_INT, 0);
-		dt += 1.0 / 1000.0;
+		dt += 1.0 / 60.0;
 		waveModel.wavePropagation(VAO1.ID, dt);
 		// Draw primpopCat.Delete();ers(window);
 
@@ -197,6 +199,7 @@ int main()
 		glfwSwapBuffers(window);
 		// Take care of all GLFW events
 		glfwPollEvents();
+		std::this_thread::sleep_for(0.02s);
 	}
 
 

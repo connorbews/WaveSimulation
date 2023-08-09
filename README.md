@@ -1,8 +1,8 @@
 # Introduction
 
-Inspired by the methods pioneered by Horvath[1] and Tessendorf[2], this project explores the fascinating world of oceanography. Using an oceanographic spectrum, we initiate waves in the spectral domain and efficiently convert them to the spatial domain using the inverse fast Fourier transform.
+Inspired by the methods pioneered by Horvath[1] and Tessendorf[2], this project explores ocean simulation. Using an oceanographic spectrum, we initiate waves in the spectral domain and efficiently convert them to the spatial domain using the inverse fast Fourier transform.
 
-Leveraging a wave propagation model, our simulation enables realistic interactions and evolutions of the waves within the spectral domain. To bring these dynamic waves to life, we once again employ the inverse fast Fourier transform, smoothly converting the spectral domain information back to the spatial domain.
+The simulation enables realistic interactions and evolutions of the waves using a wave propagation model. To bring these dynamic waves to life, we once again employ the inverse fast Fourier transform, smoothly converting the spectral domain information back to the spatial domain.
 
 Through the combined power of OpenGL and C++, this project delivers authentic wave simulation. 
 
@@ -36,7 +36,7 @@ To download the FFTW library you will need to follow to installation instruction
 
 ## Wave Initialization
 
-In order to initialize the waves position, we use a function called a Wave Spectrum. The wave spectrum can be broken into a product of two equations the non-directional wave spectra and the directional wave spectra. I then used the product of the non-directional wave spectra and the directional wave sprectra to initialize a 256 x 256 grid. The grid is in the spectral domain, to convert it to a height field, I used the fftw library and the 2d inverse fast fourier transform.
+To initialize the wave positions, I used a function known as a Wave Spectrum. This spectrum can be deconstructed into two constituent equations: the non-directional wave spectrum and the directional wave spectrum. By combining the products of these two spectra, I initialized a 256 x 256 grid. This grid exists within the spectral domain; for its conversion into a height field, the transformation utilized of the fftw library alongside a 2D inverse fast Fourier transform.
 
 ### Non-directional Wave Spectra
 
@@ -77,7 +77,7 @@ Where $\tilde{h}(k_x, k_y)$ is the 256 x 256 grid in the spectral domain obtaine
 
 Once again I need to calculate the inverse fast fourier transform in order to convert the spectral domain data into spatial domain data.
 
-I increase the value of "dt," applying the wave propagation model anew, and execute the inverse fast Fourier transform once more. This sequence is iteratively executed in a loop, enabling the simulation of the wave's progression over time.
+I increase the value of "dt", applying the wave propagation model again, and execute the inverse fast Fourier transform once more. This sequence is iteratively executed in a loop, enabling the simulation of the wave's progression over time.
 
 # References
 
