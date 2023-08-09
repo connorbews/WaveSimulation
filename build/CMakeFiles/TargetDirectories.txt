@@ -1,3 +1,0 @@
-/home/connor/Desktop/glad/build/CMakeFiles/WaveSimulation.dir
-/home/connor/Desktop/glad/build/CMakeFiles/edit_cache.dir
-/home/connor/Desktop/glad/build/CMakeFiles/rebuild_cache.dir
