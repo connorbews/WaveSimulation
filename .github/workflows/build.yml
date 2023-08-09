@@ -16,4 +16,4 @@ jobs:
     - name: Build application
       run: |
         cd build
-        cmake ..
+        cmake --build .
