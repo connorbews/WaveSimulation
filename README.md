@@ -30,7 +30,6 @@ bash install_dependencies.sh
 ```
 
 To download the FFTW library you will need to follow to installation instructions on the [FFTW Website](https://www.fftw.org/download.html)
-## Windows
 
 # Math
 
