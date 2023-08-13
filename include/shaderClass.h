@@ -17,7 +17,7 @@ class Shader
 		// Reference ID of the Shader Program
 		GLuint ID;
 
-		void Activate();
+		virtual void Activate();
 
 		void Delete();
 

@@ -27,11 +27,10 @@ ComputeShader::ComputeShader(const char* computeFile)
 	glDeleteShader(computeShader);
 }
 
-/*
+
 void ComputeShader::Activate()
 {
 	Shader::Activate();
 	glDispatchCompute(1, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 }
-*/
