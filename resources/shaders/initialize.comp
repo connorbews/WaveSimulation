@@ -8,11 +8,6 @@ layout (std430, binding = 1) buffer SpecSSBO {
     vec2 specData[];
 };
 
-uniform float dt;
-
-float waveDispersion(float kx, float ky);
-void wavePropagation(float dt);
-
 void main()
 {
     //wavePropagation(dt);
@@ -21,35 +16,7 @@ void main()
     //verticaliFFT();
 }
 
-void horizontaliFFT(int row, int n)
+void initializeWave()
 {
-}
-
-void verticaliFFT()
-{
-
-}
-
-void wavePropagation(float dt)
-{
-    int n = -128;
-    int Lx = 1000;
-    int Ly = 1000;
-    vec2 complex = vec2(0.0f, 1.0f);
-
-    for (int i = n; i < abs(n); i++)
-    {
-        float kx = 2 * PI * i / Lx;
-        for (int j = n; j < abs(n); j++)
-        {
-            float ky = 2 * PI * j / Ly;
-            specData[(i + abs(n)) * 256 + j + abs(j)] = specData[(i + abs(n)) * 256 + j + abs(n)] * exp(complex * waveDispersion(kx, ky) * dt);
-        }
-    }
-}
-
-float waveDispersion(float kx, float ky)
-{
-    int g = 10;
-    return sqrt(g * sqrt(pow(kx, 2) + pow(ky, 2)));
+    
 }

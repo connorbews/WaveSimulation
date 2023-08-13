@@ -8,7 +8,8 @@ namespace fs = std::filesystem;
 #include <chrono>
 #include <thread>
 
-#include"include/shaderClass.h"
+#include"include/ObjectShaderClass.h"
+#include"include/ComputeShaderClass.h"
 #include"include/VAO.h"
 #include"include/VBO.h"
 #include"include/EBO.h"
@@ -87,7 +88,7 @@ int main()
 	glViewport(0, 0, 800, 800);
 
 	// Generates Shader object using shaders defualt.vert and default.frag
-	Shader shaderProgram("resources/shaders/default.vert", "resources/shaders/default.frag");
+	ObjectShader shaderProgram("resources/shaders/default.vert", "resources/shaders/default.frag");
 
 	// Generates Vertex Array Object and binds it
 	VAO VAO1;
@@ -111,7 +112,7 @@ int main()
 	
 	//Shader computeShader("resources/shaders/initialize.comp");
 
-	Shader lightShader("resources/shaders/light.vert", "resources/shaders/light.frag");
+	ObjectShader lightShader("resources/shaders/light.vert", "resources/shaders/light.frag");
 	VAO lightVAO;
 	lightVAO.Bind();
 
@@ -156,6 +157,28 @@ int main()
     // Set the key callback function
     glfwSetKeyCallback(window, Camera::staticInputs);
 	// Main while loop
+
+	int work_grp_cnt[3];
+	glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 0, &work_grp_cnt[0]);
+	glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 1, &work_grp_cnt[1]);
+	glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 2, &work_grp_cnt[2]);
+	std::cout << "Max work groups per compute shader" << 
+		" x:" << work_grp_cnt[0] <<
+		" y:" << work_grp_cnt[1] <<
+		" z:" << work_grp_cnt[2] << "\n";
+
+	int work_grp_size[3];
+	glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 0, &work_grp_size[0]);
+	glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 1, &work_grp_size[1]);
+	glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 2, &work_grp_size[2]);
+	std::cout << "Max work group sizes" <<
+		" x:" << work_grp_size[0] <<
+		" y:" << work_grp_size[1] <<
+		" z:" << work_grp_size[2] << "\n";
+
+	int work_grp_inv;
+	glGetIntegerv(GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS, &work_grp_inv);
+	std::cout << "Max invocations count per work group: " << work_grp_inv << "\n";
 
 	double dt = 0.0;
 	using std::operator""s;
