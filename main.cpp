@@ -158,6 +158,7 @@ int main()
     glfwSetKeyCallback(window, Camera::staticInputs);
 	// Main while loop
 
+	/*
 	int work_grp_cnt[3];
 	glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 0, &work_grp_cnt[0]);
 	glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 1, &work_grp_cnt[1]);
@@ -179,6 +180,7 @@ int main()
 	int work_grp_inv;
 	glGetIntegerv(GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS, &work_grp_inv);
 	std::cout << "Max invocations count per work group: " << work_grp_inv << "\n";
+	*/
 
 	double dt = 0.0;
 	using std::operator""s;

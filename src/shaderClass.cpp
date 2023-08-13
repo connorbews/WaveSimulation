@@ -20,7 +20,6 @@ std::string get_file_contents(const char* filename)
 // Activates the Shader Program
 void Shader::Activate()
 {
-	std::cout << "got here: " << std::endl;
 	glUseProgram(ID);
 }
 
