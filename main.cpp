@@ -90,6 +90,33 @@ int main()
 	// Generates Shader object using shaders defualt.vert and default.frag
 	ObjectShader shaderProgram("resources/shaders/default.vert", "resources/shaders/default.frag");
 
+	ComputeShader initialize("resources/shaders/initialize.comp");
+
+	GLuint ssbo;
+	glGenBuffers(1, &ssbo);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, 64 * sizeof(glm::vec2), NULL, GL_DYNAMIC_DRAW); //sizeof(data) only works for statically sized C/C++ arrays.
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ssbo);
+
+	initialize.Activate();
+
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ssbo);
+
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
+    void* ssboData = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
+    
+    // Assuming you know the size of your data array
+    size_t dataSize = sizeof(glm::vec2) * 64;
+    
+    // Now you can access the data just like any other array
+    glm::vec2* ssboArray = static_cast<glm::vec2*>(ssboData);
+    for (size_t i = 0; i < 64; ++i) {
+        glm::vec2 data = ssboArray[i];
+        std::cout << "real: " << data[0] << " imag: " << data[1] << std::endl;
+    }
+
 	// Generates Vertex Array Object and binds it
 	VAO VAO1;
 	VAO1.Bind();
