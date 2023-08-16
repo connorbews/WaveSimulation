@@ -1,5 +1,9 @@
 #include "../include/ComputeShaderClass.h"
 
+ComputeShader::ComputeShader()
+{
+	std::cerr << "No source file has been specified" << std::endl;
+}
 
 ComputeShader::ComputeShader(const char* computeFile)
 {

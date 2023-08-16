@@ -6,6 +6,7 @@
 class ComputeShader : public Shader
 {
 	public:
+		ComputeShader();
 		ComputeShader(const char* computeFile);
 
         void Activate() override;
