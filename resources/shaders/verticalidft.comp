@@ -1,0 +1,40 @@
+#version 460 core
+
+#define PI 3.1415926538
+#define SIZE 8
+
+
+void verticalidft();
+
+layout(local_size_x = 1, local_size_y = SIZE, local_size_z = 1) in;
+
+layout (std430, binding = 1) buffer inputSSBO {
+    vec2 inputData[];
+};
+
+layout (std430, binding = 2) buffer outputSSBO {
+    vec2 outputData[];
+};
+
+void main()
+{
+    verticalidft();
+}
+
+// Used the following code from https://www.geeksforgeeks.org/discrete-fourier-transform-and-its-inverse-using-c/
+void verticalidft()
+{
+    vec2 intermediate[SIZE];
+
+    for (int n = 0; n < SIZE; n++)
+    {
+        intermediate[n] = vec2(0.0f, 0.0f);
+        for (int k = 0; k < SIZE; k++)
+        {
+            float theta = (2 * PI * k * n) / SIZE;
+            intermediate[n].x = intermediate[n].x + inputData[k * SIZE + gl_LocalInvocationID.y].x * cos(theta);
+            intermediate[n].y = intermediate[n].y + inputData[k * SIZE + gl_LocalInvocationID.y].y * sin(theta);
+        }
+        outputData[n * SIZE + gl_LocalInvocationID.y] = intermediate[n] / SIZE;
+    }
+}

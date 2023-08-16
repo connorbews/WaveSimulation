@@ -1,11 +1,8 @@
 #version 460 core
 
-#define PI 3.1415926538f
-#define ALPHA 1
+#define PI 3.1415926538
 #define SIZE 8
-#define N -4
-#define LX 1000
-#define LY 1000
+
 
 void horizontalifft();
 void reverse_bit(in int number, in int number1, in int addition, out int reversed_number);
@@ -36,9 +33,9 @@ void horizontalifft()
         intermediate[n] = vec2(0.0f, 0.0f);
         for (int k = 0; k < SIZE; k++)
         {
-            float theta = (2 * 3.141592 * k * n) / SIZE;
-            intermediate[n].x = intermediate[n].x + inputData[k].x * cos(theta);
-            intermediate[n].y = intermediate[n].y + inputData[k].y * sin(theta);
+            float theta = (2 * PI * k * n) / SIZE;
+            intermediate[n].x = intermediate[n].x + inputData[gl_LocalInvocationID.x * SIZE + k].x * cos(theta);
+            intermediate[n].y = intermediate[n].y + inputData[gl_LocalInvocationID.x * SIZE + k].y * sin(theta);
         }
         outputData[gl_LocalInvocationID.x * SIZE + n] = intermediate[n] / SIZE;
     }
