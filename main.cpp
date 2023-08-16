@@ -91,6 +91,7 @@ int main()
 	ObjectShader shaderProgram("resources/shaders/default.vert", "resources/shaders/default.frag");
 
 	ComputeShader initialize("resources/shaders/initialize.comp");
+	ComputeShader horizontalifft("resources/shaders/horizontalifft.comp");
 
 	GLuint ssbo;
 	glGenBuffers(1, &ssbo);
@@ -104,7 +105,19 @@ int main()
 
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ssbo);
 
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
+	GLuint ssbo1;
+	glGenBuffers(1, &ssbo1);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo1);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, 64 * sizeof(glm::vec2), NULL, GL_DYNAMIC_DRAW); //sizeof(data) only works for statically sized C/C++ arrays.
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, ssbo1);
+
+	horizontalifft.Activate();
+
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, ssbo1);
+
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo1);
     void* ssboData = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
     
     // Assuming you know the size of your data array
@@ -112,7 +125,7 @@ int main()
     
     // Now you can access the data just like any other array
     glm::vec2* ssboArray = static_cast<glm::vec2*>(ssboData);
-    for (size_t i = 0; i < 64; ++i) {
+    for (size_t i = 0; i < 64; i++) {
         glm::vec2 data = ssboArray[i];
         std::cout << "real: " << data[0] << " imag: " << data[1] << std::endl;
     }
