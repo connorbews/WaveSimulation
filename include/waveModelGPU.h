@@ -9,16 +9,14 @@
 class waveModelGPU
 {
 public:
+    std::vector<GLfloat> geometry;
+    std::vector<GLuint> index;
     waveModelGPU();
 	waveModelGPU(int size);
-    void wavePropagation(GLuint ID, double dt);
+    void waveProp(GLuint ID, double dt);
 
 private:
     int n;
-
-    ComputeShader horizontalidft;
-    ComputeShader verticalidft;
-    ComputeShader wavePropagation;
 };
 
 #endif

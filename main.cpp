@@ -10,6 +10,7 @@ namespace fs = std::filesystem;
 
 #include"include/ObjectShaderClass.h"
 #include"include/ComputeShaderClass.h"
+#include"include/waveModelGPU.h"
 #include"include/VAO.h"
 #include"include/VBO.h"
 #include"include/EBO.h"
@@ -55,7 +56,7 @@ int main()
 	std::string parentDir = (fs::current_path().fs::path::parent_path()).string();
 	std::string texPath = "/glad/resources/";
 
-	waveModel waveModel;
+	//waveModel waveModel;
 
 	
 	// Initialize GLFW
@@ -90,19 +91,23 @@ int main()
 	// Generates Shader object using shaders defualt.vert and default.frag
 	ObjectShader shaderProgram("resources/shaders/default.vert", "resources/shaders/default.frag");
 
+	waveModelGPU waveGPU(8);
+
 	// Generates Vertex Array Object and binds it
 	VAO VAO1;
 	VAO1.Bind();
 
 	// Generates Vertex Buffer Object and links it to vertices
-	VBO VBO1(&waveModel.geometryMesh[0], waveModel.geometryMesh.size() * sizeof(GLfloat));
+	VBO VBO1(&waveGPU.geometry[0], waveGPU.geometry.size() * sizeof(GLfloat));
 	
+	
+
 	// Generates Element Buffer Object and links it to indices
-	EBO EBO1(&waveModel.index[0], waveModel.index.size() * sizeof(GLuint));
+	EBO EBO1(&waveGPU.index[0], waveGPU.index.size() * sizeof(GLuint));
 	
 	// Links VBO to VAO
 	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 0, (void*)0);
-	VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 0, (void*)(waveModel.normalsOffset * sizeof(float)));
+	//VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 0, (void*)(waveModel.normalsOffset * sizeof(float)));
 	//VAO1.LinkAttrib(VBO1, 2, 2, GL_FLOAT, 0, (void*)(model.textureOffset * sizeof(float)));
 	
 	// Unbind all to prevent accidentally modifying them
@@ -210,9 +215,9 @@ int main()
 		// Bind the VAO so OpenGL knows to use it
 		VAO1.Bind();
 
-		glDrawElements(GL_TRIANGLES, waveModel.index.size() * sizeof(GLuint) / sizeof(int), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, waveGPU.index.size() * sizeof(GLuint) / sizeof(int), GL_UNSIGNED_INT, 0);
 		dt += 1.0 / 60.0;
-		waveModel.wavePropagation(VAO1.ID, dt);
+		//waveModel.wavePropagation(VAO1.ID, dt);
 		// Draw primpopCat.Delete();ers(window);
 
 		lightShader.Activate();

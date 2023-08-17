@@ -13,6 +13,7 @@ public:
 
 	// Binds the VBO
 	void Bind();
+	void Bind(GLuint shader);
 	// Unbinds the VBO
 	void Unbind();
 	// Deletes the VBO
