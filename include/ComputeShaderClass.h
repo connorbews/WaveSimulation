@@ -9,7 +9,7 @@ class ComputeShader : public Shader
 		ComputeShader();
 		ComputeShader(const char* computeFile);
 
-        void Activate() override;
+        void Activate(int workGroupx, int workGroupy, int workGroupz);
 };
 
 #endif

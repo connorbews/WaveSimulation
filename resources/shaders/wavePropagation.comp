@@ -2,17 +2,16 @@
 
 #define PI 3.1415926538f
 #define ALPHA 1
-#define SIZE 8
-#define N -4
+#define MAX 32
+#define SIZE 256
+#define N -128
 #define LX 1000
 #define LY 1000
 
 void propagateWave();
-void spectrumHeight(in float kx, in float ky, in float er, in float ei, out vec2 h);
 void waveDispersion(in float kx, in float ky, out float result);
-void random(in vec2 st, out float result);
 
-layout(local_size_x = SIZE, local_size_y = SIZE, local_size_z = 1) in;
+layout(local_size_x = MAX, local_size_y = MAX, local_size_z = 1) in;
 
 layout (std430, binding = 0) buffer inputSSBO {
     vec2 Data[];
@@ -27,14 +26,14 @@ void main()
 
 void propagateWave()
 {
-    float kx = 2.0f * PI * (int(gl_LocalInvocationID.x) + N) / LX;
-    float ky = 2.0f * PI * (int(gl_LocalInvocationID.y) + N) / LY;
+    float kx = 2.0f * PI * (int(MAX * gl_WorkGroupID.x + gl_LocalInvocationID.x) + N) / LX;
+    float ky = 2.0f * PI * (int(MAX * gl_WorkGroupID.y + gl_LocalInvocationID.y) + N) / LY;
 
     float omega;
     waveDispersion(kx, ky, omega);
 
-    vec2 result = Data[SIZE * gl_LocalInvocationID.x + gl_LocalInvocationID.y] * exp(vec2(0.0, 1.0) * omega * dt);
-    Data[SIZE * gl_LocalInvocationID.x + gl_LocalInvocationID.y] = result;
+    vec2 result = Data[SIZE * (MAX * gl_WorkGroupID.x + gl_LocalInvocationID.x) + MAX * gl_WorkGroupID.y + gl_LocalInvocationID.y] * exp(vec2(0.0, 1.0) * omega * dt);
+    Data[SIZE * (MAX * gl_WorkGroupID.x + gl_LocalInvocationID.x) + MAX * gl_WorkGroupID.y + gl_LocalInvocationID.y] = result;
 }
 
 void waveDispersion(in float kx, in float ky, out float result)

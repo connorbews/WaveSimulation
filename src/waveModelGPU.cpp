@@ -5,70 +5,82 @@ waveModelGPU::waveModelGPU()
     waveModelGPU(256);
 }
 
-waveModelGPU::waveModelGPU(int size)
+waveModelGPU::waveModelGPU(int size) : 
+	initialize("resources/shaders/initialize.comp"),
+	horizontalidft("resources/shaders/horizontalidft.comp"),
+	verticalidft("resources/shaders/verticalidft.comp"),
+	wavePropagation("resources/shaders/wavePropagation.comp"),
+	normalCalculation("resources/shaders/normalvec.comp"),
+	initializeBuffer(std::pow(size, 2), 0),
+	horizontalOutBuffer(std::pow(size, 2), 1),
+	verticalOutBuffer(6 * std::pow(size, 2), 2)
 {
     n = size;
 
-    ComputeShader initialize("resources/shaders/initialize.comp");
-	ComputeShader horizontalidft("resources/shaders/horizontalidft.comp");
-	ComputeShader verticalidft("resources/shaders/verticalidft.comp");
-	ComputeShader wavePropagation("resources/shaders/wavePropagation.comp");
+	waveInit();
+	waveIDFT();
 
-    GLuint ssbo;
-	glGenBuffers(1, &ssbo);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, std::pow(size, 2) * sizeof(glm::vec2), NULL, GL_DYNAMIC_DRAW); //sizeof(data) only works for statically sized C/C++ arrays.
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ssbo);
+	waveMesh();
 
-	initialize.Activate();
+	waveIndex();
+}
 
+void waveModelGPU::waveInit()
+{
+	initialize.Activate(8, 8, 1);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+}
+
+void waveModelGPU::waveIDFT()
+{
+	horizontalidft.Activate(1, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ssbo);
-
-	GLuint ssbo1;
-	glGenBuffers(1, &ssbo1);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo1);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, std::pow(size, 2) * sizeof(glm::vec2), NULL, GL_DYNAMIC_DRAW); //sizeof(data) only works for statically sized C/C++ arrays.
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, ssbo1);
-
-	horizontalidft.Activate();
-
+	verticalidft.Activate(1, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, ssbo1);
+	//verticalOutBuffer.Print();
 
-	GLuint ssbo2;
-	glGenBuffers(1, &ssbo2);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo2);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, 3 * std::pow(size, 2) * sizeof(float), NULL, GL_DYNAMIC_DRAW); //sizeof(data) only works for statically sized C/C++ arrays.
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, ssbo2);
-
-	verticalidft.Activate();
-
+	normalCalculation.Activate(8, 8, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+}
 
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, ssbo2);
+void waveModelGPU::waveMesh()
+{
+	verticalOutBuffer.BindBase();
 
 	void* ssboData = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
 
     // Now you can access the data just like any other array
-    float* ssboArray = static_cast<float*>(ssboData);
-    for (size_t i = 0; i < 3 * std::pow(size, 2); i++) {
-        geometry.push_back(ssboArray[i] );
+    glm::vec2* ssboArray = static_cast<glm::vec2*>(ssboData);
+    for (size_t i = 0; i < 6 * std::pow(n, 2); i++) {
+        geometry.push_back(std::sqrt(pow(ssboArray[i][0], 2) + pow(ssboArray[i][1], 2)));
     }
+}
 
-	for (int i = 0; i < size - 1; i++)
+void waveModelGPU::waveNorm()
+{
+
+}
+
+void waveModelGPU::waveIndex()
+{
+	for (int i = 0; i < n - 1; i++)
     {
-        for (int j = 0; j < size - 1; j++)
+        for (int j = 0; j < n - 1; j++)
         {
-            index.push_back(i * size + j);
-            index.push_back((i + 1) * size + j);
-            index.push_back(i * size + j + 1);
+            index.push_back(i * n + j);
+            index.push_back((i + 1) * n + j);
+            index.push_back(i * n + j + 1);
 
-            index.push_back((i + 1) * size + j + 1);
-            index.push_back(i * size + j + 1);
-            index.push_back((i + 1) * size + j);
+            index.push_back((i + 1) * n + j + 1);
+            index.push_back(i * n + j + 1);
+            index.push_back((i + 1) * n + j);
         }
     }
+}
+
+void waveModelGPU::waveProp(double dt)
+{
+
 }

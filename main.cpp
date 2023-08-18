@@ -91,7 +91,9 @@ int main()
 	// Generates Shader object using shaders defualt.vert and default.frag
 	ObjectShader shaderProgram("resources/shaders/default.vert", "resources/shaders/default.frag");
 
-	waveModelGPU waveGPU(8);
+	int n = 256;
+
+	waveModelGPU waveGPU(n);
 
 	// Generates Vertex Array Object and binds it
 	VAO VAO1;
@@ -105,9 +107,11 @@ int main()
 	// Generates Element Buffer Object and links it to indices
 	EBO EBO1(&waveGPU.index[0], waveGPU.index.size() * sizeof(GLuint));
 	
+	int offset = 3 * std::pow(n, 2);
+
 	// Links VBO to VAO
 	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 0, (void*)0);
-	//VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 0, (void*)(waveModel.normalsOffset * sizeof(float)));
+	VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 0, (void*)(offset * sizeof(float)));
 	//VAO1.LinkAttrib(VBO1, 2, 2, GL_FLOAT, 0, (void*)(model.textureOffset * sizeof(float)));
 	
 	// Unbind all to prevent accidentally modifying them

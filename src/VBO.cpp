@@ -14,11 +14,6 @@ void VBO::Bind()
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
 }
 
-void VBO::Bind(GLuint shader)
-{
-	glBindBuffer(GL_ARRAY_BUFFER, shader);
-}
-
 // Unbinds the VBO
 void VBO::Unbind()
 {

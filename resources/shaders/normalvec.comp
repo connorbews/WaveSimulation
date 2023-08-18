@@ -1,0 +1,61 @@
+#version 460 core
+
+#define SIZE 256
+#define MAX 32
+
+void normalsCalculation();
+
+layout(local_size_x = MAX, local_size_y = MAX, local_size_z = 1) in;
+
+layout (std430, binding = 2) buffer inputSSBO {
+    vec2 Data[];
+};
+
+uniform float dt;
+
+void main()
+{
+    normalsCalculation();
+}
+
+void normalsCalculation()
+{
+    vec2 dy, dx;
+    int x = int(MAX * gl_WorkGroupID.x + gl_LocalInvocationID.x);
+    int y = int(MAX * gl_WorkGroupID.y + gl_LocalInvocationID.y);
+
+    if ((y - 1) * SIZE + x < 0 && y * SIZE + x - 1 < 0)
+    {
+        dx = 1.0f / 2.0f * (Data[3 * (y * SIZE + x + 1) + 2] - Data[3 * (y * SIZE + x - 1 + 65536) + 2]);
+        dy = 1.0f / 2.0f * (Data[3 * ((y + 1) * SIZE + x) + 2] - Data[3 * ((y - 1) * SIZE + x + 65536) + 2]);
+    }
+    else if ((y - 1) * SIZE + x < 0 && y * SIZE + x - 1 >= 0 && y * SIZE + x - 1 < 65536)
+    {
+        dx = 1.0f / 2.0f * (Data[3 * (y * SIZE + x + 1) + 2] - Data[3 * (y * SIZE + x - 1) + 2]);
+        dy = 1.0f / 2.0f * (Data[3 * ((y + 1) * SIZE + x) + 2] - Data[3 * ((y - 1) * SIZE + x + 65536) + 2]);
+    }
+    else if ((y + 1) * SIZE + x > 65535 && y * SIZE + x + 1 > 65535)
+    {
+        dx = 1.0f / 2.0f * (Data[3 * (y * SIZE + x + 1 - 65536) + 2] - Data[3 * (y * SIZE + x - 1) + 2]);
+        dy = 1.0f / 2.0f * (Data[3 * ((y + 1) * SIZE + x - 65536) + 2] - Data[3 * ((y - 1) * SIZE + x) + 2]);
+    }
+    else if ((y + 1) * SIZE + x > 65535 && y * SIZE + x + 1 >= 0 && y * SIZE + x + 1 < 65536)
+    {
+        dx = 1.0f / 2.0f * (Data[3 * (y * SIZE + x + 1) + 2] - Data[3 * (y * SIZE + x - 1) + 2]);
+        dy = 1.0f / 2.0f * (Data[3 * ((y + 1) * SIZE + x - 65536) + 2] - Data[3 * ((y - 1) * SIZE + x) + 2]);
+    }
+    else 
+    {
+        dx = 1.0f / 2.0f * (Data[3 * (y * SIZE + x + 1) + 2] - Data[3 * (y * SIZE + x - 1) + 2]);
+        dy = 1.0f / 2.0f * (Data[3 * ((y + 1) * SIZE + x) + 2] - Data[3 * ((y - 1) * SIZE + x) + 2]);
+    }
+
+    float dxa = sqrt(pow(dx.x, 2) + pow(dx.y, 2));
+    float dya = sqrt(pow(dy.x, 2) + pow(dy.y, 2));
+    
+    float d = sqrt(pow(dxa, 2) + pow(dya, 2) + 1);
+
+    Data[3 * int(pow(SIZE, 2)) + 3 * (y * SIZE + x)].x = -dxa / d;
+    Data[3 * int(pow(SIZE, 2)) + 3 * (y * SIZE + x) + 1].x = -dya / d;
+    Data[3 * int(pow(SIZE, 2)) + 3 * (y * SIZE + x) + 2].x = 1 / d;
+}

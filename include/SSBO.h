@@ -1,18 +1,30 @@
-#ifndef VBO_CLASS_H
-#define VBO_CLASS_H
+#ifndef SSBO_CLASS_H
+#define SSBO_CLASS_H
 
+#include <iostream>
 #include<glad/glad.h>
+#include "glm/glm.hpp"
 
-class VBO
+class SSBO
 {
 public:
-	// Reference ID of the Vertex Buffer Object
 	GLuint ID;
+
+    int bufferSize;
+
+    int bufferIndex;
+
+	SSBO();
 	// Constructor that generates a Vertex Buffer Object and links it to vertices
-	VBO(GLfloat* vertices, GLsizeiptr size);
+	SSBO(int size, int index);
+
+	~SSBO();
 
 	// Binds the VBO
 	void Bind();
+	void BindBase();
+
+    void Print();
 	// Unbinds the VBO
 	void Unbind();
 	// Deletes the VBO

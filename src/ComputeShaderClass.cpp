@@ -32,9 +32,9 @@ ComputeShader::ComputeShader(const char* computeFile)
 }
 
 
-void ComputeShader::Activate()
+void ComputeShader::Activate(int workGroupx, int workGroupy, int workGroupz)
 {
 	Shader::Activate();
-	glDispatchCompute(1, 1, 1);
+	glDispatchCompute(workGroupx, workGroupy, workGroupz);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 }

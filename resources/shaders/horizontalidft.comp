@@ -1,7 +1,7 @@
 #version 460 core
 
 #define PI 3.1415926538
-#define SIZE 8
+#define SIZE 256
 
 
 void horizontalifft();
