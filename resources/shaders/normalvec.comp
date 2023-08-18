@@ -55,7 +55,9 @@ void normalsCalculation()
     
     float d = sqrt(pow(dxa, 2) + pow(dya, 2) + 1);
 
-    Data[3 * int(pow(SIZE, 2)) + 3 * (y * SIZE + x)].x = -dxa / d;
-    Data[3 * int(pow(SIZE, 2)) + 3 * (y * SIZE + x) + 1].x = -dya / d;
-    Data[3 * int(pow(SIZE, 2)) + 3 * (y * SIZE + x) + 2].x = 1 / d;
+    int offset = 3 * int(pow(SIZE, 2));
+
+    Data[offset + 3 * (y * SIZE + x)].x = -dxa / d;
+    Data[offset + 3 * (y * SIZE + x) + 1].x = -dya / d;
+    Data[offset + 3 * (y * SIZE + x) + 2].x = 1 / d;
 }

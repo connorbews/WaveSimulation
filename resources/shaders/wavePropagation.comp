@@ -26,14 +26,16 @@ void main()
 
 void propagateWave()
 {
-    float kx = 2.0f * PI * (int(MAX * gl_WorkGroupID.x + gl_LocalInvocationID.x) + N) / LX;
-    float ky = 2.0f * PI * (int(MAX * gl_WorkGroupID.y + gl_LocalInvocationID.y) + N) / LY;
+    int x = int(MAX * gl_WorkGroupID.x + gl_LocalInvocationID.x);
+    int y = int(MAX * gl_WorkGroupID.y + gl_LocalInvocationID.y);
+    float kx = 2.0f * PI * (x + N) / LX;
+    float ky = 2.0f * PI * (y + N) / LY;
 
     float omega;
     waveDispersion(kx, ky, omega);
 
-    vec2 result = Data[SIZE * (MAX * gl_WorkGroupID.x + gl_LocalInvocationID.x) + MAX * gl_WorkGroupID.y + gl_LocalInvocationID.y] * exp(vec2(0.0, 1.0) * omega * dt);
-    Data[SIZE * (MAX * gl_WorkGroupID.x + gl_LocalInvocationID.x) + MAX * gl_WorkGroupID.y + gl_LocalInvocationID.y] = result;
+    vec2 result = Data[SIZE * x + y] * exp(vec2(0.0, 1.0) * omega * dt);
+    Data[SIZE * x + y] = result;
 }
 
 void waveDispersion(in float kx, in float ky, out float result)

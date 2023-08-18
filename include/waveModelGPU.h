@@ -16,12 +16,7 @@ public:
     waveModelGPU();
 	waveModelGPU(int size);
 
-    void waveInit();
-    void waveIDFT();
-    void waveMesh();
-    void waveNorm();
-    void waveIndex();
-    void waveProp(double dt);
+    void updateModel(float dt);
 
 private:
     int n;
@@ -35,6 +30,13 @@ private:
     SSBO initializeBuffer;
     SSBO horizontalOutBuffer;
     SSBO verticalOutBuffer;
+
+    void waveInit();
+    void waveIDFT();
+    void waveNorm();
+    void waveMesh();
+    void waveIndex();
+    void waveProp(float dt);
 };
 
 #endif

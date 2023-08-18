@@ -13,16 +13,27 @@ waveModelGPU::waveModelGPU(int size) :
 	normalCalculation("resources/shaders/normalvec.comp"),
 	initializeBuffer(std::pow(size, 2), 0),
 	horizontalOutBuffer(std::pow(size, 2), 1),
-	verticalOutBuffer(6 * std::pow(size, 2), 2)
+	verticalOutBuffer(6 * std::pow(size, 2), 2),
+	geometry(6 * std::pow(size, 2), 0)
 {
     n = size;
 
 	waveInit();
 	waveIDFT();
+	waveNorm();
 
 	waveMesh();
-
 	waveIndex();
+}
+
+void waveModelGPU::updateModel(float dt)
+{
+	waveProp(dt);
+	waveIDFT();
+	waveNorm();
+
+	//seg faults here:
+	waveMesh();
 }
 
 void waveModelGPU::waveInit()
@@ -38,9 +49,10 @@ void waveModelGPU::waveIDFT()
 
 	verticalidft.Activate(1, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+}
 
-	//verticalOutBuffer.Print();
-
+void waveModelGPU::waveNorm()
+{
 	normalCalculation.Activate(8, 8, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 }
@@ -49,18 +61,14 @@ void waveModelGPU::waveMesh()
 {
 	verticalOutBuffer.BindBase();
 
+	// i think the issue is here
 	void* ssboData = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
 
     // Now you can access the data just like any other array
     glm::vec2* ssboArray = static_cast<glm::vec2*>(ssboData);
     for (size_t i = 0; i < 6 * std::pow(n, 2); i++) {
-        geometry.push_back(std::sqrt(pow(ssboArray[i][0], 2) + pow(ssboArray[i][1], 2)));
+        geometry[i] = std::sqrt(pow(ssboArray[i][0], 2) + pow(ssboArray[i][1], 2));
     }
-}
-
-void waveModelGPU::waveNorm()
-{
-
 }
 
 void waveModelGPU::waveIndex()
@@ -80,7 +88,10 @@ void waveModelGPU::waveIndex()
     }
 }
 
-void waveModelGPU::waveProp(double dt)
+void waveModelGPU::waveProp(float dt)
 {
+	glUniform1f(glGetUniformLocation(wavePropagation.ID, "dt"), dt);
 
+	wavePropagation.Activate(8, 8, 1);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 }

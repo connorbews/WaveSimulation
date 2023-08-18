@@ -5,8 +5,6 @@ namespace fs = std::filesystem;
 #include<glad/glad.h>
 #include<GLFW/glfw3.h>
 #include<math.h>
-#include <chrono>
-#include <thread>
 
 #include"include/ObjectShaderClass.h"
 #include"include/ComputeShaderClass.h"
@@ -101,8 +99,6 @@ int main()
 
 	// Generates Vertex Buffer Object and links it to vertices
 	VBO VBO1(&waveGPU.geometry[0], waveGPU.geometry.size() * sizeof(GLfloat));
-	
-	
 
 	// Generates Element Buffer Object and links it to indices
 	EBO EBO1(&waveGPU.index[0], waveGPU.index.size() * sizeof(GLuint));
@@ -118,8 +114,6 @@ int main()
 	VAO1.Unbind();
 	VBO1.Unbind();
 	EBO1.Unbind();
-	
-	//Shader computeShader("resources/shaders/initialize.comp");
 
 	ObjectShader lightShader("resources/shaders/light.vert", "resources/shaders/light.frag");
 	VAO lightVAO;
@@ -191,18 +185,12 @@ int main()
 	std::cout << "Max invocations count per work group: " << work_grp_inv << "\n";
 	*/
 
-	double dt = 0.0;
-	using std::operator""s;
+	float dt = 0.0f;
 	while (!glfwWindowShouldClose(window))
 	{
-		//glUniform1f(glGetUniformLocation(computeShader.computeProgram, "dt"), dt);
-		//computeShader.computeActivate();
-
-		//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, VBO1.ID);
-
-		//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, waveModel.specBuffer);
-
-		//dt += 1.0 / 60.0f;
+		waveGPU.updateModel(dt);
+		dt += 1.0f / 60.0f;
+		//dt += 1.0f / 60.0f;
 		// Specify the color of the background
 		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
 		// Clean the back buffer and assign the new color to it
@@ -220,7 +208,6 @@ int main()
 		VAO1.Bind();
 
 		glDrawElements(GL_TRIANGLES, waveGPU.index.size() * sizeof(GLuint) / sizeof(int), GL_UNSIGNED_INT, 0);
-		dt += 1.0 / 60.0;
 		//waveModel.wavePropagation(VAO1.ID, dt);
 		// Draw primpopCat.Delete();ers(window);
 
@@ -233,7 +220,6 @@ int main()
 		glfwSwapBuffers(window);
 		// Take care of all GLFW events
 		glfwPollEvents();
-		std::this_thread::sleep_for(0.02s);
 	}
 
 
