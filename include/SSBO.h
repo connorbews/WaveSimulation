@@ -2,6 +2,7 @@
 #define SSBO_CLASS_H
 
 #include <iostream>
+#include <cstring>
 #include<glad/glad.h>
 #include "glm/glm.hpp"
 
@@ -24,7 +25,7 @@ public:
 	void Bind();
 	void BindBase();
 
-    void Print();
+    void Print(int low, int high);
 	// Unbinds the VBO
 	void Unbind();
 	// Deletes the VBO

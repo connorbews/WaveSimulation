@@ -2,6 +2,7 @@
 #define WAVEMODELGPU_CLASS_H
 
 #include <glad/glad.h>
+#include <cstring>
 #include "glm/glm.hpp"
 #include "ComputeShaderClass.h"
 #include "SSBO.h"

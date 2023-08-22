@@ -28,16 +28,19 @@ void SSBO::BindBase()
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, bufferIndex, ID);
 }
 
-void SSBO::Print()
+void SSBO::Print(int low, int high)
 {
     BindBase();
     void* ssboData = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
     
-    glm::vec2* ssboArray = static_cast<glm::vec2*>(ssboData);
-    
     for (size_t i = 0; i < bufferSize; i++)
     {
-        std::cout << "Data at i: " << i << " real: " << ssboArray[i][0] << " imag: " << ssboArray[i][1] << std::endl;
+        if (i >= low && i < high)
+        {
+            glm::vec2 temp;
+            memcpy(&temp, &ssboData, sizeof(glm::vec2));
+            std::cout << "Data at i: " << i << " real: " << temp.x << " imag: " << temp.y << std::endl;
+        }
     }
 }
 

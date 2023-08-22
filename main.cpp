@@ -188,7 +188,7 @@ int main()
 	float dt = 0.0f;
 	while (!glfwWindowShouldClose(window))
 	{
-		waveGPU.updateModel(dt);
+		//waveGPU.updateModel(dt);
 		dt += 1.0f / 60.0f;
 		//dt += 1.0f / 60.0f;
 		// Specify the color of the background

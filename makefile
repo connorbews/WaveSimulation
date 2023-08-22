@@ -12,6 +12,9 @@ TARGET := a.out
 $(TARGET): main.o $(OBJECTS)
 	$(CC) -o $@ main.o $(OBJECTS) src/glad.c $(LDFLAGS)
 
+debug: main.o $(OBJECTS)
+	$(CC) -g -o $@ main.o $(OBJECTS) src/glad.c $(LDFLAGS)
+
 main.o: main.cpp
 	g++ -I./include -c main.cpp
 
