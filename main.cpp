@@ -94,11 +94,11 @@ int main()
 	waveModelGPU waveGPU(n);
 
 	// Generates Vertex Array Object and binds it
-	VAO VAO1;
-	VAO1.Bind();
+	//VAO VAO1;
+	//VAO1.Bind();
 
 	// Generates Vertex Buffer Object and links it to vertices
-	VBO VBO1(&waveGPU.geometry[0], waveGPU.geometry.size() * sizeof(GLfloat));
+	//VBO VBO1(&waveGPU.geometry[0], waveGPU.geometry.size() * sizeof(GLfloat));
 
 	// Generates Element Buffer Object and links it to indices
 	EBO EBO1(&waveGPU.index[0], waveGPU.index.size() * sizeof(GLuint));
@@ -106,13 +106,13 @@ int main()
 	int offset = 3 * std::pow(n, 2);
 
 	// Links VBO to VAO
-	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 0, (void*)0);
-	VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 0, (void*)(offset * sizeof(float)));
+	//VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 0, (void*)0);
+	//VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 0, (void*)(offset * sizeof(float)));
 	//VAO1.LinkAttrib(VBO1, 2, 2, GL_FLOAT, 0, (void*)(model.textureOffset * sizeof(float)));
 	
 	// Unbind all to prevent accidentally modifying them
-	VAO1.Unbind();
-	VBO1.Unbind();
+	//VAO1.Unbind();
+	//VBO1.Unbind();
 	EBO1.Unbind();
 
 	ObjectShader lightShader("resources/shaders/light.vert", "resources/shaders/light.frag");
@@ -205,7 +205,7 @@ int main()
 
 		camera.Matrix(shaderProgram, "camMatrix");
 		// Bind the VAO so OpenGL knows to use it
-		VAO1.Bind();
+		//VAO1.Bind();
 
 		glDrawElements(GL_TRIANGLES, waveGPU.index.size() * sizeof(GLuint) / sizeof(int), GL_UNSIGNED_INT, 0);
 		//waveModel.wavePropagation(VAO1.ID, dt);
@@ -225,8 +225,8 @@ int main()
 
 
 	// Delete all the objects we've created
-	VAO1.Delete();
-	VBO1.Delete();
+	//VAO1.Delete();
+	//VBO1.Delete();
 	EBO1.Delete();
 	shaderProgram.Delete();
 	// Delete window before ending the program

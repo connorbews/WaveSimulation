@@ -30,7 +30,6 @@ void SSBO::BindBase()
 
 void SSBO::Print(int low, int high)
 {
-    BindBase();
     void* ssboData = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
     
     for (size_t i = 0; i < bufferSize; i++)

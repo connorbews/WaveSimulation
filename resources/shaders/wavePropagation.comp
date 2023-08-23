@@ -35,7 +35,7 @@ void propagateWave()
     waveDispersion(kx, ky, omega);
 
     vec2 result = Data[SIZE * x + y] * exp(vec2(0.0, 1.0) * omega * dt);
-    Data[SIZE * x + y] = vec2(dt, dt);//result;
+    Data[SIZE * x + y] = result;
 }
 
 void waveDispersion(in float kx, in float ky, out float result)

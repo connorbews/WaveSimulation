@@ -11,7 +11,6 @@
 class waveModelGPU
 {
 public:
-    std::vector<GLfloat> geometry;
     std::vector<GLuint> index;
 
     waveModelGPU();
@@ -35,7 +34,6 @@ private:
     void waveInit();
     void waveIDFT();
     void waveNorm();
-    void waveMesh();
     void waveIndex();
     void waveProp(float dt);
 };
