@@ -26,10 +26,12 @@ private:
     ComputeShader verticalidft;
     ComputeShader wavePropagation;
     ComputeShader normalCalculation;
+    ComputeShader dt;
 
     SSBO initializeBuffer;
     SSBO horizontalOutBuffer;
     SSBO verticalOutBuffer;
+    SSBO dtstorage;
 
     void waveInit();
     void waveIDFT();
