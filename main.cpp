@@ -53,6 +53,7 @@ int main()
 {
 	std::string parentDir = (fs::current_path().fs::path::parent_path()).string();
 	std::string texPath = "/glad/resources/";
+	GLenum err;
 
 	//waveModel waveModel;
 
@@ -77,6 +78,7 @@ int main()
 		glfwTerminate();
 		return -1;
 	}
+	
 	// Introduce the window into the current context
 	glfwMakeContextCurrent(window);
 	
@@ -88,7 +90,7 @@ int main()
 
 	// Generates Shader object using shaders defualt.vert and default.frag
 	ObjectShader shaderProgram("resources/shaders/default.vert", "resources/shaders/default.frag");
-
+	
 	int n = 256;
 
 	waveModelGPU waveGPU(n);
@@ -96,14 +98,31 @@ int main()
 	// Generates Vertex Array Object and binds it
 	//VAO VAO1;
 	//VAO1.Bind();
+	std::vector<GLuint> index;
+
+	for (int i = 0; i < n - 1; i++)
+    {
+        for (int j = 0; j < n - 1; j++)
+        {
+            index.push_back(i * n + j);
+            index.push_back((i + 1) * n + j);
+            index.push_back(i * n + j + 1);
+
+            index.push_back((i + 1) * n + j + 1);
+            index.push_back(i * n + j + 1);
+            index.push_back((i + 1) * n + j);
+        }
+    }
 
 	// Generates Vertex Buffer Object and links it to vertices
 	//VBO VBO1(&waveGPU.geometry[0], waveGPU.geometry.size() * sizeof(GLfloat));
-
-	// Generates Element Buffer Object and links it to indices
-	EBO EBO1(&waveGPU.index[0], waveGPU.index.size() * sizeof(GLuint));
 	
-	int offset = 3 * std::pow(n, 2);
+	// Generates Element Buffer Object and links it to indices
+	EBO EBO1(&index[0], index.size() * sizeof(GLuint));
+
+	
+	
+	//int offset = 3 * std::pow(n, 2);
 
 	// Links VBO to VAO
 	//VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 0, (void*)0);
@@ -188,7 +207,15 @@ int main()
 	float dt = 0.0f;
 	while (!glfwWindowShouldClose(window))
 	{
-		//waveGPU.updateModel(dt);
+		waveGPU.updateModel(dt);
+		err = glGetError();
+		while (err != GL_NO_ERROR)
+		{
+			std::cout << "here: " << std::endl;
+			std::cout << err << std::endl;
+			err = glGetError();
+
+		}
 		dt += 1.0f / 60.0f;
 		//dt += 1.0f / 60.0f;
 		// Specify the color of the background
@@ -207,7 +234,7 @@ int main()
 		// Bind the VAO so OpenGL knows to use it
 		//VAO1.Bind();
 
-		glDrawElements(GL_TRIANGLES, waveGPU.index.size() * sizeof(GLuint) / sizeof(int), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, index.size() * sizeof(GLuint) / sizeof(int), GL_UNSIGNED_INT, 0);
 		//waveModel.wavePropagation(VAO1.ID, dt);
 		// Draw primpopCat.Delete();ers(window);
 

@@ -13,8 +13,8 @@ void waveDispersion(in float kx, in float ky, out float result);
 
 layout(local_size_x = MAX, local_size_y = MAX, local_size_z = 1) in;
 
-layout (std430, binding = 0) buffer inputSSBO {
-    vec2 Data[];
+layout (std430, binding = 0) buffer SpecSSBO {
+    vec2 specData[];
 };
 
 uniform float dt;
@@ -34,8 +34,8 @@ void propagateWave()
     float omega;
     waveDispersion(kx, ky, omega);
 
-    vec2 result = Data[SIZE * x + y] * exp(vec2(0.0, 1.0) * omega * dt);
-    Data[SIZE * x + y] = result;
+    vec2 result = specData[SIZE * x + y] * exp(vec2(0.0, 1.0) * omega * dt);
+    specData[SIZE * x + y] = result;
 }
 
 void waveDispersion(in float kx, in float ky, out float result)

@@ -34,7 +34,7 @@ ComputeShader::ComputeShader(const char* computeFile)
 
 void ComputeShader::Activate(int workGroupx, int workGroupy, int workGroupz)
 {
-	Shader::Activate();
+	glUseProgram(ID);
 	glDispatchCompute(workGroupx, workGroupy, workGroupz);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 }
