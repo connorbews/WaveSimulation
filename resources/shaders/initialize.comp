@@ -23,14 +23,14 @@ layout (std430, binding = 0) buffer SpecSSBO {
 void main()
 {
     initializeWave();
-    //specData[INDEX].x = 0.0f;
+    specData[INDEX].x = 0.0f;
 }
 
 void initializeWave()
 {
 
     float kx = 2.0f * PI * (int(MAX * gl_WorkGroupID.x + gl_LocalInvocationID.x) + N) / LX;
-    float ky = 2.0f * PI * (int(gl_LocalInvocationID.y) + N) / LY;
+    float ky = 2.0f * PI * (int(MAX * gl_WorkGroupID.y + gl_LocalInvocationID.y) + N) / LY;
 
     float neg_kx = -1.0f * kx;
     float neg_ky = -1.0f * ky;
@@ -67,7 +67,8 @@ void initializeWave()
 
         float directional_spectrum = directional * spectrum;
 
-        result = (h0 + h1) * 0.5 * exp(vec2(0.0, 1.0) * omega * 0.0f) * directional_spectrum;
+        result = (h0 + h1) * 0.5 * exp(vec2(0.0f, 1.0f) * omega * 0.0f) * directional_spectrum;
+
     }
 
     specData[SIZE * (MAX * gl_WorkGroupID.x + gl_LocalInvocationID.x) + MAX * gl_WorkGroupID.y + gl_LocalInvocationID.y] = result;

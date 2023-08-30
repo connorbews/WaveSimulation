@@ -55,7 +55,7 @@ int main()
 	std::string texPath = "/glad/resources/";
 	GLenum err;
 
-	//waveModel waveModel;
+	waveModel waveModel;
 
 	
 	// Initialize GLFW

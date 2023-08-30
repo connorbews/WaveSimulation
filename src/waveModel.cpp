@@ -12,7 +12,11 @@ waveModel::waveModel()
 
     for (int i = 0 ;  i< geometry.size() ; i++)
     {
-       memcpy(&in[i], &geometry[i], sizeof(fftw_complex));
+        memcpy(&in[i], &geometry[i], sizeof(fftw_complex));
+        if (i < 10)
+        {
+            std::cout << "i: " << i << " geometry: " << geometry[i] << std::endl;
+        }
     }
 
     fftw_plan p = fftw_plan_dft_2d(256, 256,
@@ -144,8 +148,8 @@ void waveModel::oceanographicSpectrum()
     std::default_random_engine generator;
     std::normal_distribution<double> distribution(0.0, 1.0);
 
-    double er = distribution(generator);
-    double ei = distribution(generator);
+    double er = 0.5;//distribution(generator);
+    double ei = 0.5;//distribution(generator);
 
     for (int i = n; i < std::abs(n); i++)
     {
@@ -153,9 +157,18 @@ void waveModel::oceanographicSpectrum()
         for (int j = n; j < std::abs(n); j++)
         {
             double ky = 2.0 * M_PI * j / Ly;
+            /*if (i == -128 && j == -128)
+            {
+                std::cout << "kx: " << kx << " ky: " << ky << std::endl;
+            }*/
 
             std::complex<double> h0 = spectrumHeight(kx, ky, er, ei);
             std::complex<double> h1 = spectrumHeight(-kx, -ky, er, ei);
+
+            /*if (i == -128 && j == -128)
+            {
+                std::cout << "h1 real: " << h1.real() << " imag: " << h1.imag() << std::endl;
+            }*/
 
             double omega = waveDispersion(kx, ky);
 
@@ -205,7 +218,10 @@ std::complex<double> waveModel::spectrumHeight(double kx, double ky, double rand
         glm::vec2 w = glm::vec2(1.0f, 0.0f);
 
         double p =  1.0 * std::exp(-1.0 / (k1 * std::pow(L, 2))) / (std::pow(k1, 4)) * std::pow(std::abs(glm::dot(w, k)), 2);
-
+        /*if (kx < -0.75 && ky < -0.75)
+        {
+            std::cout << "p: " << p << std::endl;
+        }*/
         h = 1.0 / std::sqrt(2.0) * std::complex<double>(randr, randi) * std::sqrt(p);
     }
 

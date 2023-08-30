@@ -32,8 +32,6 @@ void waveModelGPU::updateModel(float dt)
 	//waveProp(dt);
 	//waveIDFT();
 	//waveNorm();
-
-	
 }
 
 void waveModelGPU::waveInit()
@@ -76,8 +74,6 @@ void waveModelGPU::waveIndex()
 
 void waveModelGPU::waveProp(float dt)
 {
-
-
 	wavePropagation.Activate(8, 8, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 }
