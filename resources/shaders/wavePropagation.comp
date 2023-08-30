@@ -17,7 +17,7 @@ layout (std430, binding = 0) buffer SpecSSBO {
     vec2 specData[];
 };
 
-uniform float dt;
+
 
 void main()
 {
@@ -34,8 +34,10 @@ void propagateWave()
     float omega;
     waveDispersion(kx, ky, omega);
 
+    float dt = specData[65536].x;
+
     vec2 result = specData[SIZE * x + y] * exp(vec2(0.0, 1.0) * omega * dt);
-    specData[SIZE * x + y] = vec2(dt, dt);
+    specData[SIZE * x + y] = result;
 }
 
 void waveDispersion(in float kx, in float ky, out float result)

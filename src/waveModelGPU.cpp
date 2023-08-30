@@ -7,39 +7,38 @@ waveModelGPU::waveModelGPU()
 
 waveModelGPU::waveModelGPU(int size) : 
 	initialize("resources/shaders/initialize.comp"),
-	//horizontalidft("resources/shaders/horizontalidft.comp"),
-	//verticalidft("resources/shaders/verticalidft.comp"),
+	horizontalidft("resources/shaders/horizontalidft.comp"),
+	verticalidft("resources/shaders/verticalidft.comp"),
 	wavePropagation("resources/shaders/wavePropagation.comp"),
-	dt("resources/shaders/dtchange.comp"),
-	//normalCalculation("resources/shaders/normalvec.comp"),
-	initializeBuffer(std::pow(size, 2), 0),
-	//horizontalOutBuffer(std::pow(size, 2), 1),
-	//verticalOutBuffer(6 * std::pow(size, 2), 2),
-	dtstorage(1, 3)
+	dt("resources/shaders/dt.comp"),
+	normalCalculation("resources/shaders/normalvec.comp"),
+	initializeBuffer(std::pow(size, 2) + 1, 0),
+	horizontalOutBuffer(std::pow(size, 2), 1),
+	verticalOutBuffer(6 * std::pow(size, 2), 2)
 {
     n = size;
 
 	waveIndex();
 
 	waveInit();
-	glUniform1f(glGetUniformLocation(wavePropagation.ID, "dt"), 0.0f);
 
 	//waveIDFT();
 	//waveNorm();
+	initializeBuffer.Print(0, 10);
 }
 
 void waveModelGPU::updateModel(float dt)
 {
-	waveProp(dt);
+	//waveProp(dt);
 	//waveIDFT();
 	//waveNorm();
 
-	initializeBuffer.Print(0, 10);
+	
 }
 
 void waveModelGPU::waveInit()
 {
-	initialize.Activate(8, 8, 1);
+	initialize.Activate(1, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 }
 

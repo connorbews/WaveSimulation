@@ -31,7 +31,6 @@ private:
     SSBO initializeBuffer;
     SSBO horizontalOutBuffer;
     SSBO verticalOutBuffer;
-    SSBO dtstorage;
 
     void waveInit();
     void waveIDFT();

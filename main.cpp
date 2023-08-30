@@ -89,36 +89,44 @@ int main()
 	glViewport(0, 0, 800, 800);
 
 	// Generates Shader object using shaders defualt.vert and default.frag
-	ObjectShader shaderProgram("resources/shaders/default.vert", "resources/shaders/default.frag");
+	//ObjectShader shaderProgram("resources/shaders/default.vert", "resources/shaders/default.frag");
 	
-	int n = 256;
+	//int n = 8;
 
-	waveModelGPU waveGPU(n);
+	//waveModelGPU waveGPU(n);
+
+	SSBO init(64, 0);
+
+	ComputeShader initialize("resources/shaders/initialize.comp");
+
+	/*GLuint ssbo;
+	glGenBuffers(1, &ssbo);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, 64 * sizeof(glm::vec2), NULL, GL_DYNAMIC_DRAW); //sizeof(data) only works for statically sized C/C++ arrays.
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ssbo);
+	*/
+
+	initialize.Activate(1, 1, 1);
+
+	init.Print(0, 64);
+	/*void* ssboData = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
+
+    // Now you can access the data just like any other array
+    glm::vec2* ssboArray = static_cast<glm::vec2*>(ssboData);
+    for (size_t i = 0; i < 64; i++) {
+        glm::vec2 data = ssboArray[i];
+        std::cout << "real: " << data[0] << " imag: " << data[1] << std::endl;
+    }*/
 
 	// Generates Vertex Array Object and binds it
 	//VAO VAO1;
 	//VAO1.Bind();
-	std::vector<GLuint> index;
-
-	for (int i = 0; i < n - 1; i++)
-    {
-        for (int j = 0; j < n - 1; j++)
-        {
-            index.push_back(i * n + j);
-            index.push_back((i + 1) * n + j);
-            index.push_back(i * n + j + 1);
-
-            index.push_back((i + 1) * n + j + 1);
-            index.push_back(i * n + j + 1);
-            index.push_back((i + 1) * n + j);
-        }
-    }
 
 	// Generates Vertex Buffer Object and links it to vertices
 	//VBO VBO1(&waveGPU.geometry[0], waveGPU.geometry.size() * sizeof(GLfloat));
 	
 	// Generates Element Buffer Object and links it to indices
-	EBO EBO1(&index[0], index.size() * sizeof(GLuint));
+	//EBO EBO1(&waveGPU.index[0], waveGPU.index.size() * sizeof(GLuint));
 
 	
 	
@@ -132,7 +140,7 @@ int main()
 	// Unbind all to prevent accidentally modifying them
 	//VAO1.Unbind();
 	//VBO1.Unbind();
-	EBO1.Unbind();
+	//EBO1.Unbind();
 
 	ObjectShader lightShader("resources/shaders/light.vert", "resources/shaders/light.frag");
 	VAO lightVAO;
@@ -161,12 +169,12 @@ int main()
 	glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));
 	glUniform4f(glGetUniformLocation(lightShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 
-	shaderProgram.Activate();
+	/*shaderProgram.Activate();
 	glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(wavemodel));
 	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPosition"), lightPos.x, lightPos.y, lightPos.z);
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "matColour"), 0.005960569716989994f, 0.0f, 0.8000000715255737, 1.0f);
-
+	*/
 	//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, waveModel.specBuffer);
 
 	//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, VBO1.ID);
@@ -207,7 +215,7 @@ int main()
 	float dt = 0.0f;
 	while (!glfwWindowShouldClose(window))
 	{
-		waveGPU.updateModel(dt);
+		//waveGPU.updateModel(dt);
 		err = glGetError();
 		while (err != GL_NO_ERROR)
 		{
@@ -224,17 +232,17 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// Tell OpenGL which Shader Program we want to use
 
-		shaderProgram.Activate();
+		//shaderProgram.Activate();
 
 		//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, VBO1.ID);
 
 		camera.updateMatrix(45.0f, 0.1f, 10000.0f);
 
-		camera.Matrix(shaderProgram, "camMatrix");
+		//camera.Matrix(shaderProgram, "camMatrix");
 		// Bind the VAO so OpenGL knows to use it
 		//VAO1.Bind();
 
-		glDrawElements(GL_TRIANGLES, index.size() * sizeof(GLuint) / sizeof(int), GL_UNSIGNED_INT, 0);
+		//glDrawElements(GL_TRIANGLES, waveGPU.index.size() * sizeof(GLuint) / sizeof(int), GL_UNSIGNED_INT, 0);
 		//waveModel.wavePropagation(VAO1.ID, dt);
 		// Draw primpopCat.Delete();ers(window);
 
@@ -254,8 +262,8 @@ int main()
 	// Delete all the objects we've created
 	//VAO1.Delete();
 	//VBO1.Delete();
-	EBO1.Delete();
-	shaderProgram.Delete();
+	//EBO1.Delete();
+	//shaderProgram.Delete();
 	// Delete window before ending the program
 	glfwDestroyWindow(window);
 	// Terminate GLFW before ending the program

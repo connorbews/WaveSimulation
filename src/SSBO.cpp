@@ -10,7 +10,7 @@ SSBO::SSBO(int size, int index)
 {
     bufferSize = size;
     bufferIndex = index;
-
+    
 	glGenBuffers(1, &ID);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ID);
 	glBufferData(GL_SHADER_STORAGE_BUFFER, bufferSize * sizeof(glm::vec2), NULL, GL_DYNAMIC_DRAW);
@@ -35,11 +35,12 @@ void SSBO::Print(int low, int high)
     
     for (size_t i = 0; i < bufferSize; i++)
     {
+        glm::vec2 temp;
         if (i >= low && i < high)
         {
-            glm::vec2 temp;
-            memcpy(&temp, &ssboData, sizeof(glm::vec2));
+            memcpy(&temp, ssboData, sizeof(glm::vec2));
             std::cout << "Data at i: " << i << " real: " << temp.x << " imag: " << temp.y << std::endl;
+            ssboData = static_cast<char*>(ssboData) + sizeof(glm::vec2);
         }
     }
 
