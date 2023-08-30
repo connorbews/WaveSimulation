@@ -1,7 +1,6 @@
 #version 460 core
 
 #define PI 3.1415926538f
-#define ALPHA 1
 #define MAX 32
 #define SIZE 256
 #define N -128
@@ -10,14 +9,13 @@
 
 void propagateWave();
 void waveDispersion(in float kx, in float ky, out float result);
+void complexMultiply(in vec2 c1, in vec2 c2, out vec2 result);
 
 layout(local_size_x = MAX, local_size_y = MAX, local_size_z = 1) in;
 
 layout (std430, binding = 0) buffer SpecSSBO {
     vec2 specData[];
 };
-
-
 
 void main()
 {
@@ -36,11 +34,22 @@ void propagateWave()
 
     float dt = specData[65536].x;
 
-    vec2 result = specData[SIZE * x + y] * exp(vec2(0.0, 1.0) * omega * dt);
+    vec2 temp1 = vec2(cos(omega * dt), sin(omega * dt));
+    vec2 temp2 = specData[SIZE * x + y];
+
+    vec2 result;
+    complexMultiply(temp1, temp2, result);
+    
     specData[SIZE * x + y] = result;
 }
 
 void waveDispersion(in float kx, in float ky, out float result)
 {
     result = sqrt(9.81f * sqrt(pow(kx, 2.0f) + pow(ky, 2.0f)));
+}
+
+void complexMultiply(in vec2 c1, in vec2 c2, out vec2 result)
+{
+    result.x = c1.x * c2.x - c1.y * c2.y;
+    result.y = c1.x * c2.y + c1.y * c2.x;
 }

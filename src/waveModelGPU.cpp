@@ -22,17 +22,17 @@ waveModelGPU::waveModelGPU(int size) :
 
 	waveInit();
 
-	//waveIDFT();
-	//waveNorm();
+	waveIDFT();
+	waveNorm();
 }
 
 void waveModelGPU::updateModel()
 {
 	waveDt();
 	waveProp();
-	//waveIDFT();
-	//waveNorm();
-	initializeBuffer.Print(0, 10);
+	waveIDFT();
+	waveNorm();
+	initializeBuffer.Print(0, 1);
 }
 
 void waveModelGPU::waveInit()

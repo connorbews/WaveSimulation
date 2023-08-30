@@ -55,7 +55,7 @@ int main()
 	std::string texPath = "/glad/resources/";
 	GLenum err;
 
-	//waveModel waveModel;
+	waveModel waveModel;
 	
 	// Initialize GLFW
 	glfwInit();
@@ -99,7 +99,7 @@ int main()
 	//VAO1.Bind();
 
 	// Generates Vertex Buffer Object and links it to vertices
-	//VBO VBO1(&waveGPU.geometry[0], waveGPU.geometry.size() * sizeof(GLfloat));
+	VBO VBO1(&waveModel.geometryMesh[0], waveModel.geometryMesh.size() * sizeof(GLfloat));
 	
 	// Generates Element Buffer Object and links it to indices
 	//EBO EBO1(&waveGPU.index[0], waveGPU.index.size() * sizeof(GLuint));
@@ -187,19 +187,21 @@ int main()
 	glGetIntegerv(GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS, &work_grp_inv);
 	std::cout << "Max invocations count per work group: " << work_grp_inv << "\n";
 	*/
-
+	float dt = 0.0f;
 	while (!glfwWindowShouldClose(window))
 	{
+		dt += 1.0f / 60.0f;
 		waveGPU.updateModel();
-		err = glGetError();
+		waveModel.wavePropagation(waveModel.specBuffer, dt);
+		// maybe put this in the application class that you are planning to write
+		/*err = glGetError();
 		while (err != GL_NO_ERROR)
 		{
 			std::cout << "here: " << std::endl;
 			std::cout << err << std::endl;
 			err = glGetError();
 
-		}
-		//dt += 1.0f / 60.0f;
+		}*/
 		// Specify the color of the background
 		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
 		// Clean the back buffer and assign the new color to it

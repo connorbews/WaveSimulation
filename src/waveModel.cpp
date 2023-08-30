@@ -13,10 +13,10 @@ waveModel::waveModel()
     for (int i = 0 ;  i< geometry.size() ; i++)
     {
         memcpy(&in[i], &geometry[i], sizeof(fftw_complex));
-        if (i < 10)
+        /*if (i < 10)
         {
             std::cout << "i: " << i << " geometry: " << geometry[i] << std::endl;
-        }
+        }*/
     }
 
     fftw_plan p = fftw_plan_dft_2d(256, 256,
@@ -251,7 +251,12 @@ void waveModel::wavePropagation(GLuint ID, double dt)
         {
             double ky = 2 * M_PI * y / Ly;
 
-            geometry[(x + abs(n)) * 256 + y + abs(n)] = geometry[(x + abs(n)) * 256 + y + abs(n)] * std::exp(std::complex<double>(0.0, 1.0) * waveDispersion(kx, ky) * dt);
+            std::complex<double> result = geometry[(x + abs(n)) * 256 + y + abs(n)] * std::exp(std::complex<double>(0.0, 1.0) * waveDispersion(kx, ky) * dt);
+            if (x == -128 && y == -128)
+            {
+                std::cout << "CPU: " << result << std::endl;
+            }
+            geometry[(x + abs(n)) * 256 + y + abs(n)] = result;
         }
     }
 
