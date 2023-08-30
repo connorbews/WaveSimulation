@@ -89,34 +89,11 @@ int main()
 	glViewport(0, 0, 800, 800);
 
 	// Generates Shader object using shaders defualt.vert and default.frag
-	//ObjectShader shaderProgram("resources/shaders/default.vert", "resources/shaders/default.frag");
+	ObjectShader shaderProgram("resources/shaders/default.vert", "resources/shaders/default.frag");
 	
-	//int n = 8;
+	int n = 8;
 
-	//waveModelGPU waveGPU(n);
-
-	SSBO init(64, 0);
-
-	ComputeShader initialize("resources/shaders/initialize.comp");
-
-	/*GLuint ssbo;
-	glGenBuffers(1, &ssbo);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, 64 * sizeof(glm::vec2), NULL, GL_DYNAMIC_DRAW); //sizeof(data) only works for statically sized C/C++ arrays.
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ssbo);
-	*/
-
-	initialize.Activate(1, 1, 1);
-
-	init.Print(0, 64);
-	/*void* ssboData = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
-
-    // Now you can access the data just like any other array
-    glm::vec2* ssboArray = static_cast<glm::vec2*>(ssboData);
-    for (size_t i = 0; i < 64; i++) {
-        glm::vec2 data = ssboArray[i];
-        std::cout << "real: " << data[0] << " imag: " << data[1] << std::endl;
-    }*/
+	waveModelGPU waveGPU(n);
 
 	// Generates Vertex Array Object and binds it
 	//VAO VAO1;

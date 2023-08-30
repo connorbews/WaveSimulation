@@ -38,7 +38,7 @@ void waveModelGPU::updateModel(float dt)
 
 void waveModelGPU::waveInit()
 {
-	initialize.Activate(1, 1, 1);
+	initialize.Activate(8, 8, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 }
 
