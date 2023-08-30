@@ -24,14 +24,15 @@ waveModelGPU::waveModelGPU(int size) :
 
 	//waveIDFT();
 	//waveNorm();
-	initializeBuffer.Print(0, 10);
 }
 
-void waveModelGPU::updateModel(float dt)
+void waveModelGPU::updateModel()
 {
-	//waveProp(dt);
+	waveDt();
+	waveProp();
 	//waveIDFT();
 	//waveNorm();
+	initializeBuffer.Print(0, 10);
 }
 
 void waveModelGPU::waveInit()
@@ -72,8 +73,14 @@ void waveModelGPU::waveIndex()
     }
 }
 
-void waveModelGPU::waveProp(float dt)
+void waveModelGPU::waveProp()
 {
 	wavePropagation.Activate(8, 8, 1);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+}
+
+void waveModelGPU::waveDt()
+{
+	dt.Activate(1, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 }

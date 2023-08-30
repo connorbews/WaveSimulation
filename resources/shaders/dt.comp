@@ -20,5 +20,5 @@ void main()
 
 void increaseDt()
 {
-    specData[INDEX].x += DELTA;
+    specData[INDEX].x = specData[INDEX].x + 1.0f / 60.0f;
 }

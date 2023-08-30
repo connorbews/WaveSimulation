@@ -16,7 +16,7 @@ public:
     waveModelGPU();
 	waveModelGPU(int size);
 
-    void updateModel(float dt);
+    void updateModel();
 
 private:
     int n;
@@ -36,7 +36,8 @@ private:
     void waveIDFT();
     void waveNorm();
     void waveIndex();
-    void waveProp(float dt);
+    void waveProp();
+    void waveDt();
 };
 
 #endif

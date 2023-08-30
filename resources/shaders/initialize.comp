@@ -23,7 +23,7 @@ layout (std430, binding = 0) buffer SpecSSBO {
 void main()
 {
     initializeWave();
-    specData[INDEX].x = 0.0f;
+    specData[INDEX] = vec2(0.0f, 0.0f);
 }
 
 void initializeWave()

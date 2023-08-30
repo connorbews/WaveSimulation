@@ -55,8 +55,7 @@ int main()
 	std::string texPath = "/glad/resources/";
 	GLenum err;
 
-	waveModel waveModel;
-
+	//waveModel waveModel;
 	
 	// Initialize GLFW
 	glfwInit();
@@ -91,7 +90,7 @@ int main()
 	// Generates Shader object using shaders defualt.vert and default.frag
 	ObjectShader shaderProgram("resources/shaders/default.vert", "resources/shaders/default.frag");
 	
-	int n = 8;
+	int n = 256;
 
 	waveModelGPU waveGPU(n);
 
@@ -189,10 +188,9 @@ int main()
 	std::cout << "Max invocations count per work group: " << work_grp_inv << "\n";
 	*/
 
-	float dt = 0.0f;
 	while (!glfwWindowShouldClose(window))
 	{
-		//waveGPU.updateModel(dt);
+		waveGPU.updateModel();
 		err = glGetError();
 		while (err != GL_NO_ERROR)
 		{
@@ -201,7 +199,6 @@ int main()
 			err = glGetError();
 
 		}
-		dt += 1.0f / 60.0f;
 		//dt += 1.0f / 60.0f;
 		// Specify the color of the background
 		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
