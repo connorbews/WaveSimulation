@@ -11,14 +11,14 @@
 class waveModelGPU
 {
 public:
+    std::vector<GLfloat> geometry;
     std::vector<GLuint> index;
-
-    SSBO verticalOutBuffer;
+    int normalsOffset;
 
     waveModelGPU();
 	waveModelGPU(int size);
 
-    void updateModel();
+    void updateModel(GLuint ID);
 
 private:
     int n;
@@ -32,6 +32,7 @@ private:
 
     SSBO initializeBuffer;
     SSBO horizontalOutBuffer;
+    SSBO verticalOutBuffer;
 
     void waveInit();
     void waveIDFT();
@@ -39,6 +40,8 @@ private:
     void waveIndex();
     void waveProp();
     void waveDt();
+    void geometryMapInit();
+    void geometryMap(GLuint ID);
 };
 
 #endif

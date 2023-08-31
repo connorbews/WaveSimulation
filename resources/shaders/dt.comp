@@ -1,6 +1,5 @@
 #version 460 core
 
-#define DELTA 1.0f / 60.0f
 #define INDEX 65536
 
 void increaseDt();

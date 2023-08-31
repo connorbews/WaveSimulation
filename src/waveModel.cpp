@@ -263,10 +263,6 @@ void waveModel::wavePropagation(GLuint ID, double dt)
     for (int i = 0;  i < geometry.size(); i++)
     {
         GLfloat result = std::sqrt(std::pow(out[i][0] / 65536.0, 2.0) + std::pow(out[i][1] / 65536.0, 2.0));
-        if (i < 1)
-        {
-            std::cout << "CPU: " << result << std::endl;
-        }
         geometryMesh[3 * i + 2] = result;
     }
 

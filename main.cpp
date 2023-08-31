@@ -54,8 +54,6 @@ int main()
 	std::string parentDir = (fs::current_path().fs::path::parent_path()).string();
 	std::string texPath = "/glad/resources/";
 	GLenum err;
-
-	//waveModel waveModel;
 	
 	// Initialize GLFW
 	glfwInit();
@@ -83,40 +81,40 @@ int main()
 	
 	//Load GLAD so it configures OpenGL
 	gladLoadGL();
-	// Specify the viewport of OpenGL in the Window
+	// Specify the viewint n = 256;
+
+	//waveModelGPU waveGPU(n);port of OpenGL in the Window
 	// In this case the viewport goes from x = 0, y = 0, to x = 800, y = 800
 	glViewport(0, 0, 800, 800);
 
+	int n = 256;
+	
+	waveModelGPU waveGPU(n);
+	//waveModel waveModel;
+
 	// Generates Shader object using shaders defualt.vert and default.frag
 	ObjectShader shaderProgram("resources/shaders/default.vert", "resources/shaders/default.frag");
-	
-	int n = 256;
-
-	waveModelGPU waveGPU(n);
 
 	// Generates Vertex Array Object and binds it
-	//VAO VAO1;
-	//VAO1.Bind();
+	VAO VAO1;
+	VAO1.Bind();
 
 	// Generates Vertex Buffer Object and links it to vertices
-	//VBO VBO1(&waveModel.geometryMesh[0], waveModel.geometryMesh.size() * sizeof(GLfloat));
+	VBO VBO1(&waveGPU.geometry[0], waveGPU.geometry.size() * sizeof(GLfloat));
+	std::cout << "size: " << waveGPU.geometry.size() * sizeof(GLfloat) << std::endl;
 	
 	// Generates Element Buffer Object and links it to indices
 	EBO EBO1(&waveGPU.index[0], waveGPU.index.size() * sizeof(GLuint));
-
 	
-	
-	//int offset = 3 * std::pow(n, 2);
-
 	// Links VBO to VAO
-	//VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 0, (void*)0);
-	//VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 0, (void*)(offset * sizeof(float)));
+	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 0, (void*)0);
+	VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 0, (void*)(waveGPU.normalsOffset * sizeof(float)));
 	//VAO1.LinkAttrib(VBO1, 2, 2, GL_FLOAT, 0, (void*)(model.textureOffset * sizeof(float)));
 	
 	// Unbind all to prevent accidentally modifying them
-	//VAO1.Unbind();
-	//VBO1.Unbind();
-	//EBO1.Unbind();
+	VAO1.Unbind();
+	VBO1.Unbind();
+	EBO1.Unbind();
 
 	ObjectShader lightShader("resources/shaders/light.vert", "resources/shaders/light.frag");
 	VAO lightVAO;
@@ -185,12 +183,10 @@ int main()
 	glGetIntegerv(GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS, &work_grp_inv);
 	std::cout << "Max invocations count per work group: " << work_grp_inv << "\n";
 	*/
-	float dt = 0.0f;
+
+	//std::cout << "size: " << waveGPU.index.size() << std::endl;
 	while (!glfwWindowShouldClose(window))
 	{
-		dt += 1.0f / 60.0f;
-		waveGPU.updateModel();
-		//waveModel.wavePropagation(waveModel.specBuffer, dt);
 		// maybe put this in the application class that you are planning to write
 		err = glGetError();
 		while (err != GL_NO_ERROR)
@@ -205,16 +201,17 @@ int main()
 		// Clean the back buffer and assign the new color to it
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// Tell OpenGL which Shader Program we want to use
-		waveGPU.verticalOutBuffer.BindBase();
+
 		shaderProgram.Activate();
-		//waveGPU.verticalOutBuffer.Print(0, 3);
-		//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, VBO1.ID);
 
 		camera.updateMatrix(45.0f, 0.1f, 10000.0f);
-		waveGPU.verticalOutBuffer.BindBase();
+
+		camera.Matrix(shaderProgram, "camMatrix");
+		// Bind the VAO so OpenGL knows to use it
+		VAO1.Bind();
+
 		glDrawElements(GL_TRIANGLES, waveGPU.index.size() * sizeof(GLuint) / sizeof(int), GL_UNSIGNED_INT, 0);
-		//waveModel.wavePropagation(VAO1.ID, dt);
-		// Draw primpopCat.Delete();ers(window);
+		waveGPU.updateModel(VAO1.ID);
 
 		lightShader.Activate();
 		camera.Matrix(lightShader, "camMatrix");
@@ -230,10 +227,10 @@ int main()
 
 
 	// Delete all the objects we've created
-	//VAO1.Delete();
-	//VBO1.Delete();
-	//EBO1.Delete();
-	//shaderProgram.Delete();
+	VAO1.Delete();
+	VBO1.Delete();
+	EBO1.Delete();
+	shaderProgram.Delete();
 	// Delete window before ending the program
 	glfwDestroyWindow(window);
 	// Terminate GLFW before ending the program
