@@ -92,30 +92,48 @@ int main()
 	waveModelGPU waveGPU(n);
 	//waveModel waveModel;
 
+	/*std::vector<GLfloat> temporary;
+	
+	for (int i = 0; i < 393216; i++)
+	{
+		temporary.push_back(1.0f);
+	}
+
+	GLuint test;
+	glGenBuffers(1, &test);
+	glBindBuffer(GL_ARRAY_BUFFER, test);
+	glBufferData(temporary)*/
+
 	// Generates Shader object using shaders defualt.vert and default.frag
 	ObjectShader shaderProgram("resources/shaders/default.vert", "resources/shaders/default.frag");
 
 	// Generates Vertex Array Object and binds it
 	VAO VAO1;
 	VAO1.Bind();
-
+	
 	// Generates Vertex Buffer Object and links it to vertices
+	//VBO VBO1(&waveModel.geometryMesh[0], waveModel.geometryMesh.size() * sizeof(GLfloat));
 	VBO VBO1(&waveGPU.geometry[0], waveGPU.geometry.size() * sizeof(GLfloat));
 	std::cout << "size: " << waveGPU.geometry.size() * sizeof(GLfloat) << std::endl;
+	//std::cout << "size: " << waveModel.geometryMesh.size() * sizeof(GLfloat) << std::endl;
 	
 	// Generates Element Buffer Object and links it to indices
 	EBO EBO1(&waveGPU.index[0], waveGPU.index.size() * sizeof(GLuint));
+	//EBO EBO1(&waveModel.index[0], waveModel.index.size() * sizeof(GLuint));
 	
 	// Links VBO to VAO
 	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 0, (void*)0);
 	VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 0, (void*)(waveGPU.normalsOffset * sizeof(float)));
+	//VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 0, (void*)(waveModel.normalsOffset * sizeof(float)));
 	//VAO1.LinkAttrib(VBO1, 2, 2, GL_FLOAT, 0, (void*)(model.textureOffset * sizeof(float)));
+	//std::cout << "normals offset: " << waveGPU.normalsOffset * sizeof(float) << std::endl;
+	//std::cout << "normals offset: " << waveModel.normalsOffset * sizeof(float) << std::endl;
 	
-	GLint size = 0;
+	/*GLint size = 0;
 	glBindBuffer(GL_ARRAY_BUFFER, VAO1.ID);
 	glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
 
-	std::cout << "size: " << size << std::endl;
+	std::cout << "size: " << size << std::endl;*/
 	// Unbind all to prevent accidentally modifying them
 	VAO1.Unbind();
 	VBO1.Unbind();
@@ -196,8 +214,7 @@ int main()
 		err = glGetError();
 		while (err != GL_NO_ERROR)
 		{
-			std::cout << "here: " << std::endl;
-			std::cout << err << std::endl;
+			std::cout << "error: " << err << std::endl;
 			err = glGetError();
 
 		}
@@ -216,7 +233,8 @@ int main()
 		VAO1.Bind();
 
 		glDrawElements(GL_TRIANGLES, waveGPU.index.size() * sizeof(GLuint) / sizeof(int), GL_UNSIGNED_INT, 0);
-		waveGPU.updateModel(VAO1.ID);
+		//glDrawElements(GL_TRIANGLES, waveModel.index.size() * sizeof(GLuint) / sizeof(int), GL_UNSIGNED_INT, 0);
+		waveGPU.updateModel(VBO1.ID);
 
 		lightShader.Activate();
 		camera.Matrix(lightShader, "camMatrix");

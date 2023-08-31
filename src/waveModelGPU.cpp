@@ -132,10 +132,7 @@ void waveModelGPU::geometryMap(GLuint ID)
     {
 		glm::vec2 temp;
 		memcpy(&temp, ssboData, sizeof(glm::vec2));
-		/*if (i >= 90 && i < 93)
-		{
-			std::cout << "temp.x: " << temp.x << std::endl;
-		}*/
+		
 		GLfloat result = std::sqrt(std::pow(temp.x, 2.0f) + std::pow(temp.y, 2.0f));
 		geometry[i] = result;
 		ssboData = static_cast<char*>(ssboData) + sizeof(glm::vec2);
@@ -149,6 +146,5 @@ void waveModelGPU::geometryMap(GLuint ID)
 
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, geometry.size() * sizeof(GLfloat), &geometry[0]);
-	//std::cout << "size: " << geometry.size() * sizeof(GLfloat) << std::endl;
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
