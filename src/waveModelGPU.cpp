@@ -148,7 +148,7 @@ void waveModelGPU::geometryMap(GLuint ID)
     }
 
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, geometry.size() / 4 * sizeof(GLfloat), &geometry[0]);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, geometry.size() * sizeof(GLfloat), &geometry[0]);
 	//std::cout << "size: " << geometry.size() * sizeof(GLfloat) << std::endl;
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }

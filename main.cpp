@@ -111,7 +111,7 @@ int main()
 	VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 0, (void*)(waveGPU.normalsOffset * sizeof(float)));
 	//VAO1.LinkAttrib(VBO1, 2, 2, GL_FLOAT, 0, (void*)(model.textureOffset * sizeof(float)));
 	
-	GLuint size = 0;
+	GLint size = 0;
 	glBindBuffer(GL_ARRAY_BUFFER, VAO1.ID);
 	glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
 
