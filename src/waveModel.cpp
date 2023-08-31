@@ -157,18 +157,9 @@ void waveModel::oceanographicSpectrum()
         for (int j = n; j < std::abs(n); j++)
         {
             double ky = 2.0 * M_PI * j / Ly;
-            /*if (i == -128 && j == -128)
-            {
-                std::cout << "kx: " << kx << " ky: " << ky << std::endl;
-            }*/
 
             std::complex<double> h0 = spectrumHeight(kx, ky, er, ei);
             std::complex<double> h1 = spectrumHeight(-kx, -ky, er, ei);
-
-            /*if (i == -128 && j == -128)
-            {
-                std::cout << "h1 real: " << h1.real() << " imag: " << h1.imag() << std::endl;
-            }*/
 
             double omega = waveDispersion(kx, ky);
 
@@ -218,10 +209,6 @@ std::complex<double> waveModel::spectrumHeight(double kx, double ky, double rand
         glm::vec2 w = glm::vec2(1.0f, 0.0f);
 
         double p =  1.0 * std::exp(-1.0 / (k1 * std::pow(L, 2))) / (std::pow(k1, 4)) * std::pow(std::abs(glm::dot(w, k)), 2);
-        /*if (kx < -0.75 && ky < -0.75)
-        {
-            std::cout << "p: " << p << std::endl;
-        }*/
         h = 1.0 / std::sqrt(2.0) * std::complex<double>(randr, randi) * std::sqrt(p);
     }
 
@@ -252,10 +239,6 @@ void waveModel::wavePropagation(GLuint ID, double dt)
             double ky = 2 * M_PI * y / Ly;
 
             std::complex<double> result = geometry[(x + abs(n)) * 256 + y + abs(n)] * std::exp(std::complex<double>(0.0, 1.0) * waveDispersion(kx, ky) * dt);
-            if (x == -128 && y == -128)
-            {
-                std::cout << "CPU: " << result << std::endl;
-            }
             geometry[(x + abs(n)) * 256 + y + abs(n)] = result;
         }
     }
@@ -279,7 +262,12 @@ void waveModel::wavePropagation(GLuint ID, double dt)
 
     for (int i = 0;  i < geometry.size(); i++)
     {
-        geometryMesh[3 * i + 2] = std::sqrt(std::pow(out[i][0] / 65536.0, 2.0) + std::pow(out[i][1] / 65536.0, 2.0));
+        GLfloat result = std::sqrt(std::pow(out[i][0] / 65536.0, 2.0) + std::pow(out[i][1] / 65536.0, 2.0));
+        if (i < 1)
+        {
+            std::cout << "CPU: " << result << std::endl;
+        }
+        geometryMesh[3 * i + 2] = result;
     }
 
     updateNormals();

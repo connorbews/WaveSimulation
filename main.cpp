@@ -55,7 +55,7 @@ int main()
 	std::string texPath = "/glad/resources/";
 	GLenum err;
 
-	waveModel waveModel;
+	//waveModel waveModel;
 	
 	// Initialize GLFW
 	glfwInit();
@@ -99,10 +99,10 @@ int main()
 	//VAO1.Bind();
 
 	// Generates Vertex Buffer Object and links it to vertices
-	VBO VBO1(&waveModel.geometryMesh[0], waveModel.geometryMesh.size() * sizeof(GLfloat));
+	//VBO VBO1(&waveModel.geometryMesh[0], waveModel.geometryMesh.size() * sizeof(GLfloat));
 	
 	// Generates Element Buffer Object and links it to indices
-	//EBO EBO1(&waveGPU.index[0], waveGPU.index.size() * sizeof(GLuint));
+	EBO EBO1(&waveGPU.index[0], waveGPU.index.size() * sizeof(GLuint));
 
 	
 	
@@ -145,13 +145,11 @@ int main()
 	glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));
 	glUniform4f(glGetUniformLocation(lightShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 
-	/*shaderProgram.Activate();
+	shaderProgram.Activate();
 	glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(wavemodel));
 	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPosition"), lightPos.x, lightPos.y, lightPos.z);
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "matColour"), 0.005960569716989994f, 0.0f, 0.8000000715255737, 1.0f);
-	*/
-	//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, waveModel.specBuffer);
 
 	//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, VBO1.ID);
 
@@ -192,33 +190,29 @@ int main()
 	{
 		dt += 1.0f / 60.0f;
 		waveGPU.updateModel();
-		waveModel.wavePropagation(waveModel.specBuffer, dt);
+		//waveModel.wavePropagation(waveModel.specBuffer, dt);
 		// maybe put this in the application class that you are planning to write
-		/*err = glGetError();
+		err = glGetError();
 		while (err != GL_NO_ERROR)
 		{
 			std::cout << "here: " << std::endl;
 			std::cout << err << std::endl;
 			err = glGetError();
 
-		}*/
+		}
 		// Specify the color of the background
 		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
 		// Clean the back buffer and assign the new color to it
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// Tell OpenGL which Shader Program we want to use
-
-		//shaderProgram.Activate();
-
+		waveGPU.verticalOutBuffer.BindBase();
+		shaderProgram.Activate();
+		//waveGPU.verticalOutBuffer.Print(0, 3);
 		//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, VBO1.ID);
 
 		camera.updateMatrix(45.0f, 0.1f, 10000.0f);
-
-		//camera.Matrix(shaderProgram, "camMatrix");
-		// Bind the VAO so OpenGL knows to use it
-		//VAO1.Bind();
-
-		//glDrawElements(GL_TRIANGLES, waveGPU.index.size() * sizeof(GLuint) / sizeof(int), GL_UNSIGNED_INT, 0);
+		waveGPU.verticalOutBuffer.BindBase();
+		glDrawElements(GL_TRIANGLES, waveGPU.index.size() * sizeof(GLuint) / sizeof(int), GL_UNSIGNED_INT, 0);
 		//waveModel.wavePropagation(VAO1.ID, dt);
 		// Draw primpopCat.Delete();ers(window);
 

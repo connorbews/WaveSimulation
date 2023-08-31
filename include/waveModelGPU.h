@@ -13,6 +13,8 @@ class waveModelGPU
 public:
     std::vector<GLuint> index;
 
+    SSBO verticalOutBuffer;
+
     waveModelGPU();
 	waveModelGPU(int size);
 
@@ -30,7 +32,6 @@ private:
 
     SSBO initializeBuffer;
     SSBO horizontalOutBuffer;
-    SSBO verticalOutBuffer;
 
     void waveInit();
     void waveIDFT();
