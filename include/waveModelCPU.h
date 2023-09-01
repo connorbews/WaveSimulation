@@ -1,5 +1,5 @@
-#ifndef WAVEMODEL_CLASS_H
-#define WAVEMODEL_CLASS_H
+#ifndef WAVEMODELCPU_CLASS_H
+#define WAVEMODELCPU_CLASS_H
 
 #include "../include/glm/glm.hpp"
 #include <glad/glad.h>
@@ -12,7 +12,7 @@
 #include <iostream>
 #include <cstring>
 
-class waveModel
+class waveModelCPU
 {
 public:
     GLuint specBuffer;
@@ -21,11 +21,16 @@ public:
     std::vector<GLfloat> geometryMesh;
     int normalsOffset;
 
-	waveModel();
+    waveModelCPU();
+	waveModelCPU(int size);
     void wavePropagation(GLuint ID, double dt);
 private:
+    int n;
+
     void oceanographicSpectrum();
-    void meshNormals();
+    void waveIDFT();
+    void initMesh();
+    void updateMesh(fftw_complex* out);
     void updateNormals();
     std::complex<double> spectrumHeight(double kx, double ky, double randr, double randi);
     double waveDispersion(double kx, double ky);

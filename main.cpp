@@ -19,7 +19,7 @@ namespace fs = std::filesystem;
 #include "include/glm/gtc/type_ptr.hpp"
 #include "include/Camera.h"
 #include "include/Model.h"
-#include "include/waveModel.h"
+#include "include/waveModelCPU.h"
 
 GLfloat lightVertices[] = 
 {
@@ -81,28 +81,15 @@ int main()
 	
 	//Load GLAD so it configures OpenGL
 	gladLoadGL();
-	// Specify the viewint n = 256;
 
-	//waveModelGPU waveGPU(n);port of OpenGL in the Window
+	// Specify the view
 	// In this case the viewport goes from x = 0, y = 0, to x = 800, y = 800
 	glViewport(0, 0, 800, 800);
 
 	int n = 256;
 	
-	waveModelGPU waveGPU(n);
-	//waveModel waveModel;
-
-	/*std::vector<GLfloat> temporary;
-	
-	for (int i = 0; i < 393216; i++)
-	{
-		temporary.push_back(1.0f);
-	}
-
-	GLuint test;
-	glGenBuffers(1, &test);
-	glBindBuffer(GL_ARRAY_BUFFER, test);
-	glBufferData(temporary)*/
+	//waveModelGPU waveGPU(n);
+	waveModelCPU waveModelCPU(n);
 
 	// Generates Shader object using shaders defualt.vert and default.frag
 	ObjectShader shaderProgram("resources/shaders/default.vert", "resources/shaders/default.frag");
@@ -112,28 +99,19 @@ int main()
 	VAO1.Bind();
 	
 	// Generates Vertex Buffer Object and links it to vertices
-	//VBO VBO1(&waveModel.geometryMesh[0], waveModel.geometryMesh.size() * sizeof(GLfloat));
-	VBO VBO1(&waveGPU.geometry[0], waveGPU.geometry.size() * sizeof(GLfloat));
-	std::cout << "size: " << waveGPU.geometry.size() * sizeof(GLfloat) << std::endl;
-	//std::cout << "size: " << waveModel.geometryMesh.size() * sizeof(GLfloat) << std::endl;
+	VBO VBO1(&waveModelCPU.geometryMesh[0], waveModelCPU.geometryMesh.size() * sizeof(GLfloat));
+	//VBO VBO1(&waveGPU.geometry[0], waveGPU.geometry.size() * sizeof(GLfloat));
 	
 	// Generates Element Buffer Object and links it to indices
-	EBO EBO1(&waveGPU.index[0], waveGPU.index.size() * sizeof(GLuint));
-	//EBO EBO1(&waveModel.index[0], waveModel.index.size() * sizeof(GLuint));
+	EBO EBO1(&waveModelCPU.index[0], waveModelCPU.index.size() * sizeof(GLuint));
+	//EBO EBO1(&waveGPU.index[0], waveGPU.index.size() * sizeof(GLuint));
 	
 	// Links VBO to VAO
 	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 0, (void*)0);
-	VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 0, (void*)(waveGPU.normalsOffset * sizeof(float)));
-	//VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 0, (void*)(waveModel.normalsOffset * sizeof(float)));
-	//VAO1.LinkAttrib(VBO1, 2, 2, GL_FLOAT, 0, (void*)(model.textureOffset * sizeof(float)));
-	//std::cout << "normals offset: " << waveGPU.normalsOffset * sizeof(float) << std::endl;
-	//std::cout << "normals offset: " << waveModel.normalsOffset * sizeof(float) << std::endl;
+	VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 0, (void*)(waveModelCPU.normalsOffset * sizeof(float)));
+	//VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 0, (void*)0);
+	//VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 0, (void*)(waveGPU.normalsOffset * sizeof(float)));
 	
-	/*GLint size = 0;
-	glBindBuffer(GL_ARRAY_BUFFER, VAO1.ID);
-	glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
-
-	std::cout << "size: " << size << std::endl;*/
 	// Unbind all to prevent accidentally modifying them
 	VAO1.Unbind();
 	VBO1.Unbind();
@@ -207,7 +185,7 @@ int main()
 	std::cout << "Max invocations count per work group: " << work_grp_inv << "\n";
 	*/
 
-	//std::cout << "size: " << waveGPU.index.size() << std::endl;
+	float dt = 0.0f;
 	while (!glfwWindowShouldClose(window))
 	{
 		// maybe put this in the application class that you are planning to write
@@ -232,9 +210,11 @@ int main()
 		// Bind the VAO so OpenGL knows to use it
 		VAO1.Bind();
 
-		glDrawElements(GL_TRIANGLES, waveGPU.index.size() * sizeof(GLuint) / sizeof(int), GL_UNSIGNED_INT, 0);
-		//glDrawElements(GL_TRIANGLES, waveModel.index.size() * sizeof(GLuint) / sizeof(int), GL_UNSIGNED_INT, 0);
-		waveGPU.updateModel(VBO1.ID);
+		//glDrawElements(GL_TRIANGLES, waveGPU.index.size() * sizeof(GLuint) / sizeof(int), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, waveModelCPU.index.size() * sizeof(GLuint) / sizeof(int), GL_UNSIGNED_INT, 0);
+		//waveGPU.updateModel(VBO1.ID);
+		//waveModelCPU.wavePropagation(VBO1.ID, dt);
+		dt += 1.0f / 60.0f;
 
 		lightShader.Activate();
 		camera.Matrix(lightShader, "camMatrix");
