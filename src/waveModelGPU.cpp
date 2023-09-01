@@ -1,17 +1,19 @@
 #include "../include/waveModelGPU.h"
 
+// Constructor called with no size specified, calling this is an error
 waveModelGPU::waveModelGPU()
 {
-    waveModelGPU(256);
+    std::cerr << "No size specified" << std::endl;
 }
 
+// Constructor that generates a waveModel of size: "size" x "size" to run on the GPU
 waveModelGPU::waveModelGPU(int size) : 
-	initialize("resources/shaders/initialize.comp"),
-	horizontalidft("resources/shaders/horizontalidft.comp"),
-	verticalidft("resources/shaders/verticalidft.comp"),
-	wavePropagation("resources/shaders/wavePropagation.comp"),
-	dt("resources/shaders/dt.comp"),
-	normalCalculation("resources/shaders/normalvec.comp"),
+	initCalc("resources/shaders/ComputeShaders/initCalc.comp"),
+	horizontalIDFT("resources/shaders/ComputeShaders/horizontalIDFT.comp"),
+	verticalIDFT("resources/shaders/ComputeShaders/verticalIDFT.comp"),
+	wavePropagation("resources/shaders/ComputeShaders/wavePropagation.comp"),
+	dtCalc("resources/shaders/ComputeShaders/dtCalc.comp"),
+	normalCalc("resources/shaders/ComputeShaders/normalCalc.comp"),
 	initializeBuffer(std::pow(size, 2) + 1, 0),
 	horizontalOutBuffer(std::pow(size, 2), 1),
 	verticalOutBuffer(6 * std::pow(size, 2), 2),
@@ -25,46 +27,46 @@ waveModelGPU::waveModelGPU(int size) :
 	waveIDFT();
 	waveNorm();
 	
-	geometryMapInit();
+	getPositionDataGPU();
 }
 
+// Updates each vertex of the waveModel and updates the VBO specified by "ID" 
 void waveModelGPU::updateModel(GLuint ID)
 {
 	waveDt();
 	waveProp();
 	waveIDFT();
 	waveNorm();
-	
-	//verticalOutBuffer.Print(0, 256);
 
-	geometryMap(ID);
-
-	//std::cout << "geometry[0]: " << geometry[90] << std::endl;
-	//std::cout << "geometry[1]: " << geometry[91] << std::endl;
-	//std::cout << "geometry[2]: " << geometry[92] << std::endl;
+	getPositionDataGPU();
+	updateBuffer(ID);
 }
 
+// Calls the initCalc shader
 void waveModelGPU::waveInit()
 {
-	initialize.Activate(8, 8, 1);
+	initCalc.Activate(8, 8, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 }
 
+// Calls the horizontalIDFT and verticalIDFT shader's
 void waveModelGPU::waveIDFT()
 {
-	horizontalidft.Activate(1, 1, 1);
+	horizontalIDFT.Activate(1, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
-	verticalidft.Activate(1, 1, 1);
+	verticalIDFT.Activate(1, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 }
 
+// Calls the normalCalc shader
 void waveModelGPU::waveNorm()
 {
-	normalCalculation.Activate(8, 8, 1);
+	normalCalc.Activate(8, 8, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 }
 
+// Initializes index array for EBO
 void waveModelGPU::waveIndex()
 {
 	for (int i = 0; i < n - 1; i++)
@@ -82,19 +84,22 @@ void waveModelGPU::waveIndex()
     }
 }
 
+// Calls the wavePropagation shader
 void waveModelGPU::waveProp()
 {
 	wavePropagation.Activate(8, 8, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 }
 
+// Calls the dtCalc shader
 void waveModelGPU::waveDt()
 {
-	dt.Activate(1, 1, 1);
+	dtCalc.Activate(1, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 }
 
-void waveModelGPU::geometryMapInit()
+// Transfers the position and normal information from GPU to CPU to update the VBO
+void waveModelGPU::getPositionDataGPU()
 {
 	verticalOutBuffer.BindBase();
 	void* ssboData = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
@@ -105,10 +110,6 @@ void waveModelGPU::geometryMapInit()
     {
 		glm::vec2 temp;
 		memcpy(&temp, ssboData, sizeof(glm::vec2));
-		/*if (i >= 90 && i < 93)
-		{
-			std::cout << "temp.x: " << temp.x << std::endl;
-		}*/
 		GLfloat result = std::sqrt(std::pow(temp.x, 2.0f) + std::pow(temp.y, 2.0f));
 		geometry[i] = result;
 		ssboData = static_cast<char*>(ssboData) + sizeof(glm::vec2);
@@ -121,29 +122,9 @@ void waveModelGPU::geometryMapInit()
     }
 }
 
-void waveModelGPU::geometryMap(GLuint ID)
+// Updates the VBO with new vertex attribute data
+void waveModelGPU::updateBuffer(GLuint ID)
 {
-	verticalOutBuffer.BindBase();
-	void* ssboData = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
-
-	int size = 6 * std::pow(n, 2);
-	
-	for (int i = 0; i < size; i++)
-    {
-		glm::vec2 temp;
-		memcpy(&temp, ssboData, sizeof(glm::vec2));
-		
-		GLfloat result = std::sqrt(std::pow(temp.x, 2.0f) + std::pow(temp.y, 2.0f));
-		geometry[i] = result;
-		ssboData = static_cast<char*>(ssboData) + sizeof(glm::vec2);
-    }
-
-    GLboolean val = glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
-    if (val == GL_FALSE)
-    {
-        std::cerr << "contents were corrupted" << std::endl;
-    }
-
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, geometry.size() * sizeof(GLfloat), &geometry[0]);
     glBindBuffer(GL_ARRAY_BUFFER, 0);

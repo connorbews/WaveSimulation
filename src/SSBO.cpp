@@ -1,11 +1,12 @@
 #include"../include/SSBO.h"
 
+// Constructor called with no size or index specified, calling this is an error
 SSBO::SSBO()
 {
-    std::cout << "No size or index specified" << std::endl;
+    std::cerr << "No size or index specified" << std::endl;
 }
 
-// Constructor that generates a Shader Storage Buffer Object and links it to vertices
+// Constructor that generates a Shader Storage Buffer Object and binds it to the binding point at index "index"
 SSBO::SSBO(int size, int index)
 {
     bufferSize = size;
@@ -17,26 +18,21 @@ SSBO::SSBO(int size, int index)
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, bufferIndex, ID);
 }
 
-// Binds the SSBO
-void SSBO::Bind()
+// Prints the contents of the SSBO from firstIndex to lastIndex
+void SSBO::debugPrint(int firstIndex, int lastIndex)
 {
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ID);
-}
+    if (firstIndex == lastIndex)
+    {
+        std::cerr << "no values are printed because the arguments for this function are the same" << std::endl;
+    }
 
-void SSBO::BindBase()
-{
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, bufferIndex, ID);
-}
-
-void SSBO::Print(int low, int high)
-{
     BindBase();
     void* ssboData = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
     
     for (size_t i = 0; i < bufferSize; i++)
     {
         glm::vec2 temp;
-        if (i >= low && i < high)
+        if (i >= firstIndex && i < lastIndex)
         {
             memcpy(&temp, ssboData, sizeof(glm::vec2));
             std::cout << "Data at i: " << i << " real: " << temp.x << " imag: " << temp.y << std::endl;
@@ -51,6 +47,18 @@ void SSBO::Print(int low, int high)
     }
 }
 
+// Binds the SSBO
+void SSBO::Bind()
+{
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ID);
+}
+
+// Binds the SSBO to a binding point at "bufferIndex"
+void SSBO::BindBase()
+{
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, bufferIndex, ID);
+}
+
 // Unbinds the SSBO
 void SSBO::Unbind()
 {
@@ -63,7 +71,7 @@ void SSBO::Delete()
 	glDeleteBuffers(1, &ID);
 }
 
-
+// Deconstructor for the SSBO
 SSBO::~SSBO()
 {
 	Delete();
