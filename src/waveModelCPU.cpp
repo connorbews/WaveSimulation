@@ -10,7 +10,6 @@ waveModelCPU::waveModelCPU(int size) :
     waveIDFT();
 
     normalsOffset = 3 * std::pow(size, 2);
-    std::cout << "normals offset: " << normalsOffset << std::endl;
 
     for (int i = 0; i < 256 - 1; i++)
     {
@@ -33,8 +32,6 @@ void waveModelCPU::oceanographicSpectrum()
 {
     double alpha = 1;
     int n = -128;
-    int Lx = 1000;
-    int Ly = 1000;
 
     std::default_random_engine generator;
     std::normal_distribution<double> distribution(0.0, 1.0);
@@ -44,10 +41,10 @@ void waveModelCPU::oceanographicSpectrum()
 
     for (int i = n; i < std::abs(n); i++)
     {
-        double kx = 2.0 * M_PI * i / Lx;
+        double kx = 2.0 * M_PI * i / LX;
         for (int j = n; j < std::abs(n); j++)
         {
-            double ky = 2.0 * M_PI * j / Ly;
+            double ky = 2.0 * M_PI * j / LY;
 
             std::complex<double> h0 = spectrumHeight(kx, ky, er, ei);
             std::complex<double> h1 = spectrumHeight(-kx, -ky, er, ei);
@@ -107,11 +104,14 @@ void waveModelCPU::waveIDFT()
 
 void waveModelCPU::initMesh()
 {
-    for (int i = 0;  i < geometry.size(); i += 3)
+    for (int y = 0; y < n; y++)
     {
-        geometryMesh[i] = ((i % 256) * 1000.0f / 256.0f);
-        geometryMesh[i + 1] = ((i / 256) * 1000.0f / 256.0f);
-        geometryMesh[i + 2] = 0.0f;
+        for (int x = 0; x < n; x++)
+        {
+            geometryMesh[3 * (y * n + x)] = (x * 1000.0f / 256.0f);
+            geometryMesh[3 * (y * n + x) + 1] = (y * 1000.0f / 256.0f);
+            geometryMesh[3 * (y * n + x) + 2] = 0.0f;
+        }
     }
 }
 
@@ -126,47 +126,70 @@ void waveModelCPU::updateMesh(fftw_complex* out)
     fftw_free(out);
 }
 
-// error in update normals function
 void waveModelCPU::updateNormals()
 {
-    for (int y = 0; y < 256; y++)
+    float dy, dx;
+    float upIndex, downIndex, leftIndex, rightIndex;
+    const int maxIndex = std::pow(n, 2);
+    for (int y = 0; y < n; y++)
     {
-        for (int x = 0; x < 256; x++)
+        for (int x = 0; x < n; x++)
         {
-            float dy, dx;
-            if ((y - 1) * 256 + x < 0 && y * 256 + x - 1 < 0)
-            {
-                dx = 1.0f / 2.0f * (geometryMesh[3 * (y * 256 + x + 1) + 2] - geometryMesh[3 * (y * 256 + x - 1 + 65536) + 2]);
-                dy = 1.0f / 2.0f * (geometryMesh[3 * ((y + 1) * 256 + x) + 2] - geometryMesh[3 * ((y - 1) * 256 + x + 65536) + 2]);
-            }
-            else if ((y - 1) * 256 + x < 0 && y * 256 + x - 1 >= 0 && y * 256 + x - 1 < 65536)
-            {
-                dx = 1.0f / 2.0f * (geometryMesh[3 * (y * 256 + x + 1) + 2] - geometryMesh[3 * (y * 256 + x - 1) + 2]);
-                dy = 1.0f / 2.0f * (geometryMesh[3 * ((y + 1) * 256 + x) + 2] - geometryMesh[3 * ((y - 1) * 256 + x + 65536) + 2]);
-            }
-            else if ((y + 1) * 256 + x > 65535 && y * 256 + x + 1 > 65535)
-            {
-                dx = 1.0f / 2.0f * (geometryMesh[3 * (y * 256 + x + 1 - 65536) + 2] - geometryMesh[3 * (y * 256 + x - 1) + 2]);
-                dy = 1.0f / 2.0f * (geometryMesh[3 * ((y + 1) * 256 + x - 65536) + 2] - geometryMesh[3 * ((y - 1) * 256 + x) + 2]);
-            }
-            else if ((y + 1) * 256 + x > 65535 && y * 256 + x + 1 >= 0 && y * 256 + x + 1 < 65536)
-            {
-                dx = 1.0f / 2.0f * (geometryMesh[3 * (y * 256 + x + 1) + 2] - geometryMesh[3 * (y * 256 + x - 1) + 2]);
-                dy = 1.0f / 2.0f * (geometryMesh[3 * ((y + 1) * 256 + x - 65536) + 2] - geometryMesh[3 * ((y - 1) * 256 + x) + 2]);
-            }
-            else 
-            {
-                dx = 1.0f / 2.0f * (geometryMesh[3 * (y * 256 + x + 1) + 2] - geometryMesh[3 * (y * 256 + x - 1) + 2]);
-                dy = 1.0f / 2.0f * (geometryMesh[3 * ((y + 1) * 256 + x) + 2] - geometryMesh[3 * ((y - 1) * 256 + x) + 2]);
-            }
+            upIndex = (y + 1) * n + x;
+            downIndex = (y - 1) * n + x;
+            leftIndex = y * n + x - 1;
+            rightIndex = y * n + x + 1;
+            
+            dy = calcDy(upIndex, downIndex, maxIndex);
+            dx = calcDx(x, y, rightIndex, leftIndex, maxIndex);
 
             float d = std::sqrt(std::pow(dx, 2) + std::pow(dy, 2) + 1);
 
-            geometryMesh[normalsOffset + 3 * (y * 256 + x)] = -dx / d;
-            geometryMesh[normalsOffset + 3 * (y * 256 + x) + 1] = -dy / d;
-            geometryMesh[normalsOffset + 3 * (y * 256 + x) + 2] = 1 / d;
+            geometryMesh[normalsOffset + 3 * (y * n + x)] = -dx / d;
+            geometryMesh[normalsOffset + 3 * (y * n + x) + 1] = -dy / d;
+            geometryMesh[normalsOffset + 3 * (y * n + x) + 2] = 1 / d;
         }
     }
+}
+
+float waveModelCPU::calcDy(int upIndex, int downIndex, int maxIndex)
+{
+    float dy;
+
+    if (downIndex < 0)
+    {
+        dy = 0.5f * (geometryMesh[3 * upIndex + 2] - geometryMesh[3 * (downIndex + maxIndex) + 2]);
+    }
+    else if (upIndex > maxIndex - 1)
+    {
+        dy = 0.5f * (geometryMesh[3 * (upIndex - maxIndex) + 2] - geometryMesh[3 * downIndex + 2]);
+    }
+    else
+    {
+        dy = 0.5f * (geometryMesh[3 * upIndex + 2] - geometryMesh[3 * downIndex + 2]);
+    }
+
+    return dy;
+}
+
+float waveModelCPU::calcDx(int x, int y, int rightIndex, int leftIndex, int maxIndex)
+{
+    float dx;
+
+    if (x - 1 == -1)
+    {
+        dx = 0.5f * (geometryMesh[3 * rightIndex + 2] - geometryMesh[3 * (y * n + n - 1) + 2]);
+    }
+    else if (x + 1 == n)
+    {
+        dx = 0.5f * (geometryMesh[3 * (y * n) + 2] - geometryMesh[3 * leftIndex + 2]);
+    }
+    else
+    {
+        dx = 0.5f * (geometryMesh[3 * rightIndex + 2] - geometryMesh[3 * leftIndex + 2]);
+    }
+
+    return dx;
 }
 
 
@@ -203,54 +226,23 @@ double waveModelCPU::waveDispersion(double kx, double ky)
 
 void waveModelCPU::wavePropagation(GLuint ID, double dt)
 {
-    fftw_complex *in;
-    fftw_complex *out;
-
     glBindBuffer(GL_ARRAY_BUFFER, ID);
 
     int n = -128;
-    int Lx = 1000;
-    int Ly = 1000;for (int i = 0;  i < geometry.size(); i++)
-    {
-        GLfloat result = std::sqrt(std::pow(out[i][0] / 65536.0, 2.0) + std::pow(out[i][1] / 65536.0, 2.0));
-        geometryMesh[3 * i + 2] = result;
-    }
 
     for (int x = n; x < abs(n); x++)
     {
-        double kx = 2 * M_PI * x / Lx;
+        double kx = 2 * M_PI * x / LX;
         for (int y = n; y < abs(n); y++)
         {
-            double ky = 2 * M_PI * y / Ly;
+            double ky = 2 * M_PI * y / LY;
 
             std::complex<double> result = geometry[(x + abs(n)) * 256 + y + abs(n)] * std::exp(std::complex<double>(0.0, 1.0) * waveDispersion(kx, ky) * dt);
             geometry[(x + abs(n)) * 256 + y + abs(n)] = result;
         }
     }
 
-    in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * geometry.size());
-    out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * geometry.size());
-
-    for (int i = 0 ;  i< geometry.size() ; i++)
-    {
-       memcpy(&in[i], &geometry[i], sizeof(fftw_complex));
-    }
-
-    fftw_plan p = fftw_plan_dft_2d(256, 256,
-                in,
-                out,
-                FFTW_BACKWARD,
-                FFTW_ESTIMATE);
-
-    fftw_execute(p);
-    fftw_destroy_plan(p);
-
-    for (int i = 0;  i < geometry.size(); i++)
-    {
-        GLfloat result = std::sqrt(std::pow(out[i][0] / 65536.0, 2.0) + std::pow(out[i][1] / 65536.0, 2.0));
-        geometryMesh[3 * i + 2] = result;
-    }
-
+    waveIDFT();
     updateNormals();
     glBufferSubData(GL_ARRAY_BUFFER, 0, geometryMesh.size() * sizeof(GLfloat), &geometryMesh[0]);
 

@@ -12,6 +12,9 @@
 #include <iostream>
 #include <cstring>
 
+#define LX 1000
+#define LY 1000
+
 class waveModelCPU
 {
 public:
@@ -32,6 +35,8 @@ private:
     void initMesh();
     void updateMesh(fftw_complex* out);
     void updateNormals();
+    float calcDy(int upIndex, int downIndex, int maxIndex);
+    float calcDx(int x, int y, int rightIndex, int leftIndex, int maxIndex);
     std::complex<double> spectrumHeight(double kx, double ky, double randr, double randi);
     double waveDispersion(double kx, double ky);
 };

@@ -213,7 +213,7 @@ int main()
 		//glDrawElements(GL_TRIANGLES, waveGPU.index.size() * sizeof(GLuint) / sizeof(int), GL_UNSIGNED_INT, 0);
 		glDrawElements(GL_TRIANGLES, waveModelCPU.index.size() * sizeof(GLuint) / sizeof(int), GL_UNSIGNED_INT, 0);
 		//waveGPU.updateModel(VBO1.ID);
-		//waveModelCPU.wavePropagation(VBO1.ID, dt);
+		waveModelCPU.wavePropagation(VBO1.ID, dt);
 		dt += 1.0f / 60.0f;
 
 		lightShader.Activate();
