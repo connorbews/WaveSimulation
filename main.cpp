@@ -3,7 +3,6 @@ namespace fs = std::filesystem;
 
 #include<iostream>
 #include<glad/glad.h>
-#include<GLFW/glfw3.h>
 #include<math.h>
 
 #include"include/ObjectShaderClass.h"
@@ -20,6 +19,7 @@ namespace fs = std::filesystem;
 #include "include/Camera.h"
 #include "include/Model.h"
 #include "include/waveModelCPU.h"
+#include "include/GLFWSetup.h"
 
 GLfloat lightVertices[] = 
 {
@@ -54,30 +54,10 @@ int main()
 	std::string parentDir = (fs::current_path().fs::path::parent_path()).string();
 	std::string texPath = "/glad/resources/";
 	GLenum err;
-	
-	// Initialize GLFW
-	glfwInit();
-	
-	// Tell GLFW what version of OpenGL we are using 
-	// In this case we are using OpenGL 4.6
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-	// Tell GLFW we are using the CORE profile
-	// So that means we only have the modern functions
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	// Create a GLFWwindow object of 800 by 800 pixels, naming it "YoutubeOpenGL"
-	GLFWwindow* window = glfwCreateWindow(800, 800, "HELLO", NULL, NULL);
-	// Error check if the window fails to create
-	if (window == NULL)
-	{
-		std::cout << "Failed to create GLFW window" << std::endl;
-		glfwTerminate();
-		return -1;
-	}
-	
-	// Introduce the window into the current context
-	glfwMakeContextCurrent(window);
+	Camera camera(800, 800, glm::vec3(500.0f, 500.0f, 700.0f));
+
+	GLFWSetup glfwScreen(&camera);
 	
 	//Load GLAD so it configures OpenGL
 	gladLoadGL();
@@ -150,15 +130,7 @@ int main()
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "matColour"), 0.005960569716989994f, 0.0f, 0.8000000715255737, 1.0f);
 
-	//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, VBO1.ID);
-
 	glEnable(GL_DEPTH_TEST);
-
-	Camera camera(800, 800, glm::vec3(500.0f, 500.0f, 700.0f));
-    glfwSetWindowUserPointer(window, &camera);
-
-    // Set the key callback function
-    glfwSetKeyCallback(window, Camera::staticInputs);
 	// Main while loop
 
 	/*
@@ -185,7 +157,7 @@ int main()
 	std::cout << "Max invocations count per work group: " << work_grp_inv << "\n";
 	*/
 
-	while (!glfwWindowShouldClose(window))
+	while (glfwScreen.GLFWWindowShouldClose())
 	{
 		// maybe put this in the application class that you are planning to write
 		err = glGetError();
@@ -219,10 +191,8 @@ int main()
 		lightVAO.Bind();
 		
 		glDrawElements(GL_TRIANGLES, sizeof(lightIndices) / sizeof(int), GL_UNSIGNED_INT, 0);
-		
-		glfwSwapBuffers(window);
-		// Take care of all GLFW events
-		glfwPollEvents();
+
+		glfwScreen.GLFWWindowUpdate();
 	}
 
 
@@ -232,9 +202,5 @@ int main()
 	VBO1.Delete();
 	EBO1.Delete();
 	shaderProgram.Delete();
-	// Delete window before ending the program
-	glfwDestroyWindow(window);
-	// Terminate GLFW before ending the program
-	glfwTerminate();
 	return 0;
 }
