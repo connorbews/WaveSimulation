@@ -99,7 +99,7 @@ int main()
 	VAO1.Bind();
 	
 	// Generates Vertex Buffer Object and links it to vertices
-	VBO VBO1(&waveModelCPU.geometryMesh[0], waveModelCPU.geometryMesh.size() * sizeof(GLfloat));
+	VBO VBO1(&waveModelCPU.geometry[0], waveModelCPU.geometry.size() * sizeof(GLfloat));
 	//VBO VBO1(&waveGPU.geometry[0], waveGPU.geometry.size() * sizeof(GLfloat));
 	
 	// Generates Element Buffer Object and links it to indices
@@ -185,7 +185,6 @@ int main()
 	std::cout << "Max invocations count per work group: " << work_grp_inv << "\n";
 	*/
 
-	float dt = 0.0f;
 	while (!glfwWindowShouldClose(window))
 	{
 		// maybe put this in the application class that you are planning to write
@@ -213,8 +212,7 @@ int main()
 		//glDrawElements(GL_TRIANGLES, waveGPU.index.size() * sizeof(GLuint) / sizeof(int), GL_UNSIGNED_INT, 0);
 		glDrawElements(GL_TRIANGLES, waveModelCPU.index.size() * sizeof(GLuint) / sizeof(int), GL_UNSIGNED_INT, 0);
 		//waveGPU.updateModel(VBO1.ID);
-		waveModelCPU.wavePropagation(VBO1.ID, dt);
-		dt += 1.0f / 60.0f;
+		waveModelCPU.updateModel(VBO1.ID);
 
 		lightShader.Activate();
 		camera.Matrix(lightShader, "camMatrix");
