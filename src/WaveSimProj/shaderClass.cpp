@@ -1,4 +1,4 @@
-#include"../include/WaveSimProj/shaderClass.h"
+#include"../../include/WaveSimProj/shaderClass.h"
 
 // Reads a text file and outputs a string with everything in the text file
 std::string get_file_contents(const char* filename)
@@ -52,4 +52,9 @@ void Shader::compileErrors(unsigned int shader, const char* type)
 			std::cout << "SHADER_LINKING_ERROR for: " << type << "\n" << infoLog << std::endl;
 		}
 	}
+}
+
+Shader::~Shader()
+{
+	Delete();
 }

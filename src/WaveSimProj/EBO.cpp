@@ -1,4 +1,4 @@
-#include"../include/WaveSimProj/EBO.h"
+#include"../../include/WaveSimProj/EBO.h"
 
 // Constructor that generates a Elements Buffer Object and links it to indices
 EBO::EBO(GLuint* indices, GLsizeiptr size)
@@ -24,4 +24,10 @@ void EBO::Unbind()
 void EBO::Delete()
 {
 	glDeleteBuffers(1, &ID);
+}
+
+// Destructor for EBO
+EBO::~EBO()
+{
+	Delete();
 }

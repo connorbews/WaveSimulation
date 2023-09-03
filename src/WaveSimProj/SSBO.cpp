@@ -1,4 +1,4 @@
-#include"../include/WaveSimProj/SSBO.h"
+#include"../../include/WaveSimProj/SSBO.h"
 
 // Constructor called with no size or index specified, calling this is an error
 SSBO::SSBO()
@@ -71,7 +71,7 @@ void SSBO::Delete()
 	glDeleteBuffers(1, &ID);
 }
 
-// Deconstructor for the SSBO
+// Deconstructor for SSBO
 SSBO::~SSBO()
 {
 	Delete();

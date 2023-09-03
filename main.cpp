@@ -1,8 +1,6 @@
 #include<filesystem>
 namespace fs = std::filesystem;
 
-#include<iostream>
-#include<glad/glad.h>
 #include<math.h>
 
 #include"include/WaveSimProj/ObjectShaderClass.h"
@@ -20,6 +18,7 @@ namespace fs = std::filesystem;
 #include "include/WaveSimProj/Model.h"
 #include "include/WaveSimProj/waveModelCPU.h"
 #include "include/WaveSimProj/Setup/GLFWSetup.h"
+#include "include/WaveSimProj/Setup/OpenGLSetup.h"
 
 GLfloat lightVertices[] = 
 {
@@ -51,18 +50,10 @@ GLuint lightIndices[] =
 
 int main()
 {
-	GLenum err;
-
 	Camera camera(800, 800, glm::vec3(500.0f, 500.0f, 700.0f));
 
 	GLFWSetup glfwScreen(&camera);
-	
-	//Load GLAD so it configures OpenGL
-	gladLoadGL();
-
-	// Specify the view
-	// In this case the viewport goes from x = 0, y = 0, to x = 800, y = 800
-	glViewport(0, 0, 800, 800);
+	OpenGLSetup openGLSetup;
 
 	int n = 256;
 	
@@ -128,77 +119,32 @@ int main()
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "matColour"), 0.005960569716989994f, 0.0f, 0.8000000715255737, 1.0f);
 
-	glEnable(GL_DEPTH_TEST);
-	// Main while loop
-
-	/*
-	int work_grp_cnt[3];
-	glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 0, &work_grp_cnt[0]);
-	glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 1, &work_grp_cnt[1]);
-	glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 2, &work_grp_cnt[2]);
-	std::cout << "Max work groups per compute shader" << 
-		" x:" << work_grp_cnt[0] <<
-		" y:" << work_grp_cnt[1] <<
-		" z:" << work_grp_cnt[2] << "\n";
-
-	int work_grp_size[3];
-	glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 0, &work_grp_size[0]);
-	glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 1, &work_grp_size[1]);
-	glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 2, &work_grp_size[2]);
-	std::cout << "Max work group sizes" <<
-		" x:" << work_grp_size[0] <<
-		" y:" << work_grp_size[1] <<
-		" z:" << work_grp_size[2] << "\n";
-
-	int work_grp_inv;
-	glGetIntegerv(GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS, &work_grp_inv);
-	std::cout << "Max invocations count per work group: " << work_grp_inv << "\n";
-	*/
-
 	while (glfwScreen.ShouldWindowClose())
 	{
-		// maybe put this in the application class that you are planning to write
-		err = glGetError();
-		while (err != GL_NO_ERROR)
-		{
-			std::cout << "error: " << err << std::endl;
-			err = glGetError();
-
-		}
-		// Specify the color of the background
-		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
-		// Clean the back buffer and assign the new color to it
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		// Tell OpenGL which Shader Program we want to use
+		openGLSetup.ProcessErrors();
+		openGLSetup.SetBackgroundColour(0.07f, 0.13f, 0.17f, 1.0f);
+		openGLSetup.CleanBuffer();
 
 		shaderProgram.Activate();
-
 		camera.updateMatrix(45.0f, 0.1f, 10000.0f);
-
 		camera.Matrix(shaderProgram, "camMatrix");
-		// Bind the VAO so OpenGL knows to use it
-		VAO1.Bind();
 
+		VAO1.Bind();
 		//glDrawElements(GL_TRIANGLES, waveGPU.index.size() * sizeof(GLuint) / sizeof(int), GL_UNSIGNED_INT, 0);
 		glDrawElements(GL_TRIANGLES, waveModelCPU.index.size() * sizeof(GLuint) / sizeof(int), GL_UNSIGNED_INT, 0);
+		
 		//waveGPU.updateModel(VBO1.ID);
 		waveModelCPU.updateModel(VBO1.ID);
 
 		lightShader.Activate();
 		camera.Matrix(lightShader, "camMatrix");
+
 		lightVAO.Bind();
-		
 		glDrawElements(GL_TRIANGLES, sizeof(lightIndices) / sizeof(int), GL_UNSIGNED_INT, 0);
 
 		glfwScreen.UpdateScreenInputs();
 	}
 
-
-
-	// Delete all the objects we've created
-	VAO1.Delete();
-	VBO1.Delete();
-	EBO1.Delete();
 	shaderProgram.Delete();
 	return 0;
 }

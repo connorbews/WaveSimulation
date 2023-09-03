@@ -1,4 +1,4 @@
-#include"../include/WaveSimProj/VBO.h"
+#include"../../include/WaveSimProj/VBO.h"
 
 // Constructor that generates a Vertex Buffer Object and links it to vertices
 VBO::VBO(GLfloat* vertices, GLsizeiptr size)
@@ -24,4 +24,10 @@ void VBO::Unbind()
 void VBO::Delete()
 {
 	glDeleteBuffers(1, &ID);
+}
+
+// Destructor for VBO
+VBO::~VBO()
+{
+	Delete();
 }

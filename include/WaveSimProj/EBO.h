@@ -17,6 +17,9 @@ public:
 	void Unbind();
 	// Deletes the EBO
 	void Delete();
+
+	// Destructor for EBO
+	~EBO();
 };
 
 #endif
