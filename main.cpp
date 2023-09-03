@@ -5,21 +5,21 @@ namespace fs = std::filesystem;
 #include<glad/glad.h>
 #include<math.h>
 
-#include"include/ObjectShaderClass.h"
-#include"include/ComputeShaderClass.h"
-#include"include/waveModelGPU.h"
-#include"include/VAO.h"
-#include"include/VBO.h"
-#include"include/EBO.h"
+#include"include/WaveSimProj/ObjectShaderClass.h"
+#include"include/WaveSimProj/ComputeShaderClass.h"
+#include"include/WaveSimProj/waveModelGPU.h"
+#include"include/WaveSimProj/VAO.h"
+#include"include/WaveSimProj/VBO.h"
+#include"include/WaveSimProj/EBO.h"
 #include"include/stb/stb_image.h"
-#include"include/Texture.h"
+#include"include/WaveSimProj/Texture.h"
 #include"include/glm/glm.hpp"
 #include "include/glm/gtc/matrix_transform.hpp"
 #include "include/glm/gtc/type_ptr.hpp"
-#include "include/Camera.h"
-#include "include/Model.h"
-#include "include/waveModelCPU.h"
-#include "include/GLFWSetup.h"
+#include "include/WaveSimProj/Camera.h"
+#include "include/WaveSimProj/Model.h"
+#include "include/WaveSimProj/waveModelCPU.h"
+#include "include/WaveSimProj/Setup/GLFWSetup.h"
 
 GLfloat lightVertices[] = 
 {
@@ -51,8 +51,6 @@ GLuint lightIndices[] =
 
 int main()
 {
-	std::string parentDir = (fs::current_path().fs::path::parent_path()).string();
-	std::string texPath = "/glad/resources/";
 	GLenum err;
 
 	Camera camera(800, 800, glm::vec3(500.0f, 500.0f, 700.0f));

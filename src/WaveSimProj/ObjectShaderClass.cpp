@@ -1,4 +1,4 @@
-#include "../include/ObjectShaderClass.h"
+#include "../include/WaveSimProj/ObjectShaderClass.h"
 
 // Constructor that build the Shader Program from 2 different shaders
 ObjectShader::ObjectShader(const char* vertexFile, const char* fragmentFile)

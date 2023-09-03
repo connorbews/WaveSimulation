@@ -2,7 +2,7 @@
 #define GLFWSETUP_CLASS_H
 
 #include <iostream>
-#include "Camera.h"
+#include "../Camera.h"
 
 class GLFWSetup
 {

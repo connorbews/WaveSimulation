@@ -1,4 +1,4 @@
-#include"../include/SSBO.h"
+#include"../include/WaveSimProj/SSBO.h"
 
 // Constructor called with no size or index specified, calling this is an error
 SSBO::SSBO()

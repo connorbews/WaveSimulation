@@ -1,4 +1,4 @@
-#include "../include/GLFWSetup.h"
+#include "../include/WaveSimProj/Setup/GLFWSetup.h"
 
 GLFWSetup::GLFWSetup(Camera* camera)
 {
