@@ -9,8 +9,8 @@ class GLFWSetup
 public:
     GLFWSetup(Camera* camera);
 
-    bool GLFWWindowShouldClose();
-    void GLFWWindowUpdate();
+    bool ShouldWindowClose();
+    void UpdateScreenInputs();
 
     ~GLFWSetup();
 private:

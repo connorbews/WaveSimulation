@@ -27,12 +27,12 @@ GLFWSetup::GLFWSetup(Camera* camera)
     glfwSetKeyCallback(window, Camera::staticInputs);
 }
 
-bool GLFWSetup::GLFWWindowShouldClose()
+bool GLFWSetup::ShouldWindowClose()
 {
     return !glfwWindowShouldClose(window);
 }
 
-void GLFWSetup::GLFWWindowUpdate()
+void GLFWSetup::UpdateScreenInputs()
 {
     glfwSwapBuffers(window);
 	glfwPollEvents();

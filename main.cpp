@@ -157,7 +157,7 @@ int main()
 	std::cout << "Max invocations count per work group: " << work_grp_inv << "\n";
 	*/
 
-	while (glfwScreen.GLFWWindowShouldClose())
+	while (glfwScreen.ShouldWindowClose())
 	{
 		// maybe put this in the application class that you are planning to write
 		err = glGetError();
@@ -192,7 +192,7 @@ int main()
 		
 		glDrawElements(GL_TRIANGLES, sizeof(lightIndices) / sizeof(int), GL_UNSIGNED_INT, 0);
 
-		glfwScreen.GLFWWindowUpdate();
+		glfwScreen.UpdateScreenInputs();
 	}
 
 
