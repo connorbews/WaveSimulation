@@ -28,7 +28,7 @@ void waveModelCPU::updateModel(GLuint ID)
     waveIDFT();
     waveNorm();
     updateBuffer(ID);
-    dt += 1.0 / 60.0;
+    dt += 1.0 / 500.0;
 }
 
 // Initializes a "size" x "size" complex grid in the spectral domain that represents the wave model

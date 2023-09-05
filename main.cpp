@@ -105,7 +105,7 @@ int main()
 	glm::mat4 lightModel = glm::mat4(1.0f);
 	lightModel = glm::translate(lightModel, lightPos);
 
-	glm::vec3 wavePos = glm::vec3(0.0f, 2.5246694087982178f, 0.0f);
+	glm::vec3 wavePos = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::mat4 wavemodel = glm::mat4(1.0f);
 	wavemodel = glm::translate(wavemodel, wavePos);
 	
