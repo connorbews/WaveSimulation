@@ -2,7 +2,7 @@
 
 Inspired by the methods pioneered by Horvath[1] and Tessendorf[2], this project explores ocean simulation. Using an oceanographic spectrum, we initiate waves in the spectral domain and efficiently convert them to the spatial domain using the inverse fast Fourier transform.
 
-The simulation enables realistic interactions and evolutions of the waves using a wave propagation model. To bring these dynamic waves to life, we once again employ the inverse fast Fourier transform, smoothly converting the spectral domain information back to the spatial domain.
+The simulation enables realistic evolutions of the waves using a wave propagation model. To bring these dynamic waves to life, we once again employ the inverse fast Fourier transform, smoothly converting the spectral domain information back to the spatial domain.
 
 Through the combined power of OpenGL and C++, this project delivers authentic wave simulation. 
 
