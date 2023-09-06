@@ -260,7 +260,18 @@ void waveModelCPU::waveProp()
         {
             double ky = 2 * M_PI * y / LY;
 
-            std::complex<double> result = complexGeometry[(x + maxLimit) * n + y + maxLimit] * std::exp(std::complex<double>(0.0, 1.0) * waveDispersion(kx, ky) * dt);
+            std::complex<double> imaginary = std::complex<double>(0.0, 1.0);
+
+            double omega = waveDispersion(kx, ky);
+
+            std::complex<double> complexAmp1 = complexGeometry[(x + maxLimit) * n + y + maxLimit];
+
+            int negx = int((-1.0 * kx * LX) / (2 * M_PI));
+            int negy = int((-1.0 * ky * LY) / (2 * M_PI));
+
+            std::complex<double> complexAmp2 = complexGeometry[(negx + maxLimit) * n + negy + maxLimit];
+
+            std::complex<double> result = complexAmp1 * std::exp(imaginary * omega * dt);
             complexGeometry[(x + maxLimit) * n + y + maxLimit] = result;
         }
     }

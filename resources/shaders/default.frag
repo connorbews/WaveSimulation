@@ -12,7 +12,7 @@ uniform vec3 lightPosition;
 void main()
 {
    //vec3 lightDirection = normalize(lightPosition - currentPosition);
-   vec4 skyColour = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+   vec4 skyColour = vec4(0.69f, 0.84f, 1.0f, 1.0f);
    vec3 lightDirection = normalize(vec3(0.1f, 0.1f, -1.0f));
    vec3 normalDirection = normalize(normals);
 
@@ -39,5 +39,5 @@ void main()
    }
    
    float diffuse = max(dot(normalDirection, lightDirection), 0.0f);
-   FragColor =  matColour * skyColour * reflectivity;
+   FragColor = (vec4(0.2f, 0.2f, 0.2f, 0.2f) + matColour) * skyColour * reflectivity;
 }
