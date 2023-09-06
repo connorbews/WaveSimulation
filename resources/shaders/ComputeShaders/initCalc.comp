@@ -1,0 +1,108 @@
+#version 460 core
+
+#define PI 3.1415926538f
+#define ALPHA 1
+#define MAX 32
+#define SIZE 256
+#define N -128
+#define LX 1000
+#define LY 1000
+#define INDEX 65536
+
+void initializeWave();
+void spectrumHeight(in float kx, in float ky, in float er, in float ei, out vec2 h);
+void waveDispersion(in float kx, in float ky, out float result);
+void random(in vec2 st, out float result);
+
+layout(local_size_x = MAX, local_size_y = MAX, local_size_z = 1) in;
+
+layout (std430, binding = 0) buffer SpecSSBO {
+    vec2 specData[];
+};
+
+void main()
+{
+    initializeWave();
+    specData[INDEX] = vec2(0.0f, 0.0f);
+}
+
+void initializeWave()
+{
+
+    float kx = 2.0f * PI * (int(MAX * gl_WorkGroupID.x + gl_LocalInvocationID.x) + N) / LX;
+    float ky = 2.0f * PI * (int(MAX * gl_WorkGroupID.y + gl_LocalInvocationID.y) + N) / LY;
+
+    float neg_kx = -1.0f * kx;
+    float neg_ky = -1.0f * ky;
+
+    vec2 h0 = vec2(0.0f, 0.0f);
+    vec2 h1 = vec2(0.0f, 0.0f);
+
+    vec2 ti = vec2(0.0f, 1.0f);
+
+    float er = 0.5f;
+    float ei = 0.5f;
+
+    float omega;
+
+    vec2 result = vec2(0.0f, 0.0f);
+
+    //random(ti, er);
+    //random(ti, ei);
+
+    spectrumHeight(kx, ky, er, ei, h0);
+    spectrumHeight(neg_kx, neg_ky, er, ei, h1);
+
+    waveDispersion(kx, ky, omega);
+
+    if (omega != 0.0f)
+    {
+        float theta_p = PI / 4.0f;
+
+        float w_m = 9.81f / (1.026f * 31.0f);
+
+        float directional = (ALPHA * pow(9.81f, 2.0f)) / (pow(omega, 5.0f));
+
+        float spectrum = exp((-5.0f / 4.0f) * pow((w_m / omega), 4.0f)) * pow(cos(theta_p - atan(ky, kx)), 2.0f);
+
+        float directional_spectrum = directional * spectrum;
+
+        result = (h0 + h1) * 0.5 * exp(vec2(0.0f, 1.0f) * omega * 0.0f) * directional_spectrum;
+
+    }
+
+    specData[SIZE * (MAX * gl_WorkGroupID.x + gl_LocalInvocationID.x) + MAX * gl_WorkGroupID.y + gl_LocalInvocationID.y] = result;
+}
+
+void spectrumHeight(in float kx, in float ky, in float er, in float ei, out vec2 h)
+{
+    vec2 w = vec2(1.0f, 0.0f);
+    vec2 k = vec2(kx, ky);
+
+    float k1 = sqrt(pow(kx, 2.0f) + pow(ky, 2.0f));
+
+    float L = pow(31.0f, 2.0f) / 9.81f;
+
+    if (k1 < 0.00001f)
+    {
+        h = vec2(0.0, 0.0);
+    }
+    else
+    {
+        float p =  1.0 * exp(-1.0f / (k1 * pow(L, 2.0f))) / (pow(k1, 4.0f)) * pow(abs(dot(w, k)), 2.0f);
+
+        h = 1.0f / sqrt(2.0f) * vec2(er, ei) * sqrt(p);
+    }
+}
+
+void waveDispersion(in float kx, in float ky, out float result)
+{
+    result = sqrt(9.81f * sqrt(pow(kx, 2.0f) + pow(ky, 2.0f)));
+}
+
+// Copied this function from the following stack overflow post
+// https://stackoverflow.com/questions/53500550/generating-a-pseudo-random-number-between-0-an-1-glsl-es
+void random(in vec2 st, out float result)
+{
+    result = fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
+}

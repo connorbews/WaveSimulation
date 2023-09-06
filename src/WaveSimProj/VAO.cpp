@@ -1,4 +1,4 @@
-#include"../include/VAO.h"
+#include"../../include/WaveSimProj/VAO.h"
 
 // Constructor that generates a VAO ID
 VAO::VAO()
@@ -31,4 +31,10 @@ void VAO::Unbind()
 void VAO::Delete()
 {
 	glDeleteVertexArrays(1, &ID);
+}
+
+// Destructor for VAO
+VAO::~VAO()
+{
+	Delete();
 }

@@ -1,4 +1,4 @@
-#include "../include/Mesh.h"
+#include "../include/WaveSimProj/Mesh.h"
 
 Mesh::Mesh(const nlohmann::json& data)
 {

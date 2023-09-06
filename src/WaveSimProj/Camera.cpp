@@ -1,4 +1,4 @@
-#include "../include/Camera.h"
+#include "../include/WaveSimProj/Camera.h"
 
 Camera::Camera(int width, int height, glm::vec3 position)
 {

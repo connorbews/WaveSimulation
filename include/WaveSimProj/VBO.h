@@ -17,6 +17,8 @@ public:
 	void Unbind();
 	// Deletes the VBO
 	void Delete();
+	// Destructor for VBO
+	~VBO();
 };
 
 #endif

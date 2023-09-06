@@ -1,25 +1,24 @@
 #include<filesystem>
 namespace fs = std::filesystem;
 
-#include<iostream>
-#include<glad/glad.h>
-#include<GLFW/glfw3.h>
 #include<math.h>
-#include <chrono>
-#include <thread>
 
-#include"include/shaderClass.h"
-#include"include/VAO.h"
-#include"include/VBO.h"
-#include"include/EBO.h"
+#include"include/WaveSimProj/ObjectShaderClass.h"
+#include"include/WaveSimProj/ComputeShaderClass.h"
+#include"include/WaveSimProj/waveModelGPU.h"
+#include"include/WaveSimProj/VAO.h"
+#include"include/WaveSimProj/VBO.h"
+#include"include/WaveSimProj/EBO.h"
 #include"include/stb/stb_image.h"
-#include"include/Texture.h"
+#include"include/WaveSimProj/Texture.h"
 #include"include/glm/glm.hpp"
 #include "include/glm/gtc/matrix_transform.hpp"
 #include "include/glm/gtc/type_ptr.hpp"
-#include "include/Camera.h"
-#include "include/Model.h"
-#include "include/waveModel.h"
+#include "include/WaveSimProj/Camera.h"
+#include "include/WaveSimProj/Model.h"
+#include "include/WaveSimProj/waveModelCPU.h"
+#include "include/WaveSimProj/Setup/GLFWSetup.h"
+#include "include/WaveSimProj/Setup/OpenGLSetup.h"
 
 GLfloat lightVertices[] = 
 {
@@ -51,67 +50,43 @@ GLuint lightIndices[] =
 
 int main()
 {
-	std::string parentDir = (fs::current_path().fs::path::parent_path()).string();
-	std::string texPath = "/glad/resources/";
+	Camera camera(800, 800, glm::vec3(500.0f, 500.0f, 700.0f));
 
-	waveModel waveModel;
+	GLFWSetup glfwScreen(&camera);
+	OpenGLSetup openGLSetup;
 
+	int n = 256;
 	
-	// Initialize GLFW
-	glfwInit();
-	
-	// Tell GLFW what version of OpenGL we are using 
-	// In this case we are using OpenGL 4.6
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-	// Tell GLFW we are using the CORE profile
-	// So that means we only have the modern functions
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-	// Create a GLFWwindow object of 800 by 800 pixels, naming it "YoutubeOpenGL"
-	GLFWwindow* window = glfwCreateWindow(800, 800, "HELLO", NULL, NULL);
-	// Error check if the window fails to create
-	if (window == NULL)
-	{
-		std::cout << "Failed to create GLFW window" << std::endl;
-		glfwTerminate();
-		return -1;
-	}
-	// Introduce the window into the current context
-	glfwMakeContextCurrent(window);
-	
-	//Load GLAD so it configures OpenGL
-	gladLoadGL();
-	// Specify the viewport of OpenGL in the Window
-	// In this case the viewport goes from x = 0, y = 0, to x = 800, y = 800
-	glViewport(0, 0, 800, 800);
+	//waveModelGPU waveGPU(n);
+	waveModelCPU waveModelCPU(n);
 
 	// Generates Shader object using shaders defualt.vert and default.frag
-	Shader shaderProgram("resources/shaders/default.vert", "resources/shaders/default.frag");
+	ObjectShader shaderProgram("resources/shaders/default.vert", "resources/shaders/default.frag");
 
 	// Generates Vertex Array Object and binds it
 	VAO VAO1;
 	VAO1.Bind();
-
+	
 	// Generates Vertex Buffer Object and links it to vertices
-	VBO VBO1(&waveModel.geometryMesh[0], waveModel.geometryMesh.size() * sizeof(GLfloat));
+	VBO VBO1(&waveModelCPU.geometry[0], waveModelCPU.geometry.size() * sizeof(GLfloat));
+	//VBO VBO1(&waveGPU.geometry[0], waveGPU.geometry.size() * sizeof(GLfloat));
 	
 	// Generates Element Buffer Object and links it to indices
-	EBO EBO1(&waveModel.index[0], waveModel.index.size() * sizeof(GLuint));
+	EBO EBO1(&waveModelCPU.index[0], waveModelCPU.index.size() * sizeof(GLuint));
+	//EBO EBO1(&waveGPU.index[0], waveGPU.index.size() * sizeof(GLuint));
 	
 	// Links VBO to VAO
 	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 0, (void*)0);
-	VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 0, (void*)(waveModel.normalsOffset * sizeof(float)));
-	//VAO1.LinkAttrib(VBO1, 2, 2, GL_FLOAT, 0, (void*)(model.textureOffset * sizeof(float)));
+	VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 0, (void*)(waveModelCPU.normalsOffset * sizeof(float)));
+	//VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 0, (void*)0);
+	//VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 0, (void*)(waveGPU.normalsOffset * sizeof(float)));
 	
 	// Unbind all to prevent accidentally modifying them
 	VAO1.Unbind();
 	VBO1.Unbind();
 	EBO1.Unbind();
-	
-	//Shader computeShader("resources/shaders/initialize.comp");
 
-	Shader lightShader("resources/shaders/light.vert", "resources/shaders/light.frag");
+	ObjectShader lightShader("resources/shaders/light.vert", "resources/shaders/light.frag");
 	VAO lightVAO;
 	lightVAO.Bind();
 
@@ -130,7 +105,7 @@ int main()
 	glm::mat4 lightModel = glm::mat4(1.0f);
 	lightModel = glm::translate(lightModel, lightPos);
 
-	glm::vec3 wavePos = glm::vec3(0.0f, 2.5246694087982178f, 0.0f);
+	glm::vec3 wavePos = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::mat4 wavemodel = glm::mat4(1.0f);
 	wavemodel = glm::translate(wavemodel, wavePos);
 	
@@ -144,74 +119,32 @@ int main()
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "matColour"), 0.005960569716989994f, 0.0f, 0.8000000715255737, 1.0f);
 
-	//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, waveModel.specBuffer);
-
-	//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, VBO1.ID);
-
-	glEnable(GL_DEPTH_TEST);
-
-	Camera camera(800, 800, glm::vec3(500.0f, 500.0f, 700.0f));
-    glfwSetWindowUserPointer(window, &camera);
-
-    // Set the key callback function
-    glfwSetKeyCallback(window, Camera::staticInputs);
-	// Main while loop
-
-	double dt = 0.0;
-	using std::operator""s;
-	while (!glfwWindowShouldClose(window))
+	while (glfwScreen.ShouldWindowClose())
 	{
-		//glUniform1f(glGetUniformLocation(computeShader.computeProgram, "dt"), dt);
-		//computeShader.computeActivate();
-
-		//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, VBO1.ID);
-
-		//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, waveModel.specBuffer);
-
-		//dt += 1.0 / 60.0f;
-		// Specify the color of the background
-		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
-		// Clean the back buffer and assign the new color to it
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		// Tell OpenGL which Shader Program we want to use
+		openGLSetup.ProcessErrors();
+		openGLSetup.SetBackgroundColour(0.07f, 0.13f, 0.17f, 1.0f);
+		openGLSetup.CleanBuffer();
 
 		shaderProgram.Activate();
-
-		//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, VBO1.ID);
-
 		camera.updateMatrix(45.0f, 0.1f, 10000.0f);
-
 		camera.Matrix(shaderProgram, "camMatrix");
-		// Bind the VAO so OpenGL knows to use it
-		VAO1.Bind();
 
-		glDrawElements(GL_TRIANGLES, waveModel.index.size() * sizeof(GLuint) / sizeof(int), GL_UNSIGNED_INT, 0);
-		dt += 1.0 / 60.0;
-		waveModel.wavePropagation(VAO1.ID, dt);
-		// Draw primpopCat.Delete();ers(window);
+		VAO1.Bind();
+		//glDrawElements(GL_TRIANGLES, waveGPU.index.size() * sizeof(GLuint) / sizeof(int), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, waveModelCPU.index.size() * sizeof(GLuint) / sizeof(int), GL_UNSIGNED_INT, 0);
+		
+		//waveGPU.updateModel(VBO1.ID);
+		waveModelCPU.updateModel(VBO1.ID);
 
 		lightShader.Activate();
 		camera.Matrix(lightShader, "camMatrix");
+
 		lightVAO.Bind();
-		
 		glDrawElements(GL_TRIANGLES, sizeof(lightIndices) / sizeof(int), GL_UNSIGNED_INT, 0);
-		
-		glfwSwapBuffers(window);
-		// Take care of all GLFW events
-		glfwPollEvents();
-		std::this_thread::sleep_for(0.02s);
+
+		glfwScreen.UpdateScreenInputs();
 	}
 
-
-
-	// Delete all the objects we've created
-	VAO1.Delete();
-	VBO1.Delete();
-	EBO1.Delete();
 	shaderProgram.Delete();
-	// Delete window before ending the program
-	glfwDestroyWindow(window);
-	// Terminate GLFW before ending the program
-	glfwTerminate();
 	return 0;
 }

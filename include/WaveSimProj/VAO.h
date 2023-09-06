@@ -20,5 +20,7 @@ public:
 	void Unbind();
 	// Deletes the VAO
 	void Delete();
+	// Destructor for VAO
+	~VAO();
 };
 #endif
