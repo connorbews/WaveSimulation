@@ -2,7 +2,7 @@
 #define LOADER_CLASS_H
 
 #include <fstream>
-#include "nlohmann/json.hpp"
+#include <nlohmann/json.hpp>
 #include <iostream>
 
 class Loader

@@ -1,10 +1,10 @@
 #ifndef MESH_CLASS_H
 #define MESH_CLASS_H
 
-#include "glad/glad.h"
-#include "nlohmann/json.hpp"
-#include "glm/vec3.hpp"
-#include "glm/vec4.hpp"
+#include "../glad/glad.h"
+#include <nlohmann/json.hpp>
+#include "../glm/glm/vec3.hpp"
+#include "../glm/glm/vec4.hpp"
 #include <iostream>
 #include <vector>
 #include <fstream>

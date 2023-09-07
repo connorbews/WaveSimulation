@@ -1,4 +1,4 @@
-#include "../include/WaveSimProj/ComputeShaderClass.h"
+#include "../../include/WaveSimProj/ComputeShaderClass.h"
 
 ComputeShader::ComputeShader()
 {

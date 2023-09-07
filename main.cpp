@@ -3,17 +3,17 @@ namespace fs = std::filesystem;
 
 #include<math.h>
 
-#include"include/WaveSimProj/ObjectShaderClass.h"
-#include"include/WaveSimProj/ComputeShaderClass.h"
-#include"include/WaveSimProj/waveModelGPU.h"
-#include"include/WaveSimProj/VAO.h"
-#include"include/WaveSimProj/VBO.h"
-#include"include/WaveSimProj/EBO.h"
-#include"include/stb/stb_image.h"
-#include"include/WaveSimProj/Texture.h"
-#include"include/glm/glm.hpp"
-#include "include/glm/gtc/matrix_transform.hpp"
-#include "include/glm/gtc/type_ptr.hpp"
+#include "include/WaveSimProj/ObjectShaderClass.h"
+#include "include/WaveSimProj/ComputeShaderClass.h"
+#include "include/WaveSimProj/waveModelGPU.h"
+#include "include/WaveSimProj/VAO.h"
+#include "include/WaveSimProj/VBO.h"
+#include "include/WaveSimProj/EBO.h"
+#include "include/stb/stb_image.h"
+#include "include/WaveSimProj/Texture.h"
+#include "include/glm/glm/glm.hpp"
+#include "include/glm/glm/gtc/matrix_transform.hpp"
+#include "include/glm/glm/gtc/type_ptr.hpp"
 #include "include/WaveSimProj/Camera.h"
 #include "include/WaveSimProj/Model.h"
 #include "include/WaveSimProj/waveModelCPU.h"
@@ -50,13 +50,14 @@ GLuint lightIndices[] =
 
 int main()
 {
+	
 	Camera camera(800, 800, glm::vec3(500.0f, 500.0f, 700.0f));
 
 	GLFWSetup glfwScreen(&camera);
 	OpenGLSetup openGLSetup;
-
-	int n = 256;
 	
+	int n = 256;
+
 	//waveModelGPU waveGPU(n);
 	waveModelCPU waveModelCPU(n);
 
@@ -66,21 +67,21 @@ int main()
 	// Generates Vertex Array Object and binds it
 	VAO VAO1;
 	VAO1.Bind();
-	
+
 	// Generates Vertex Buffer Object and links it to vertices
 	VBO VBO1(&waveModelCPU.geometry[0], waveModelCPU.geometry.size() * sizeof(GLfloat));
 	//VBO VBO1(&waveGPU.geometry[0], waveGPU.geometry.size() * sizeof(GLfloat));
-	
+
 	// Generates Element Buffer Object and links it to indices
 	EBO EBO1(&waveModelCPU.index[0], waveModelCPU.index.size() * sizeof(GLuint));
 	//EBO EBO1(&waveGPU.index[0], waveGPU.index.size() * sizeof(GLuint));
-	
+
 	// Links VBO to VAO
 	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 0, (void*)0);
 	VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 0, (void*)(waveModelCPU.normalsOffset * sizeof(float)));
 	//VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 0, (void*)0);
 	//VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 0, (void*)(waveGPU.normalsOffset * sizeof(float)));
-	
+
 	// Unbind all to prevent accidentally modifying them
 	VAO1.Unbind();
 	VBO1.Unbind();
@@ -108,7 +109,7 @@ int main()
 	glm::vec3 wavePos = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::mat4 wavemodel = glm::mat4(1.0f);
 	wavemodel = glm::translate(wavemodel, wavePos);
-	
+
 	lightShader.Activate();
 	glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));
 	glUniform4f(glGetUniformLocation(lightShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);

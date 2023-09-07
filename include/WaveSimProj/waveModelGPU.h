@@ -3,7 +3,7 @@
 
 #include <glad/glad.h>
 #include <cstring>
-#include "glm/glm.hpp"
+#include "../glm/glm/glm.hpp"
 #include "ComputeShaderClass.h"
 #include "SSBO.h"
 

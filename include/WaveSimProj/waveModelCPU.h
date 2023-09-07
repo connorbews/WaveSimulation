@@ -1,7 +1,7 @@
 #ifndef WAVEMODELCPU_CLASS_H
 #define WAVEMODELCPU_CLASS_H
 
-#include "../include/glm/glm.hpp"
+#include "../glm/glm/glm.hpp"
 #include <glad/glad.h>
 #include <vector>
 #include <cstdlib>
