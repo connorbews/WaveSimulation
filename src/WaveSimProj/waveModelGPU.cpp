@@ -1,4 +1,4 @@
-#include "../include/WaveSimProj/waveModelGPU.h"
+#include "../../include/WaveSimProj/waveModelGPU.h"
 
 // Constructor called with no size specified, calling this is an error
 waveModelGPU::waveModelGPU()

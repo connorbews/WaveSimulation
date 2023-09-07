@@ -1,12 +1,16 @@
 # Introduction
 
-Inspired by the methods pioneered by Horvath[1] and Tessendorf[2], this project explores ocean simulation. Using an oceanographic spectrum, we initiate waves in the spectral domain and efficiently convert them to the spatial domain using the inverse fast Fourier transform.
-
-The simulation enables realistic interactions and evolutions of the waves using a wave propagation model. To bring these dynamic waves to life, we once again employ the inverse fast Fourier transform, smoothly converting the spectral domain information back to the spatial domain.
-
-Through the combined power of OpenGL and C++, this project delivers authentic wave simulation. 
+Inspired by the methods pioneered by Horvath[1] and Tessendorf[2], this project explores ocean simulation. Using an oceanographic spectrum, inverse fast Fourier transform and power of OpenGL and C++, this project delivers authentic wave simulation. 
 
 https://github.com/connorbews/vertexs/assets/49799089/c912705d-5ac3-43e8-a316-fe532ec3ba5a
+
+# What I learned
+
+- Practice coding in the OpenGL Shading Language
+- Wrote compute shaders to achieve faster results, utilizing GPU acceleration.
+- Gained a solid understanding of the principles of wave physics such as wave propagation, including wave equations, wave types, and wave behavior.
+- Gained an understanding of how light interacts with water and programmed that functioanlity into the fragment shader.
+- Gained experience using third party libraries such as GLFW and FFTW3
 
 # Setup Instructions
 
