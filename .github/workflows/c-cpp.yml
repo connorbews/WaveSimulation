@@ -24,7 +24,7 @@ jobs:
           cmake ..
           make
           mkdir release
-          cp WaveSim resources release
+          cp --recursive run.sh WaveSim resources release
           zip -r release.zip "release"
 
       - name: Create Release
