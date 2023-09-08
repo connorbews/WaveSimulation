@@ -3,6 +3,9 @@ namespace fs = std::filesystem;
 
 #include<math.h>
 
+#include "include/WaveSimProj/Setup/OpenGLSetup.h"
+#include "include/WaveSimProj/Setup/GLFWSetup.h"
+
 #include "include/WaveSimProj/ObjectShaderClass.h"
 #include "include/WaveSimProj/ComputeShaderClass.h"
 #include "include/WaveSimProj/waveModelGPU.h"
@@ -11,14 +14,10 @@ namespace fs = std::filesystem;
 #include "include/WaveSimProj/EBO.h"
 #include "include/stb/stb_image.h"
 #include "include/WaveSimProj/Texture.h"
-#include "include/glm/glm/glm.hpp"
-#include "include/glm/glm/gtc/matrix_transform.hpp"
-#include "include/glm/glm/gtc/type_ptr.hpp"
 #include "include/WaveSimProj/Camera.h"
 #include "include/WaveSimProj/Model.h"
 #include "include/WaveSimProj/waveModelCPU.h"
-#include "include/WaveSimProj/Setup/GLFWSetup.h"
-#include "include/WaveSimProj/Setup/OpenGLSetup.h"
+
 
 GLfloat lightVertices[] = 
 {
@@ -50,17 +49,17 @@ GLuint lightIndices[] =
 
 int main()
 {
-	
 	Camera camera(800, 800, glm::vec3(500.0f, 500.0f, 700.0f));
 
 	GLFWSetup glfwScreen(&camera);
+
 	OpenGLSetup openGLSetup;
 	
 	int n = 256;
-
+	
 	//waveModelGPU waveGPU(n);
 	waveModelCPU waveModelCPU(n);
-
+	
 	// Generates Shader object using shaders defualt.vert and default.frag
 	ObjectShader shaderProgram("resources/shaders/default.vert", "resources/shaders/default.frag");
 

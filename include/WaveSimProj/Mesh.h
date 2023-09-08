@@ -3,12 +3,11 @@
 
 #include "../glad/glad.h"
 #include <nlohmann/json.hpp>
-#include "../glm/glm/vec3.hpp"
-#include "../glm/glm/vec4.hpp"
 #include <iostream>
 #include <vector>
 #include <fstream>
 #include "base64.h"
+#include <glm/glm.hpp>
 
 
 class Mesh

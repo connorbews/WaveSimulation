@@ -144,8 +144,6 @@ void waveModelCPU::updateMesh(fftw_complex* out)
         GLfloat result = std::sqrt(std::pow(out[i][0] / 65536.0, 2.0) + std::pow(out[i][1] / 65536.0, 2.0));
         geometry[3 * i + 2] = result;
     }
-
-    fftw_free(out);
 }
 
 // Calcualtes the normal vectors for each vertex
