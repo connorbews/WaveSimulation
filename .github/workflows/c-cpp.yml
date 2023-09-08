@@ -23,6 +23,9 @@ jobs:
           cd build
           cmake ..
           make
+          mkdir release
+          cp WaveSim resources release
+          zip -r release.zip "release"
 
       - name: Create Release
         id: create-new-release
@@ -39,7 +42,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
           upload_url: ${{ steps.create-new-release.outputs.upload_url }}
-          asset_path: ./build/WaveSim
-          asset_name: WaveSimulation-v${{ github.run-number }}
-          asset_content_type: application/octet-stream
+          asset_path: ./build/release.zip
+          asset_name: WaveSimulation-v${{ github.run_number }}
+          asset_content_type: application/zip
           token: ${{ secrets.GITHUB_TOKEN }}
