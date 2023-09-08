@@ -23,3 +23,23 @@ jobs:
           cd build
           cmake ..
           make
+
+      - name: Create Release
+        id: create-new-release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ github.run_number }}
+          release_name: ${{ github.run_number }}
+
+      - name: Upload Executable
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          upload_url: ${{ steps.create-new-release.outputs.upload_url }}
+          asset_path: ./build/WaveSim
+          asset_name: WaveSimulation-v${{ github.run-number }}
+          asset_content_type: application/octet-stream
+          token: ${{ secrets.GITHUB_TOKEN }}
