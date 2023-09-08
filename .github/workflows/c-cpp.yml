@@ -1,9 +1,6 @@
-name: Build C++ Application
+name: Build and Release C++ Application
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
@@ -19,27 +16,37 @@ jobs:
       - name: Build application
         run: |
           sudo apt install xorg-dev mesa-utils libglu1-mesa-dev freeglut3-dev mesa-common-dev
-          mkdir build
+          mkdir -p build
           cd build
           cmake ..
           make
+          mkdir release
+          cp --recursive run.sh WaveSim resources release
+          zip -r release.zip "release"
 
+  create-release:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event.pull_request.merged == true
+
+    steps:
       - name: Create Release
         id: create-new-release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.run_number }}
-          release_name: ${{ github.run_number }}
+          tag_name: v0.1.1  # Specify your desired tag here
+          release_name: v0.1.1  # Specify your desired release name here
 
       - name: Upload Executable
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-new-release.outputs.upload_url }}
-          asset_path: ./build/WaveSim
-          asset_name: WaveSimulation-v${{ github.run-number }}
-          asset_content_type: application/octet-stream
+          asset_path: ./build/release.zip
+          asset_name: v0.1.1.zip  # Specify your desired asset name here
+          asset_content_type: application/zip
           token: ${{ secrets.GITHUB_TOKEN }}
+
