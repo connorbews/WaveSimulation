@@ -18,7 +18,7 @@ jobs:
 
       - name: Build application
         run: |
-          sudo apt install mesa-utils libglu1-mesa-dev freeglut3-dev mesa-common-dev
+          sudo apt install xorg-dev mesa-utils libglu1-mesa-dev freeglut3-dev mesa-common-dev
           mkdir build
           cd build
           cmake ..
