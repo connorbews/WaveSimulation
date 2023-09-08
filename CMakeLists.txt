@@ -40,7 +40,18 @@ if (NOT glm_POPULATED)
     add_subdirectory(${glm_SOURCE_DIR} ${glm_BINARY_DIR} EXCLUDE_FROM_ALL)
 endif()
 
-add_subdirectory(include/nlohmann_json)
+FetchContent_Declare(
+    nlohmann_json
+    GIT_REPOSITORY https://github.com/nlohmann/json.git
+)
+
+FetchContent_GetProperties(nlohmann_json)
+
+if (NOT nlohmann_json_POPULATED)
+    FetchContent_Populate(nlohmann_json)
+    add_subdirectory(${nlohmann_json_SOURCE_DIR} ${nlohmann_json_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif()
+
 add_subdirectory(include)
 add_subdirectory(src)
 
@@ -53,20 +64,12 @@ file(GLOB_RECURSE SOURCE_FILES
 file(GLOB_RECURSE HEADER_FILES 
 	${CMAKE_SOURCE_DIR}../include/*.h)
 
-ADD_CUSTOM_TARGET(
-    copy_shader_files
-    ${CMAKE_COMMAND}
-    -D SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
-    -D DESTINATION_DIR=${CMAKE_CURRENT_BINARY_DIR} 
-    -P ${CMAKE_CURRENT_BINARY_DIR}/CopyFile.cmake
-    COMMENT "Copying Files for target: WaveSim" VERBATIM 
-    )
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/resources DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 add_executable(WaveSim main.cpp ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(WaveSim PRIVATE glfw)
 target_link_libraries(WaveSim PRIVATE fftw3)
-target_link_libraries(WaveSim PRIVATE nlohmann_json::nlohmann_json)
+target_link_libraries(WaveSim PRIVATE nlohmann_json)
 target_link_libraries(WaveSim PRIVATE glm)
-ADD_DEPENDENCIES (WaveSim copy_shader_files)
 
 install(TARGETS WaveSim DESTINATION bin)
