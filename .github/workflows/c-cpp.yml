@@ -16,9 +16,6 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
 
-      - name: Set up C++ environment
-        uses: actions/setup-cpp@v2
-
       - name: Build application
         run: |
           mkdir build
