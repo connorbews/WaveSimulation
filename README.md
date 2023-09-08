@@ -1,6 +1,7 @@
 # Introduction
 
 Inspired by the methods pioneered by Horvath[1] and Tessendorf[2], this project explores ocean simulation. Using an oceanographic spectrum, inverse fast Fourier transform and power of OpenGL and C++, this project delivers authentic wave simulation. 
+Inspired by the methods pioneered by Horvath[1] and Tessendorf[2], this project explores ocean simulation. Using an oceanographic spectrum, inverse fast Fourier transform and power of OpenGL and C++, this project delivers authentic wave simulation. 
 
 https://github.com/connorbews/vertexs/assets/49799089/c912705d-5ac3-43e8-a316-fe532ec3ba5a
 

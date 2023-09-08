@@ -49,6 +49,7 @@ GLuint lightIndices[] =
 
 int main()
 {
+	
 	Camera camera(800, 800, glm::vec3(500.0f, 500.0f, 700.0f));
 
 	GLFWSetup glfwScreen(&camera);
@@ -56,7 +57,7 @@ int main()
 	OpenGLSetup openGLSetup;
 	
 	int n = 256;
-	
+
 	//waveModelGPU waveGPU(n);
 	waveModelCPU waveModelCPU(n);
 	
