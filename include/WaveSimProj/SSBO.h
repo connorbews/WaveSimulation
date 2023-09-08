@@ -4,8 +4,8 @@
 #include <iostream>
 #include <cstring>
 #include <vector>
-#include<glad/glad.h>
-#include "../glm/glm/glm.hpp"
+#include "../glad/glad.h"
+#include <glm/glm.hpp>
 
 class SSBO
 {

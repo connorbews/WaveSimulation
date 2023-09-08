@@ -16,11 +16,9 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
 
-      - name: Set up C++ environment
-        uses: actions/setup-cpp@v2
-
       - name: Build application
         run: |
+          sudo apt install xorg-dev mesa-utils libglu1-mesa-dev freeglut3-dev mesa-common-dev
           mkdir build
           cd build
           cmake ..

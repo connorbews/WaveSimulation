@@ -1,6 +1,7 @@
 # Introduction
 
 Inspired by the methods pioneered by Horvath[1] and Tessendorf[2], this project explores ocean simulation. Using an oceanographic spectrum, inverse fast Fourier transform and power of OpenGL and C++, this project delivers authentic wave simulation. 
+Inspired by the methods pioneered by Horvath[1] and Tessendorf[2], this project explores ocean simulation. Using an oceanographic spectrum, inverse fast Fourier transform and power of OpenGL and C++, this project delivers authentic wave simulation. 
 
 https://github.com/connorbews/vertexs/assets/49799089/c912705d-5ac3-43e8-a316-fe532ec3ba5a
 
@@ -9,7 +10,6 @@ https://github.com/connorbews/vertexs/assets/49799089/c912705d-5ac3-43e8-a316-fe
 - Practice coding in the OpenGL Shading Language
 - Wrote compute shaders to achieve faster results, utilizing GPU acceleration.
 - Gained a solid understanding of the principles of wave physics such as wave propagation, including wave equations, wave types, and wave behavior.
-- Gained an understanding of how light interacts with water and programmed that functioanlity into the fragment shader.
 - Gained experience using third party libraries such as GLFW and FFTW3
 
 # Setup Instructions

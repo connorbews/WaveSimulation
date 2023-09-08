@@ -6,11 +6,11 @@ ObjectShader::ObjectShader(const char* vertexFile, const char* fragmentFile)
     // Read vertexFile and fragmentFile and store the strings
 	std::string vertexCode = get_file_contents(vertexFile);
 	std::string fragmentCode = get_file_contents(fragmentFile);
-
+	
 	// Convert the shader source strings into character arrays
 	const char* vertexSource = vertexCode.c_str();
 	const char* fragmentSource = fragmentCode.c_str();
-
+	
 	// Create Vertex Shader Object and get its reference
 	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	// Attach Vertex Shader source to the Vertex Shader Object
@@ -38,5 +38,4 @@ ObjectShader::ObjectShader(const char* vertexFile, const char* fragmentFile)
 
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
-
 }
