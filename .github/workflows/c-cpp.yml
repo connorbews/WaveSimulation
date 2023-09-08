@@ -39,7 +39,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
           upload_url: ${{ steps.create-new-release.outputs.upload_url }}
-          asset_path: ./WaveSim
+          asset_path: ./build/WaveSim
           asset_name: WaveSimulation-v${{ github.run-number }}
           asset_content_type: application/octet-stream
           token: ${{ secrets.GITHUB_TOKEN }}
