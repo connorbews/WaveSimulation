@@ -7,7 +7,7 @@
 #include <cmath>
 #include <random>
 #include <complex>
-#include <fftw3.h>
+#include "../fftw3/fftw3.h"
 #include <iostream>
 #include <cstring>
 #include <glm/glm.hpp>
