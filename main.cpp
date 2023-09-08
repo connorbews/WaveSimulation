@@ -50,7 +50,7 @@ GLuint lightIndices[] =
 int main()
 {
 	
-	Camera camera(800, 800, glm::vec3(500.0f, 500.0f, 700.0f));
+	Camera camera(800, 800, glm::vec3(500.0f, 400.0f, 1000.0f));
 
 	GLFWSetup glfwScreen(&camera);
 
