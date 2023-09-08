@@ -25,6 +25,7 @@ jobs:
           make
 
       - name: Create Release
+        permissions: write-all
         id: create-new-release
         uses: actions/create-release@v1
         env:
