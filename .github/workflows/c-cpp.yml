@@ -63,7 +63,7 @@ jobs:
         with:
           upload_url: ${{ steps.create-new-release.outputs.upload_url }}
           asset_path: ./build/release.zip
-          asset_name: v0.1.1.zip  # Specify your desired asset name here
+          asset_name: v0.1.2.zip  # Specify your desired asset name here
           asset_content_type: application/zip
           token: ${{ secrets.GITHUB_TOKEN }}
 
