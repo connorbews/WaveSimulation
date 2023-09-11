@@ -54,6 +54,7 @@ jobs:
           tag_name: debug2  # Specify your desired tag here
           release_name: debug2 # Specify your desired release name here
 
+
       - name: Upload Executable
         uses: actions/upload-release-asset@v1
         env:
@@ -62,5 +63,6 @@ jobs:
           upload_url: ${{ steps.create-new-release.outputs.upload_url }}
           asset_path: ./build/release.zip
           asset_name: debug2.zip  # Specify your desired asset name here
+
           asset_content_type: application/zip
           token: ${{ secrets.GITHUB_TOKEN }}
