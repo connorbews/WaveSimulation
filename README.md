@@ -21,11 +21,10 @@ https://github.com/connorbews/vertexs/assets/49799089/c912705d-5ac3-43e8-a316-fe
 
 ## Linux
 
-To run this project, you will need to download the latest release of the WaveSimulation-v executable. In order to actually run the executable you will need to download the "resources" subdirectory and run the following commands.
+To run this project, you will need to download the latest zipped folder from Releases on GitHub. Then run the following command.
 
 ```
-chmod u+x WaveSimulation-v 
-sudo ./WaveSimulation-v
+bash run.sh
 ```
 
 If you still do not see a window like the one seen in the video above, please run the following commands:
