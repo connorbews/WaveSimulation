@@ -1,7 +1,11 @@
-name: Build and Release C++ Application
-
 on:
   pull_request:
+    types:
+      - opened
+      - edited
+      - closed
+      - reopened
+      - synchronize
     branches:
       - main
 
@@ -9,11 +13,9 @@ jobs:
   build:
     if: github.event.pull_request.merged == false
     runs-on: ubuntu-latest
-
     steps:
       - name: Check out code
         uses: actions/checkout@v2
-
       - name: Build application
         run: |
           sudo apt install xorg-dev mesa-utils libglu1-mesa-dev freeglut3-dev mesa-common-dev
@@ -24,15 +26,12 @@ jobs:
           mkdir release
           cp --recursive run.sh WaveSim resources release
           zip -r release.zip "release"
-
   merge_job:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
-
     steps:
       - name: Check out code
         uses: actions/checkout@v2
-
       - name: Build application
         run: |
           sudo apt install xorg-dev mesa-utils libglu1-mesa-dev freeglut3-dev mesa-common-dev
@@ -43,7 +42,6 @@ jobs:
           mkdir release
           cp --recursive run.sh WaveSim resources release
           zip -r release.zip "release"
-
 
       - name: Create Release
         id: create-new-release
