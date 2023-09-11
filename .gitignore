@@ -3,4 +3,5 @@
 *.out
 lib/
 obj/
-build/
+build/*
+!build/run.sh
