@@ -17,6 +17,7 @@ on:
 
 jobs:
   build:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
@@ -35,11 +36,24 @@ jobs:
           zip -r release.zip "release"
 
   merge_job:
-    needs: build
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Build application
+        run: |
+          sudo apt install xorg-dev mesa-utils libglu1-mesa-dev freeglut3-dev mesa-common-dev
+          mkdir -p build
+          cd build
+          cmake ..
+          make
+          mkdir release
+          cp --recursive run.sh WaveSim resources release
+          zip -r release.zip "release"
+
       - name: Create Release
         id: create-new-release
         uses: actions/create-release@v1
