@@ -2,12 +2,6 @@ name: Build and Release C++ Application
 
 on:
   pull_request:
-    types:
-      - opened
-      - edited
-      - closed
-      - reopened
-      - synchronize
     branches:
       - main
 
