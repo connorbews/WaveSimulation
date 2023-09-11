@@ -17,7 +17,7 @@ on:
 
 jobs:
   build:
-    if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == false
     runs-on: ubuntu-latest
 
     steps:
@@ -53,6 +53,7 @@ jobs:
           mkdir release
           cp --recursive run.sh WaveSim resources release
           zip -r release.zip "release"
+
 
       - name: Create Release
         id: create-new-release
