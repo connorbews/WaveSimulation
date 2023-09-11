@@ -3,15 +3,11 @@ name: Build and Release C++ Application
 on:
   pull_request:
     types:
-      - assigned
-      - unlabeled
       - opened
       - edited
       - closed
       - reopened
       - synchronize
-      - converted_to_draft
-      - ready_for_review
     branches:
       - main
 
@@ -61,8 +57,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v0.1.2  # Specify your desired tag here
-          release_name: v0.1.2  # Specify your desired release name here
+          tag_name: debug1  # Specify your desired tag here
+          release_name: debug1  # Specify your desired release name here
 
       - name: Upload Executable
         uses: actions/upload-release-asset@v1
@@ -71,6 +67,6 @@ jobs:
         with:
           upload_url: ${{ steps.create-new-release.outputs.upload_url }}
           asset_path: ./build/release.zip
-          asset_name: v0.1.2.zip  # Specify your desired asset name here
+          asset_name: debug1.zip  # Specify your desired asset name here
           asset_content_type: application/zip
           token: ${{ secrets.GITHUB_TOKEN }}
