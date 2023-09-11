@@ -42,6 +42,7 @@ jobs:
           mkdir release
           cp --recursive run.sh WaveSim resources release
           zip -r release.zip "release"
+
       - name: Create Release
         id: create-new-release
         uses: actions/create-release@v1
