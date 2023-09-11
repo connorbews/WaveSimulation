@@ -17,7 +17,6 @@ on:
 
 jobs:
   build:
-    if: github.event.pull_request.merged == false
     runs-on: ubuntu-latest
 
     steps:
@@ -41,7 +40,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Create Release
         id: create-new-release
         uses: actions/create-release@v1
@@ -50,7 +48,6 @@ jobs:
         with:
           tag_name: v0.1.2  # Specify your desired tag here
           release_name: v0.1.2  # Specify your desired release name here
-
 
       - name: Upload Executable
         uses: actions/upload-release-asset@v1
@@ -62,4 +59,3 @@ jobs:
           asset_name: v0.1.2.zip  # Specify your desired asset name here
           asset_content_type: application/zip
           token: ${{ secrets.GITHUB_TOKEN }}
-
