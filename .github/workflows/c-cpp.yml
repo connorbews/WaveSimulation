@@ -4,8 +4,6 @@ on:
   pull_request:
     types:
       - assigned
-      - unassigned
-      - labeled
       - unlabeled
       - opened
       - edited
@@ -25,6 +23,7 @@ on:
 
 jobs:
   build:
+    if: github.event.pull_request.merged == false
     runs-on: ubuntu-latest
 
     steps:
