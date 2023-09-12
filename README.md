@@ -29,7 +29,7 @@ sudo apt install xorg-dev mesa-utils libglu1-mesa-dev freeglut3-dev mesa-common-
 - Gained a solid understanding of the principles of wave physics such as wave propagation, including wave equations, wave types, and wave behavior.
 - I developed a GLTF file importer that utilizes the [nlohmann JSON library](https://github.com/nlohmann/json) to parse GLTF files, extracting and populating essential vertex attributes like position, normals, and texture coordinates.
 - Gained experience using third party libraries such as GLFW and FFTW3
-- Learned how to build a self-contained executable using CMake  that seamlessly integrates multiple third-party libraries.
+- Learned how to build a self-contained executable using CMake that seamlessly integrates multiple third-party libraries.
 - Successfully automated the release process of the executable on GitHub using GitHub Actions to ensure easy distribution and accessibility for users.
 <!--- Learned how to profile C++ applications -->
 
@@ -37,7 +37,7 @@ sudo apt install xorg-dev mesa-utils libglu1-mesa-dev freeglut3-dev mesa-common-
 
 ## Wave Initialization
 
-To initialize the wave positions, I used a function known as a Wave Spectrum. This spectrum can be deconstructed into two constituent equations: the non-directional wave spectrum and the directional wave spectrum. By combining the products of these two spectra, I initialized a 256 x 256 grid. This grid exists within the spectral domain; for its conversion into a height field, the transformation utilized of the fftw library alongside a 2D IDFT.
+To initialize the wave positions, I used a function known as a Wave Spectrum. This spectrum can be deconstructed into two constituent equations: the non-directional wave spectrum and the directional wave spectrum. By combining the products of these two spectra, I initialized a 256 x 256 grid. This grid exists within the spectral domain; for its conversion into a height field, the transformation utilized the fftw library alongside a 2D IDFT.
 
 ### Non-directional Wave Spectra
 
