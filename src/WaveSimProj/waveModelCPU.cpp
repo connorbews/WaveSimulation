@@ -78,7 +78,7 @@ void waveModelCPU::waveInit()
             complexGeometryZ.push_back(spectrum);
             //if (i == -128)
             //    std::cout << "x: " << (imaginary * kx * spectrum) / k << std::endl;
-            if (k <= 0.00001)
+            if (k <= 0.000001)
             {
                 complexGeometryX.push_back(std::complex<double>(0.0, 0.0));
                 complexGeometryY.push_back(std::complex<double>(0.0, 0.0));
@@ -128,10 +128,6 @@ double waveModelCPU::waveDispersion(double kx, double ky)
 // Converts the complex wave model grid from the spectral domain to the spatial domain
 void waveModelCPU::waveIDFT()
 {
-    /*std::cout << "z: " << complexGeometryZ.size() << std::endl;
-    std::cout << "x: " << complexGeometryX.size() << std::endl;
-    std::cout << "y: " << complexGeometryY.size() << std::endl;
-
     fftw_complex *zin;
     fftw_complex *zout;
 
@@ -150,11 +146,7 @@ void waveModelCPU::waveIDFT()
                 FFTW_ESTIMATE);
 
     fftw_execute(zp);
-    fftw_destroy_plan(zp);
-
-    fftw_free(zin);
-    fftw_free(zout);
-    */
+    
     fftw_complex *xin;
     fftw_complex *xout;
 
@@ -162,7 +154,7 @@ void waveModelCPU::waveIDFT()
     xout = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * complexGeometryX.size());
 
     for (int i = 0;  i < complexGeometryX.size() ; i++)
-    {   
+    {
         memcpy(&xin[i], &complexGeometryX[i], sizeof(fftw_complex));
     }
 
@@ -173,12 +165,8 @@ void waveModelCPU::waveIDFT()
                 FFTW_ESTIMATE);
 
     fftw_execute(xp);
+    std::cout << "real: " << xout[1][0] / 65536.0 << " imag: " << xout[1][1] / 65536.0 << std::endl;
 
-    std::cout << "xout: " << xout[255][0] << std::endl;
-    fftw_destroy_plan(xp);
-    fftw_free(xin);
-    fftw_free(xout);
-    /*
     fftw_complex *yin;
     fftw_complex *yout;
 
@@ -197,23 +185,30 @@ void waveModelCPU::waveIDFT()
                 FFTW_ESTIMATE);
 
     fftw_execute(yp);
+    
+    updateMesh(zout, xout, yout);
+
+    fftw_destroy_plan(zp);
+    fftw_destroy_plan(xp);
     fftw_destroy_plan(yp);
+
+    fftw_free(zin);
+    fftw_free(zout);
+    fftw_free(xin);
+    fftw_free(xout);
     fftw_free(yin);
-    fftw_free(yout);*/
+    fftw_free(yout);
 }
 
 // Helper function for waveIDFT, transfers the results from IFFT to the z component of the wave model mesh
 void waveModelCPU::updateMesh(fftw_complex* zout, fftw_complex* xout, fftw_complex* yout)
 {
-    for (int i = 0;  i < complexGeometryZ.size(); i++)
+    for (int i = 0;  i < 65536; i++)
     {
-        /*if (i == 0)
-        {
-            std::cout << "x: " << xout[i][0] << std::endl;
-            //std::cout << "x: " << std::sqrt(std::pow(xout[i][0] / 65536.0, 2.0) + std::pow(xout[i][1] / 65536.0, 2.0)) << std::endl;
-        }*/
-        GLfloat result = std::sqrt(std::pow(zout[i][0] / 65536.0, 2.0) + std::pow(zout[i][1] / 65536.0, 2.0));
-        geometry[3 * i + 2] = result;
+        //geometry[3 * i] = geometry[3 * i] + geometry[3 * i] * xout[i][0] / 65536.0;
+        //geometry[3 * i + 1] = geometry[3 * i + 1] + geometry[3 * i + 1] * yout[i][0] / 65536.0;
+        GLfloat resultZ = std::sqrt(std::pow(zout[i][0] / 65536.0, 2.0) + std::pow(zout[i][1] / 65536.0, 2.0));
+        geometry[3 * i + 2] = resultZ;
     }
 }
 
@@ -347,8 +342,16 @@ void waveModelCPU::waveProp()
 
             //if (i == -128)
             //    std::cout << "x: " << (imaginary * kx * spectrum) / k << std::endl;
-            complexGeometryX[(x + maxLimit) * n + y + maxLimit] = (imaginary * kx * result) / k;
-            complexGeometryY[(x + maxLimit) * n + y + maxLimit] = (imaginary * ky * result) / k;
+            if (k <= 0.000001)
+            {
+                complexGeometryX[(x + maxLimit) * n + y + maxLimit] = std::complex<double>(0.0, 0.0);
+                complexGeometryY[(x + maxLimit) * n + y + maxLimit] = std::complex<double>(0.0, 0.0);
+            }
+            else
+            {
+                complexGeometryX[(x + maxLimit) * n + y + maxLimit] = (imaginary * kx * result) / k;
+                complexGeometryY[(x + maxLimit) * n + y + maxLimit] = (imaginary * ky * result) / k;
+            }
         }
     }
 }
