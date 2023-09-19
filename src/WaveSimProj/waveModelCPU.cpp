@@ -72,7 +72,22 @@ void waveModelCPU::waveInit()
                 spectrum = (h0 + h1) * 0.5 * std::exp(std::complex<double>(0.0, 1.0) * omega * 0.0) * directional_spectrum;
             }
 
-            complexGeometry.push_back(spectrum);
+            std::complex<double> imaginary = std::complex<double>(0.0, 1.0);
+            double k = std::sqrt(std::pow(kx, 2.0) + std::pow(ky, 2.0));
+
+            complexGeometryZ.push_back(spectrum);
+            //if (i == -128)
+            //    std::cout << "x: " << (imaginary * kx * spectrum) / k << std::endl;
+            if (k <= 0.00001)
+            {
+                complexGeometryX.push_back(std::complex<double>(0.0, 0.0));
+                complexGeometryY.push_back(std::complex<double>(0.0, 0.0));
+            }
+            else
+            {
+                complexGeometryX.push_back((imaginary * kx * spectrum) / k);
+                complexGeometryY.push_back((imaginary * ky * spectrum) / k);
+            }
         }
     }
 }
@@ -113,35 +128,91 @@ double waveModelCPU::waveDispersion(double kx, double ky)
 // Converts the complex wave model grid from the spectral domain to the spatial domain
 void waveModelCPU::waveIDFT()
 {
-    fftw_complex *in;
-    fftw_complex *out;
+    /*std::cout << "z: " << complexGeometryZ.size() << std::endl;
+    std::cout << "x: " << complexGeometryX.size() << std::endl;
+    std::cout << "y: " << complexGeometryY.size() << std::endl;
 
-    in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * complexGeometry.size());
-    out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * complexGeometry.size());
+    fftw_complex *zin;
+    fftw_complex *zout;
 
-    for (int i = 0 ;  i < complexGeometry.size() ; i++)
+    zin = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * complexGeometryZ.size());
+    zout = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * complexGeometryZ.size());
+
+    for (int i = 0 ;  i < complexGeometryZ.size() ; i++)
     {
-        memcpy(&in[i], &complexGeometry[i], sizeof(fftw_complex));
+        memcpy(&zin[i], &complexGeometryZ[i], sizeof(fftw_complex));
     }
 
-    fftw_plan p = fftw_plan_dft_2d(256, 256,
-                in,
-                out,
+    fftw_plan zp = fftw_plan_dft_2d(256, 256,
+                zin,
+                zout,
                 FFTW_BACKWARD,
                 FFTW_ESTIMATE);
 
-    fftw_execute(p);
-    fftw_destroy_plan(p);
+    fftw_execute(zp);
+    fftw_destroy_plan(zp);
 
-    updateMesh(out);
+    fftw_free(zin);
+    fftw_free(zout);
+    */
+    fftw_complex *xin;
+    fftw_complex *xout;
+
+    xin = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * complexGeometryX.size());
+    xout = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * complexGeometryX.size());
+
+    for (int i = 0;  i < complexGeometryX.size() ; i++)
+    {   
+        memcpy(&xin[i], &complexGeometryX[i], sizeof(fftw_complex));
+    }
+
+    fftw_plan xp = fftw_plan_dft_2d(n, n,
+                xin,
+                xout,
+                FFTW_BACKWARD,
+                FFTW_ESTIMATE);
+
+    fftw_execute(xp);
+
+    std::cout << "xout: " << xout[255][0] << std::endl;
+    fftw_destroy_plan(xp);
+    fftw_free(xin);
+    fftw_free(xout);
+    /*
+    fftw_complex *yin;
+    fftw_complex *yout;
+
+    yin = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * complexGeometryY.size());
+    yout = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * complexGeometryY.size());
+
+    for (int i = 0 ;  i < complexGeometryY.size() ; i++)
+    {
+        memcpy(&yin[i], &complexGeometryY[i], sizeof(fftw_complex));
+    }
+
+    fftw_plan yp = fftw_plan_dft_2d(256, 256,
+                yin,
+                yout,
+                FFTW_BACKWARD,
+                FFTW_ESTIMATE);
+
+    fftw_execute(yp);
+    fftw_destroy_plan(yp);
+    fftw_free(yin);
+    fftw_free(yout);*/
 }
 
 // Helper function for waveIDFT, transfers the results from IFFT to the z component of the wave model mesh
-void waveModelCPU::updateMesh(fftw_complex* out)
+void waveModelCPU::updateMesh(fftw_complex* zout, fftw_complex* xout, fftw_complex* yout)
 {
-    for (int i = 0;  i < complexGeometry.size(); i++)
+    for (int i = 0;  i < complexGeometryZ.size(); i++)
     {
-        GLfloat result = std::sqrt(std::pow(out[i][0] / 65536.0, 2.0) + std::pow(out[i][1] / 65536.0, 2.0));
+        /*if (i == 0)
+        {
+            std::cout << "x: " << xout[i][0] << std::endl;
+            //std::cout << "x: " << std::sqrt(std::pow(xout[i][0] / 65536.0, 2.0) + std::pow(xout[i][1] / 65536.0, 2.0)) << std::endl;
+        }*/
+        GLfloat result = std::sqrt(std::pow(zout[i][0] / 65536.0, 2.0) + std::pow(zout[i][1] / 65536.0, 2.0));
         geometry[3 * i + 2] = result;
     }
 }
@@ -262,15 +333,22 @@ void waveModelCPU::waveProp()
 
             double omega = waveDispersion(kx, ky);
 
-            std::complex<double> complexAmp1 = complexGeometry[(x + maxLimit) * n + y + maxLimit];
+            std::complex<double> complexAmp1 = complexGeometryZ[(x + maxLimit) * n + y + maxLimit];
 
             int negx = int((-1.0 * kx * LX) / (2 * M_PI));
             int negy = int((-1.0 * ky * LY) / (2 * M_PI));
 
-            std::complex<double> complexAmp2 = complexGeometry[(negx + maxLimit) * n + negy + maxLimit];
+            std::complex<double> complexAmp2 = complexGeometryZ[(negx + maxLimit) * n + negy + maxLimit];
 
             std::complex<double> result = complexAmp1 * std::exp(imaginary * omega * dt);
-            complexGeometry[(x + maxLimit) * n + y + maxLimit] = result;
+            complexGeometryZ[(x + maxLimit) * n + y + maxLimit] = result;
+
+            double k = std::sqrt(std::pow(kx, 2.0) + std::pow(ky, 2.0));
+
+            //if (i == -128)
+            //    std::cout << "x: " << (imaginary * kx * spectrum) / k << std::endl;
+            complexGeometryX[(x + maxLimit) * n + y + maxLimit] = (imaginary * kx * result) / k;
+            complexGeometryY[(x + maxLimit) * n + y + maxLimit] = (imaginary * ky * result) / k;
         }
     }
 }

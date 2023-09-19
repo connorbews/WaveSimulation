@@ -20,7 +20,9 @@ class waveModelCPU
 {
 public:
     GLuint specBuffer;
-	std::vector<std::complex<double>> complexGeometry;
+    std::vector<std::complex<double>> complexGeometryX;
+    std::vector<std::complex<double>> complexGeometryY;
+	std::vector<std::complex<double>> complexGeometryZ;
     std::vector<GLuint> index;
     std::vector<GLfloat> geometry;
     int normalsOffset;
@@ -53,7 +55,7 @@ private:
     void waveIDFT();
 
     // Helper function for waveIDFT, transfers the results from IFFT to the z component of the wave model mesh
-    void updateMesh(fftw_complex* out);
+    void updateMesh(fftw_complex* zout, fftw_complex* xout, fftw_complex* yout);
 
     // Calcualtes the normal vectors for each vertex
     void waveNorm();
