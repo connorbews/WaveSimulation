@@ -40,8 +40,8 @@ void waveModelCPU::waveInit()
     std::default_random_engine generator;
     std::normal_distribution<double> distribution(0.0, 1.0);
 
-    double er = distribution(generator);
-    double ei = distribution(generator);
+    double er = 0.5;//distribution(generator);
+    double ei = 0.5;//distribution(generator);
 
     for (int i = minLimit; i < maxLimit; i++)
     {
@@ -65,7 +65,7 @@ void waveModelCPU::waveInit()
             {
                 double theta_p = M_PI / 4.0;
                 double w_m = 9.81 / (1.026 * 31.0);
-                double directional = (ALPHA * std::pow(9.81, 2.0)) / (std::pow(omega, 5.0));
+                double directional = (ALPHA * std::pow(GRAVITY, 2.0)) / (std::pow(omega, 5.0));
                 double dspectrum = std::exp((-5.0 / 4.0) * std::pow((w_m / omega), 4.0)) * std::pow(std::cos(theta_p - std::atan2(ky, kx)), 2.0);
                 double directional_spectrum = directional * dspectrum;
 
@@ -76,8 +76,7 @@ void waveModelCPU::waveInit()
             double k = std::sqrt(std::pow(kx, 2.0) + std::pow(ky, 2.0));
 
             complexGeometryZ.push_back(spectrum);
-            //if (i == -128)
-            //    std::cout << "x: " << (imaginary * kx * spectrum) / k << std::endl;
+            
             if (k <= 0.000001)
             {
                 complexGeometryX.push_back(std::complex<double>(0.0, 0.0));
@@ -85,6 +84,8 @@ void waveModelCPU::waveInit()
             }
             else
             {
+                //if (i == minLimit)
+                //    std::cout << "start: " << (imaginary * kx * spectrum) / k << std::endl;
                 complexGeometryX.push_back((imaginary * kx * spectrum) / k);
                 complexGeometryY.push_back((imaginary * ky * spectrum) / k);
             }
@@ -122,7 +123,7 @@ std::complex<double> waveModelCPU::spectrumHeight(double kx, double ky, double r
 // Helper function for waveInit, converts wave number to frequency
 double waveModelCPU::waveDispersion(double kx, double ky)
 {
-    return std::sqrt(9.81 * std::sqrt(std::pow(kx, 2) + std::pow(ky, 2)));
+    return std::sqrt(GRAVITY * std::sqrt(std::pow(kx, 2.0) + std::pow(ky, 2.0)));
 }
 
 // Converts the complex wave model grid from the spectral domain to the spatial domain
@@ -155,7 +156,15 @@ void waveModelCPU::waveIDFT()
 
     for (int i = 0;  i < complexGeometryX.size() ; i++)
     {
+        /*if (i == 1)
+        {
+            std::cout << complexGeometryX[i] << std::endl;
+        }*/
         memcpy(&xin[i], &complexGeometryX[i], sizeof(fftw_complex));
+        /*if (i == 1)
+        {
+            std::cout << "real: " << xin[i][0] << " imag: " << xin[i][1] << std::endl;
+        }*/
     }
 
     fftw_plan xp = fftw_plan_dft_2d(n, n,
@@ -165,7 +174,8 @@ void waveModelCPU::waveIDFT()
                 FFTW_ESTIMATE);
 
     fftw_execute(xp);
-    std::cout << "real: " << xout[1][0] / 65536.0 << " imag: " << xout[1][1] / 65536.0 << std::endl;
+    //std::cout << "input real: " << xin[1][0]<< " imag: " << xout[1][1] << std::endl;
+    //std::cout << "output real: " << xout[1][0] / 65536.0 << " imag: " << xout[1][1] / 65536.0 << std::endl;
 
     fftw_complex *yin;
     fftw_complex *yout;
@@ -203,12 +213,16 @@ void waveModelCPU::waveIDFT()
 // Helper function for waveIDFT, transfers the results from IFFT to the z component of the wave model mesh
 void waveModelCPU::updateMesh(fftw_complex* zout, fftw_complex* xout, fftw_complex* yout)
 {
-    for (int i = 0;  i < 65536; i++)
+    for (int i = 0; i < n; i++)
     {
-        //geometry[3 * i] = geometry[3 * i] + geometry[3 * i] * xout[i][0] / 65536.0;
-        //geometry[3 * i + 1] = geometry[3 * i + 1] + geometry[3 * i + 1] * yout[i][0] / 65536.0;
-        GLfloat resultZ = std::sqrt(std::pow(zout[i][0] / 65536.0, 2.0) + std::pow(zout[i][1] / 65536.0, 2.0));
-        geometry[3 * i + 2] = resultZ;
+        for (int j = 0; j < n; j++)
+        {
+            geometry[3 * (i * n + j)] = (j * 1000.0f / 256.0f) + xout[i * n + j][0] / 65536.0;
+            geometry[3 * (i * n + j) + 1] = (i * 1000.0f / 256.0f) + yout[i * n + j][0] / 65536.0;
+            GLfloat resultZ = std::sqrt(std::pow(zout[i * n + j][0] / 65536.0, 2.0) + std::pow(zout[i * n + j][1] / 65536.0, 2.0));
+            geometry[3 * (i * n + j) + 2] = resultZ;
+        }
+
     }
 }
 

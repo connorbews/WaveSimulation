@@ -15,6 +15,7 @@
 #define ALPHA 1
 #define LX 1000
 #define LY 1000
+#define GRAVITY 9.81
 
 class waveModelCPU
 {
