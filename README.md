@@ -2,7 +2,7 @@
 
 Inspired by the methods pioneered by Horvath[1] and Tessendorf[2], this project explores ocean simulation. Using an oceanographic spectrum, Inverse Discrete Fourier Transform (IDFT) and power of OpenGL and C++, this project delivers authentic wave simulation. 
 
-https://github.com/connorbews/vertexs/assets/49799089/c912705d-5ac3-43e8-a316-fe532ec3ba5a
+https://youtu.be/CXsKYo364Cg
 
 # Setup Instructions
 
@@ -15,7 +15,7 @@ bash run.sh
 ```
 
 If you still do not see a window like the one seen in the video above, please run the following commands:
-
+more
 ```
 sudo apt install xorg-dev mesa-utils libglu1-mesa-dev freeglut3-dev mesa-common-dev
 ```
