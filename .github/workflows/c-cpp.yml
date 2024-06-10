@@ -10,7 +10,7 @@ on:
       - main
 
 jobs:
-  build:
+  build-linux:
     if: github.event.pull_request.merged == false
     runs-on: ubuntu-latest
     steps:
@@ -62,3 +62,29 @@ jobs:
           asset_name: v0.0.0.zip  # Specify your desired asset name here
           asset_content_type: application/zip
           token: ${{ secrets.GITHUB_TOKEN }}
+  build-windows:
+    if: github.event.pull_request.merged == false
+    runs-on: windows-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Set up CMake
+        uses: lukka/get-cmake@v3.21.3
+
+      - name: Configure CMake
+        run: cmake -G "Visual Studio 2022" -A x64 -B build -S .
+      
+      - name: Build
+        run: cmake --build build --config Release
+
+      - name: Build application
+        run: |
+          sudo apt install xorg-dev mesa-utils libglu1-mesa-dev freeglut3-dev mesa-common-dev
+          mkdir -p build
+          cd build
+          cmake ..
+          make
+          mkdir release
+          cp --recursive run.sh WaveSim resources release
+          zip -r release.zip "release"  
