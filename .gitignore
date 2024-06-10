@@ -4,4 +4,6 @@
 lib/
 obj/
 build/*
+out/*
+.vs/*
 !build/run.sh

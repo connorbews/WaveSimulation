@@ -73,6 +73,7 @@ void waveModelCPU::waveInit()
             }
 
             complexGeometry.push_back(spectrum);
+            //std::cout << "this should be called 65536 times: " << complexGeometry.size() << std::endl;
         }
     }
 }
@@ -267,7 +268,7 @@ void waveModelCPU::waveProp()
             int negx = int((-1.0 * kx * LX) / (2 * M_PI));
             int negy = int((-1.0 * ky * LY) / (2 * M_PI));
 
-            std::complex<double> complexAmp2 = complexGeometry[(negx + maxLimit) * n + negy + maxLimit];
+            std::complex<double> complexAmp2 = complexGeometry[(negx + maxLimit - 1) * n + negy + maxLimit - 1];
 
             std::complex<double> result = complexAmp1 * std::exp(imaginary * omega * dt);
             complexGeometry[(x + maxLimit) * n + y + maxLimit] = result;
