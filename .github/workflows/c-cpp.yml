@@ -118,7 +118,7 @@ jobs:
           mkdir release
           dir build\Release
           copy build\Release\WaveSim.exe release\WaveSim.exe
-          xcopy build\Release\resources release\resources /s /i
+          xcopy resources release\resources /s /i
           powershell Compress-Archive -Path .\release\* -DestinationPath release.zip
       - name: Create Release
         id: create-new-release
