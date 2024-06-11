@@ -1,6 +1,10 @@
 #ifndef WAVEMODELCPU_CLASS_H
 #define WAVEMODELCPU_CLASS_H
 
+#if _WIN32
+#define _USE_MATH_DEFINES
+#endif
+
 #include "../glad/glad.h"
 #include <vector>
 #include <cstdlib>
