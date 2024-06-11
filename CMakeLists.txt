@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.15)
 
 project(WaveSimulation)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
 include(FetchContent)
 
 FetchContent_Declare(
@@ -54,9 +57,6 @@ endif()
 
 add_subdirectory(include)
 add_subdirectory(src)
-
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Add source files
 file(GLOB_RECURSE SOURCE_FILES 
