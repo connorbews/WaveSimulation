@@ -16,12 +16,19 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v2
-      - name: Build application
+      - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install wayland-protocols
-          apt-cache search wayland-protocols
-          sudo apt install xorg-dev mesa-utils libglu1-mesa-dev freeglut3-dev mesa-common-dev
+          sudo apt-get install -y \
+            libwayland-dev \
+            wayland-protocols \
+            xorg-dev \
+            mesa-utils \
+            libglu1-mesa-dev \
+            freeglut3-dev \
+            mesa-common-dev
+      - name: Build application
+        run: |
           mkdir -p build
           cd build
           cmake ..
