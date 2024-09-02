@@ -1,8 +1,14 @@
+# Watch Simulation Here
+
+<div align="center">
+    <a href="https://youtu.be/CXsKYo364Cg">
+        <img src="https://img.youtube.com/vi/CXsKYo364Cg/0.jpg" alt="Watch this video">
+    </a>
+</div>
+
 # Introduction
 
 Inspired by the methods pioneered by Horvath[1] and Tessendorf[2], this project explores ocean simulation. Using an oceanographic spectrum, Inverse Discrete Fourier Transform (IDFT) and power of OpenGL and C++, this project delivers authentic wave simulation. 
-
-https://youtu.be/CXsKYo364Cg
 
 # Setup Instructions
 
