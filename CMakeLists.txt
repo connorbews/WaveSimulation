@@ -44,6 +44,9 @@ file(GLOB_RECURSE HEADER_FILES
     ${CMAKE_SOURCE_DIR}/include/*.h
     ${CMAKE_SOURCE_DIR}/include/*.hpp)
 
+source_group(TREE ${CMAKE_SOURCE_DIR}/src PREFIX "Source Files" FILES ${SOURCE_FILES})
+source_group(TREE ${CMAKE_SOURCE_DIR}/include PREFIX "Header Files" FILES ${HEADER_FILES})
+
 # Add executable
 add_executable(WaveSim main.cpp ${SOURCE_FILES} ${HEADER_FILES})
 
