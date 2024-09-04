@@ -34,7 +34,8 @@ Visual Studio 2019 is recommended. I have not tried compiling this project with 
 
 ### Linux
 
-1. Navigate to the WaveSimulation folder, the WaveSimulation folder should look like this:
+1. Navigate to the WaveSimulation folder, the WaveSimulation folder should look like this: ![Screenshot from 2024-09-04 15-56-17](https://github.com/user-attachments/assets/eabd9151-c17f-4c41-b95d-9d985d6c863a)
+
 2. Run ```chmod +x ./setup_linux.sh```, you will need to run this command in order to give execute permission to ```setup_linux.sh```
 3. In the WaveSimulation directory, run ```./setup_linux.sh```.
 4. The command above should generate a Makefile in the WaveSimulation directory, run ```make``` to generate an executable.
