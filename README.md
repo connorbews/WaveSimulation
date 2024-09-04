@@ -23,6 +23,7 @@ Start by cloning the repository with ```git clone https://github.com/connorbews/
 Visual Studio 2019 is recommended. I have not tried compiling this project with Visual Studio 2022 but will in the future.
 
 #### Steps
+
 1. Navigate to the WaveSimulation folder, the WaveSimulation folder should look like this: ![initial_state](https://github.com/user-attachments/assets/0d63f715-f858-4c56-a91a-2337783a3228)
 
 2. In the WaveSimulation directory, run ```setup_windows.bat```.
@@ -33,17 +34,12 @@ Visual Studio 2019 is recommended. I have not tried compiling this project with 
 
 ### Linux
 
-To run this project, you will need to download the latest zipped folder from Releases on GitHub, cd into the folder and run the following command.
-
-```
-bash run.sh
-```
-
-If you still do not see a window like the one seen in the video above, please run the following commands:
-more
-```
-sudo apt install xorg-dev mesa-utils libglu1-mesa-dev freeglut3-dev mesa-common-dev
-```
+1. Navigate to the WaveSimulation folder, the WaveSimulation folder should look like this:
+2. Run ```chmod +x ./setup_linux.sh```, you will need to run this command in order to give execute permission to ```setup_linux.sh```
+3. In the WaveSimulation directory, run ```./setup_linux.sh```.
+4. The command above should generate a Makefile in the WaveSimulation directory, run ```make``` to generate an executable.
+5. Run the ```./WaveSim``` command to start the program.
+6. You should now see the wave simulation.
 
 # References
 
