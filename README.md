@@ -23,10 +23,11 @@ Start by cloning the repository with ```git clone https://github.com/connorbews/
 Visual Studio 2019 is recommended. I have not tried compiling this project with Visual Studio 2022 but will in the future.
 
 #### Steps
-1. Navigate to the WaveSimulation folder, the WaveSimulation folder should look like this:
+1. Navigate to the WaveSimulation folder, the WaveSimulation folder should look like this: ![initial_state](https://github.com/user-attachments/assets/0d63f715-f858-4c56-a91a-2337783a3228)
+
 2. In the WaveSimulation directory, run ```setup_windows.bat```.
 3. The command above should generate a ```WaveSimulation.sln``` in the WaveSimulation directory, double click the ```WaveSimulation.sln``` file to open it.
-4. In the solution explorer, right click on the ```WaveSim``` and click "Set as Startup Project"
+4. In the solution explorer, right click on the ```WaveSim``` and click "Set as Startup Project". ![StartupProject](https://github.com/user-attachments/assets/5fa77b2b-a9ec-47de-8d64-a931e69d6301)
 5. Click "Local Windows Debugger" to start the program.
 6. You should now see the wave simulation.
 
