@@ -7,3 +7,17 @@ build/*
 out/*
 .vs/*
 !build/run.sh
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+CMakeCache.txt
+CMakeFiles/*
+Debug/*
+WaveSim.dir/*
+*.sln
+_deps/*
+cmake_install.cmake
+x64/*
+Makefile
+makefile
+WaveSim

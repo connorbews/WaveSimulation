@@ -1,7 +1,4 @@
 #include <filesystem>
-
-namespace fs = std::filesystem;
-
 #include<math.h>
 
 #include "include/WaveSimProj/Setup/OpenGLSetup.h"
@@ -50,10 +47,9 @@ GLuint lightIndices[] =
 
 int main()
 {
-	
-	Camera camera(800, 800, glm::vec3(500.0f, 400.0f, 1000.0f));
+	Camera* camera = new Camera(800, 800, glm::vec3(500.0f, 400.0f, 1000.0f));
 
-	GLFWSetup glfwScreen(&camera);
+	GLFWSetup glfwScreen(camera);
 
 	OpenGLSetup openGLSetup;
 	
@@ -128,8 +124,8 @@ int main()
 		openGLSetup.CleanBuffer();
 
 		shaderProgram.Activate();
-		camera.updateMatrix(45.0f, 0.1f, 10000.0f);
-		camera.Matrix(shaderProgram, "camMatrix");
+		camera->updateMatrix(45.0f, 0.1f, 10000.0f);
+		camera->Matrix(shaderProgram, "camMatrix");
 
 		VAO1.Bind();
 		//glDrawElements(GL_TRIANGLES, waveGPU.index.size() * sizeof(GLuint) / sizeof(int), GL_UNSIGNED_INT, 0);
@@ -139,7 +135,7 @@ int main()
 		waveModelCPU.updateModel(VBO1.ID);
 
 		lightShader.Activate();
-		camera.Matrix(lightShader, "camMatrix");
+		camera->Matrix(lightShader, "camMatrix");
 
 		lightVAO.Bind();
 		glDrawElements(GL_TRIANGLES, sizeof(lightIndices) / sizeof(int), GL_UNSIGNED_INT, 0);
@@ -148,5 +144,7 @@ int main()
 	}
 
 	shaderProgram.Delete();
+
+	delete camera;
 	return 0;
 }
