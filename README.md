@@ -10,9 +10,27 @@
 
 Inspired by the methods pioneered by Horvath[1] and Tessendorf[2], this project explores ocean simulation. Using an oceanographic spectrum, Inverse Discrete Fourier Transform (IDFT) and power of OpenGL and C++, this project delivers authentic wave simulation. 
 
-# Setup Instructions
+# Getting Started
 
-## Linux
+## Downloading Release
+
+## Compiling from Source
+
+Start by cloning the repository with ```git clone https://github.com/connorbews/WaveSimulation.git```
+
+### Windows
+
+Visual Studio 2019 is recommended. I have not tried compiling this project with Visual Studio 2022 but will in the future.
+
+#### Steps
+1. Navigate to the WaveSimulation folder, the WaveSimulation folder should look like this:
+2. In the WaveSimulation directory, run ```setup_windows.bat```.
+3. The command above should generate a ```WaveSimulation.sln``` in the WaveSimulation directory, double click the ```WaveSimulation.sln``` file to open it.
+4. In the solution explorer, right click on the ```WaveSim``` and click "Set as Startup Project"
+5. Click "Local Windows Debugger" to start the program.
+6. You should now see the wave simulation.
+
+### Linux
 
 To run this project, you will need to download the latest zipped folder from Releases on GitHub, cd into the folder and run the following command.
 
