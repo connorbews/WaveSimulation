@@ -29,13 +29,11 @@ jobs:
             mesa-common-dev
       - name: Build application
         run: |
-          mkdir -p build
-          cd build
-          cmake ..
+          cmake -G  "Unix Makefiles"
           make
-          mkdir release
-          cp --recursive run.sh WaveSim resources release
-          zip -r release.zip "release"
+          mkdir release-github
+          cp --recursive run.sh WaveSim resources release-github
+          zip -r release.zip "release-github"
   merge_job-linux:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
@@ -55,13 +53,11 @@ jobs:
             mesa-common-dev
       - name: Build application
         run: |
-          mkdir -p build
-          cd build
-          cmake ..
+          cmake -G  "Unix Makefiles"
           make
-          mkdir release
-          cp --recursive run.sh WaveSim resources release
-          zip -r release.zip "release"
+          mkdir release-github
+          cp --recursive run.sh WaveSim resources release-github
+          zip -r release.zip "release-github"
 
       - name: Create Release
         id: create-new-release
@@ -93,10 +89,10 @@ jobs:
         uses: lukka/get-cmake@latest
 
       - name: Configure CMake
-        run: cmake -G "Visual Studio 17 2022" -A x64 -B build -S .
+        run: cmake -G "Visual Studio 17 2022"
       
       - name: Build
-        run: cmake --build build --config Release
+        run: cmake --build . --config Release
   merge_job-windows:
     if: github.event.pull_request.merged == true
     runs-on: windows-latest
@@ -108,17 +104,17 @@ jobs:
         uses: lukka/get-cmake@latest
 
       - name: Configure CMake
-        run: cmake -G "Visual Studio 17 2022" -A x64 -B build -S .
+        run: cmake -G "Visual Studio 17 2022"
       
       - name: Build
-        run: cmake --build build --config Release  
+        run: cmake --build . --config Release  
 
       - name: Make Release
         run: |
-          mkdir release
-          copy build\Release\WaveSim.exe release\WaveSim.exe
-          xcopy resources release\resources /s /i
-          powershell Compress-Archive -Path .\release\* -DestinationPath release.zip
+          mkdir release-github
+          copy Release\WaveSim.exe release-github\WaveSim.exe
+          xcopy resources release-github\resources /s /i
+          powershell Compress-Archive -Path .\release-github\* -DestinationPath release.zip
       - name: Create Release
         id: create-new-release
         uses: actions/create-release@v1
