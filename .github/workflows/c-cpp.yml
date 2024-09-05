@@ -53,13 +53,11 @@ jobs:
             mesa-common-dev
       - name: Build application
         run: |
-          mkdir -p build
-          cd build
-          cmake ..
+          cmake -G  "Unix Makefiles"
           make
-          mkdir release
-          cp --recursive run.sh WaveSim resources release
-          zip -r release.zip "release"
+          mkdir release-github
+          cp --recursive run.sh WaveSim resources release-github
+          zip -r release.zip "release-github"
 
       - name: Create Release
         id: create-new-release
