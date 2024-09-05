@@ -74,7 +74,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-new-release.outputs.upload_url }}
-          asset_path: ./build/release.zip
+          asset_path: ./release.zip
           asset_name: v0.0.0-ubuntu.zip  # Specify your desired asset name here
           asset_content_type: application/zip
           token: ${{ secrets.GITHUB_TOKEN }}
