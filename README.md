@@ -12,8 +12,6 @@ Inspired by the methods pioneered by Horvath[1] and Tessendorf[2], this project 
 
 # Getting Started
 
-## Downloading Release
-
 ## Compiling from Source
 
 Start by cloning the repository with ```git clone https://github.com/connorbews/WaveSimulation.git```
