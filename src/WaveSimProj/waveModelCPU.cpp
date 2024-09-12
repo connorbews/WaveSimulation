@@ -135,6 +135,9 @@ void waveModelCPU::waveIDFT()
     fftw_destroy_plan(p);
 
     updateMesh(out);
+
+    fftw_free(in);
+    fftw_free(out);
 }
 
 // Helper function for waveIDFT, transfers the results from IFFT to the z component of the wave model mesh

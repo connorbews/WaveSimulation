@@ -1,5 +1,6 @@
 #include <filesystem>
-#include<math.h>
+#include <math.h>
+#include <assert.h>
 
 #include "include/WaveSimProj/Setup/OpenGLSetup.h"
 #include "include/WaveSimProj/Setup/GLFWSetup.h"
@@ -48,6 +49,7 @@ GLuint lightIndices[] =
 int main()
 {
 	Camera* camera = new Camera(800, 800, glm::vec3(500.0f, 400.0f, 1000.0f));
+	assert(camera != nullptr);
 
 	GLFWSetup glfwScreen(camera);
 
