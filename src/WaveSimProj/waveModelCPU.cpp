@@ -1,12 +1,10 @@
 #include "../../include/WaveSimProj/waveModelCPU.h"
 
-// Constructor called with no size specified, calling this is an error
 waveModelCPU::waveModelCPU()
 {
     std::cerr << "No size specified" << std::endl;
 }
 
-// Constructor that generates a waveModel of size: "size" x "size" to run on the CPU
 waveModelCPU::waveModelCPU(int size) :
     geometry(6 * std::pow(size, 2), 0)
 {
@@ -17,21 +15,26 @@ waveModelCPU::waveModelCPU(int size) :
     waveIndex();
     waveInit();
     initMesh();
-    waveIDFT();
+    AllocateFFTWResources();
+    waveIFFT();
     waveNorm();
+
+    
+}
+waveModelCPU::~waveModelCPU()
+{
+    ReleaseFFTWResources();
 }
 
-// Updates each vertex of the waveModel and updates the VBO specified by "ID"
 void waveModelCPU::updateModel(GLuint ID)
 {
     waveProp();
-    waveIDFT();
+    waveIFFT();
     waveNorm();
     updateBuffer(ID);
     dt += 1.0 / 500.0;
 }
 
-// Initializes a "size" x "size" complex grid in the spectral domain that represents the wave model
 void waveModelCPU::waveInit()
 {
     int minLimit = -n / 2;
@@ -73,12 +76,10 @@ void waveModelCPU::waveInit()
             }
 
             complexGeometry.push_back(spectrum);
-            //std::cout << "this should be called 65536 times: " << complexGeometry.size() << std::endl;
         }
     }
 }
 
-// Helper function for waveInit, calculates spectrum height for initialization of complex wave model grid
 std::complex<double> waveModelCPU::spectrumHeight(double kx, double ky, double randr, double randi)
 {
     glm::vec2 w = glm::vec2(1.0f, 0.0f);
@@ -105,42 +106,38 @@ std::complex<double> waveModelCPU::spectrumHeight(double kx, double ky, double r
     return h;
 }
 
-// Helper function for waveInit, converts wave number to frequency
 double waveModelCPU::waveDispersion(double kx, double ky)
 {
     return std::sqrt(9.81 * std::sqrt(std::pow(kx, 2) + std::pow(ky, 2)));
 }
 
-// Converts the complex wave model grid from the spectral domain to the spatial domain
-void waveModelCPU::waveIDFT()
+void waveModelCPU::AllocateFFTWResources()
 {
-    fftw_complex *in;
-    fftw_complex *out;
+    ComplexWave = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * complexGeometry.size());
+    RealWave = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * complexGeometry.size());
 
-    in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * complexGeometry.size());
-    out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * complexGeometry.size());
-
-    for (int i = 0 ;  i < complexGeometry.size() ; i++)
-    {
-        memcpy(&in[i], &complexGeometry[i], sizeof(fftw_complex));
-    }
-
-    fftw_plan p = fftw_plan_dft_2d(256, 256,
-                in,
-                out,
-                FFTW_BACKWARD,
-                FFTW_ESTIMATE);
-
-    fftw_execute(p);
-    fftw_destroy_plan(p);
-
-    updateMesh(out);
-
-    fftw_free(in);
-    fftw_free(out);
+    WaveIFFTPlan = fftw_plan_dft_2d(n, n, ComplexWave, RealWave, FFTW_BACKWARD, FFTW_ESTIMATE);
 }
 
-// Helper function for waveIDFT, transfers the results from IFFT to the z component of the wave model mesh
+void waveModelCPU::ReleaseFFTWResources()
+{
+    fftw_destroy_plan(WaveIFFTPlan);
+
+    fftw_free(ComplexWave);
+    fftw_free(RealWave);
+}
+
+void waveModelCPU::waveIFFT()
+{
+    for (int i = 0 ;  i < complexGeometry.size() ; i++)
+    {
+        memcpy(&ComplexWave[i], &complexGeometry[i], sizeof(fftw_complex));
+    }
+
+    fftw_execute(WaveIFFTPlan);
+    updateMesh(RealWave);
+}
+
 void waveModelCPU::updateMesh(fftw_complex* out)
 {
     for (int i = 0;  i < complexGeometry.size(); i++)
@@ -150,7 +147,6 @@ void waveModelCPU::updateMesh(fftw_complex* out)
     }
 }
 
-// Calcualtes the normal vectors for each vertex
 void waveModelCPU::waveNorm()
 {
     float dy, dx;
@@ -171,7 +167,6 @@ void waveModelCPU::waveNorm()
     }
 }
 
-// Helper function for waveNorm, calculates the dy variables in waveNorm function
 float waveModelCPU::calcDy(int x, int y, int maxIndex)
 {
     float dy;
@@ -194,7 +189,6 @@ float waveModelCPU::calcDy(int x, int y, int maxIndex)
     return dy;
 }
 
-// Helper function for waveNorm, calculates the dx variables in waveNorm function
 float waveModelCPU::calcDx(int x, int y, int maxIndex)
 {
     float dx;
@@ -217,7 +211,6 @@ float waveModelCPU::calcDx(int x, int y, int maxIndex)
     return dx;
 }
 
-// Initializes the x and y components of the wave model mesh
 void waveModelCPU::initMesh()
 {
     for (int y = 0; y < n; y++)
@@ -231,7 +224,6 @@ void waveModelCPU::initMesh()
     }
 }
 
-// Initializes index array for EBO
 void waveModelCPU::waveIndex()
 {
 	for (int i = 0; i < n - 1; i++)
@@ -249,7 +241,6 @@ void waveModelCPU::waveIndex()
     }
 }
 
-// Updates complex wave model grid
 void waveModelCPU::waveProp()
 {
     int minLimit = -n / 2;
@@ -279,7 +270,6 @@ void waveModelCPU::waveProp()
     }
 }
 
-// Updates the VBO with new vertex attribute data
 void waveModelCPU::updateBuffer(GLuint ID)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, ID);

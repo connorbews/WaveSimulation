@@ -40,7 +40,6 @@ void GLFWSetup::UpdateScreenInputs()
 
 GLFWSetup::~GLFWSetup()
 {
-    free(camera);
     glfwDestroyWindow(window);
     glfwTerminate();
 }
