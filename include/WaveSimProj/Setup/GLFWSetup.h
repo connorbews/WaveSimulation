@@ -13,6 +13,7 @@ public:
     void UpdateScreenInputs();
 
     ~GLFWSetup();
+
 private:
     GLFWwindow* window;
     Camera* camera;

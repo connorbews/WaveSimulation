@@ -35,12 +35,11 @@ bool GLFWSetup::ShouldWindowClose()
 void GLFWSetup::UpdateScreenInputs()
 {
     glfwSwapBuffers(window);
-	glfwPollEvents();
+    glfwPollEvents();
 }
 
 GLFWSetup::~GLFWSetup()
 {
-    free(camera);
-	glfwDestroyWindow(window);
-	glfwTerminate();
+    glfwDestroyWindow(window);
+    glfwTerminate();
 }

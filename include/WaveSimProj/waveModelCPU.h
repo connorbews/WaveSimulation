@@ -35,6 +35,8 @@ public:
     // Constructor that generates a waveModel of size: "size" x "size" to run on the CPU
 	waveModelCPU(int size);
 
+    ~waveModelCPU();
+
     // Updates each vertex of the waveModel and updates the VBO specified by "ID"
     void updateModel(GLuint ID);
 
@@ -53,10 +55,19 @@ private:
     // Helper function for waveInit, converts wave number to frequency
     double waveDispersion(double kx, double ky);
 
-    // Converts the complex wave model grid from the spectral domain to the spatial domain
-    void waveIDFT();
+    fftw_plan WaveIFFTPlan;
+    fftw_complex* ComplexWave;
+    fftw_complex* RealWave;
+    // Allocates memory for the input and output arrays required for the FFTW plan to compute the position of a wave model.
+    void AllocateFFTWResources();
 
-    // Helper function for waveIDFT, transfers the results from IFFT to the z component of the wave model mesh
+    // Converts the complex wave model grid from the spectral domain to the spatial domain
+    void waveIFFT();
+
+    // Releases memory for the input and output arrays required for the FFTW plan to compute the position of a wave model.
+    void ReleaseFFTWResources();
+
+    // Helper function for waveIFFT, transfers the results from IFFT to the z component of the wave model mesh
     void updateMesh(fftw_complex* out);
 
     // Calcualtes the normal vectors for each vertex
